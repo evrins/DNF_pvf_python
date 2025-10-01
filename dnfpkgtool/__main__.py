@@ -5962,9 +5962,13 @@ def run(finCallBackFunc=lambda: None, root_: tk.Tk = None):
     global root
     W = 720
     H = 520
-    if platform.system().lower() == "linux":
+    system = platform.system().lower()
+    if system == "linux":
         W = 800
         H = 700
+    elif system == "darwin":
+        W = 800
+        H = 600
 
     theme = cacheM.config.get("THEME", "默认主题")
     style = None
