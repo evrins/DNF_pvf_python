@@ -21,10 +21,10 @@ from pathlib import Path
 import time
 from copy import deepcopy
 import struct
-from toolTip import CreateToolTip, CreateOnceToolTip, ToolTip
+from widgets.toolTip import CreateToolTip, CreateOnceToolTip, ToolTip
 import json
-from imageLabel import ImageLabel
-from titleBar import TitleBarFrame
+from widgets.imageLabel import ImageLabel
+from widgets.titleBar import TitleBarFrame
 import ps
 import webbrowser
 
