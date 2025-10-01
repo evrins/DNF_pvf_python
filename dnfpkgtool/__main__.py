@@ -24,7 +24,7 @@ if __name__ == "__main__":
     sys.path.append(os.getcwd())
     sys.path.append(os.path.join(os.getcwd(), "dnfpkgtool"))
 from dnfpkgtool import itemSlotFrame
-from dnfpkgtool import creatureFeame
+from dnfpkgtool import creature_frame
 from dnfpkgtool import avatar_frame
 from dnfpkgtool import mailFrame
 from dnfpkgtool import characFrame
@@ -1526,7 +1526,7 @@ class GuiApp:
             self._buildtab_itemTab(itemEditFrame, tabName)
         self.mailFrame = mailFrame.MailframeWidget(self.mailFrame)
         self.avatarFrame = avatarFrame.AvatarFrameWidget(self.avatarFrame)
-        self.creatureItemFrame = creatureFeame.CreatureframeWidget(
+        self.creatureItemFrame = creatureFeame.CreatureFrameWidget(
             self.creatureItemFrame
         )
         self.questFrame = questFrame.QuestframeWidget(self.questFrame, self)
@@ -2728,7 +2728,7 @@ class GuiApp:
             CreateToolTip(commitBtn, f"提交当前[{tabName}]页面的所有修改")
 
     def _buildtab_itemTab_creature(
-        self, creatureF: creatureFeame.CreatureframeWidget, tabName=" 宠物 "
+        self, creatureF: creatureFeame.CreatureFrameWidget, tabName=" 宠物 "
     ):
         def deleteItems():
             if not messagebox.askokcancel("删除确认", f"确定删除{tabName}所选物品？"):
