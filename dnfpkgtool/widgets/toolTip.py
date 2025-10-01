@@ -30,7 +30,7 @@ class ToolTip(object):
             x, y = xy
         self.tipwindow = tw = Toplevel(self.widget)
         self.tipwindow.wm_attributes("-topmost", 1)
-        tw.wm_overrideredirect(1)
+        tw.wm_overrideredirect(True)
         tw.wm_geometry("+%d+%d" % (x, y))
         c = Canvas(
             tw, background="#D2D2D2", height=10, highlightthickness=0, borderwidth=1
