@@ -27,7 +27,7 @@ from dnfpkgtool import itemSlotFrame
 from dnfpkgtool import creature_frame
 from dnfpkgtool import avatar_frame
 from dnfpkgtool import mailFrame
-from dnfpkgtool import characFrame
+from dnfpkgtool import character_frame
 import threading
 from dnfpkgtool import cacheManager as cacheM
 
@@ -1525,8 +1525,8 @@ class GuiApp:
             self.blobFrameWids.append(itemEditFrame)
             self._buildtab_itemTab(itemEditFrame, tabName)
         self.mailFrame = mailFrame.MailframeWidget(self.mailFrame)
-        self.avatarFrame = avatarFrame.AvatarFrameWidget(self.avatarFrame)
-        self.creatureItemFrame = creatureFeame.CreatureFrameWidget(
+        self.avatarFrame = avatar_frame.AvatarFrameWidget(self.avatarFrame)
+        self.creatureItemFrame = creature_frame.CreatureFrameWidget(
             self.creatureItemFrame
         )
         self.questFrame = questFrame.QuestframeWidget(self.questFrame, self)
@@ -2841,7 +2841,7 @@ class GuiApp:
         delBtn = mailF.deleteBtn
         delBtn.config(command=deleteItems)
 
-    def _buildtab_charac(self, characF: characFrame.CharacframeWidget, tabName):
+    def _buildtab_charac(self, characF: character_frame.CharacterFrameWidget, tabName):
         def clear_tab():
             """清空角色信息页"""
             nameE.config(state="normal")
@@ -3092,7 +3092,7 @@ class GuiApp:
             cacheM.config["HD_RESOLUTION"] = HDVar.get()
             cacheM.save_config()
 
-        HDBtn = characF.HDresolutionBtn  # HDResolutionBtn
+        HDBtn = characF.HDResolutionBtn  # HDResolutionBtn
 
         # HDBtn.config(command=setHD)
         # CreateToolTip(HDBtn,'开启高清分辨率，重启程序后生效')
