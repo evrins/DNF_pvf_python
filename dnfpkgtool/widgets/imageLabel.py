@@ -20,7 +20,7 @@ def resize(pil_image,size=[100,100]):
     height = int(h*factor)  
     
     box = ((width-min(w_box,width))//2, (height-min(h_box,height))//2, (width+min(w_box,width))//2, (height+min(h_box,height))//2)
-    res = pil_image.resize((width, height), Image.ANTIALIAS).crop(box)
+    res = pil_image.resize((width, height), Image.LANCZOS).crop(box)
 
     return res #
 
