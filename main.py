@@ -1,3 +1,4 @@
+import platform
 import tkinter
 from tkinter import ttk
 
@@ -25,23 +26,27 @@ else:
     style = Style()  # darkly cyborg minty
     root = style.master
     style.theme_use(theme)
-try:
-    import ctypes
 
-    # 获取屏幕的缩放因子
-    ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
-    # 设置程序缩放
+# only work on windows
+if platform.platform().lower() == "windows":
+    try:
+        import ctypes
 
-    # 告诉操作系统使用程序自身的dpi适配
-    ctypes.windll.shcore.SetProcessDpiAwareness(1)
-    root.tk.call("tk", "scaling", ScaleFactor / 75)
-    s = ttk.Style()
-    # s.theme_use('classic')
+        # 获取屏幕的缩放因子
+        ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+        # 设置程序缩放
 
-    # Add the rowheight
-    s.configure("Treeview", rowheight=20 * ScaleFactor // 100)
-except:
-    print("高清缩放失败")
+        # 告诉操作系统使用程序自身的dpi适配
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        root.tk.call("tk", "scaling", ScaleFactor / 75)
+        s = ttk.Style()
+        # s.theme_use('classic')
+
+        # Add the rowheight
+        s.configure("Treeview", rowheight=20 * ScaleFactor // 100)
+    except:
+        print("高清缩放失败")
+
 
 root.geometry("1x1")
 # root.iconify()
