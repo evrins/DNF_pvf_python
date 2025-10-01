@@ -10,10 +10,19 @@ import threading
 import time
 import traceback
 
-import pymysql_new as pymysql
 from Crypto.Cipher import PKCS1_v1_5 as PKCS1_cipher
 from Crypto.PublicKey import RSA
-from pymysql_new.cursors import Cursor
+from pymysql.cursors import Cursor
+
+
+def inThread(func):
+    def inner(*args, **kw):
+        t = threading.Thread(target=lambda: func(*args, **kw))
+        t.daemon = True
+        t.start()
+        return t
+
+    return inner
 
 
 def signal_handler(signal, frame):
@@ -43,7 +52,6 @@ if os.path.exists(cfgFile):
         INIT_CERAPOINT = configDict.get("INIT_CERAPOINT", INIT_CERAPOINT)
         serverList = configDict.get("SERVER_LIST", serverList)
 
-
 if not isinstance(serverList, list):
     serverList = [serverList]
 
@@ -54,17 +62,6 @@ print(f"初始CERAPOINT:{INIT_CERAPOINT}")
 print(f"数据库账号:{DB_USER}")
 print(f"数据库密码:{DB_PWD}")
 print(f"服务器:{serverList[0]['name']}")
-
-
-def inThread(func):
-    def inner(*args, **kw):
-        t = threading.Thread(target=lambda: func(*args, **kw))
-        t.setDaemon(True)
-        t.start()
-        return t
-
-    return inner
-
 
 execute_queue = []  # [(taskID,args,'fetch'/'commit'/None),...]
 resDict = {}  # {id:res}
@@ -540,8 +537,10 @@ if __name__ == "__main__":
     logQueue = []
     oldPrint = print
 
+
     def log(*text):
         logQueue.append(text)
+
 
     def logger():
         import time
@@ -574,6 +573,7 @@ if __name__ == "__main__":
             except Exception as e:
                 oldPrint(e)
                 pass
+
 
     print = log
     t = threading.Thread(target=logger)
