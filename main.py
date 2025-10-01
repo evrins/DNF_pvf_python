@@ -53,9 +53,9 @@ image = ImageTk.PhotoImage(image)
 
 
 # img = tkinter.PhotoImage(file=iconPath)
-class LoadingframeWidget(ttk.Frame):
+class LoadingFrameWidget(ttk.Frame):
     def __init__(self, master=None, **kw):
-        super(LoadingframeWidget, self).__init__(master, **kw)
+        super(LoadingFrameWidget, self).__init__(master, **kw)
         self.imageLabel = ttk.Label(self)
         self.imageLabel.configure(text=" ", image=image)
         self.imageLabel.pack(side="left")
@@ -63,11 +63,11 @@ class LoadingframeWidget(ttk.Frame):
         label2.configure(font="{黑体} 24 {}", text="背包编辑工具启动中...")
         label2.pack(side="left")
         self.configure(height=200, width=200)
-        self.pack(expand="true", side="top")
+        self.pack(expand=True, side="top")
 
 
 loadingWin = tkinter.Toplevel(root)
-loadingFrame = LoadingframeWidget(loadingWin)
+loadingFrame = LoadingFrameWidget(loadingWin)
 loadingWin.title("loading")
 # loadingWin.geometry('300x100')
 loadingWin.resizable(False, False)
