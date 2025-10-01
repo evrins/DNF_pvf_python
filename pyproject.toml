@@ -1,0 +1,18 @@
+[project]
+name = "dnf-pvf-python"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mysql-connector>=2.2.9",
+    "paramiko>=4.0.0",
+    "pillow>=10.4.0",
+    "psutil>=7.1.0",
+    "pycrypto>=2.6.1",
+    "pymysql>=1.1.2",
+    "pyperclip>=1.11.0",
+    "pyqrcode>=1.2.1",
+    "ttkbootstrap>=1.14.2",
+    "zhconv>=1.4.3",
+]
