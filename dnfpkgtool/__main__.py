@@ -2755,7 +2755,7 @@ class GuiApp:
         delBtn.config(command=deleteItems)
 
     def _buildtab_itemTab_avatar(
-        self, avatarF: avatarFrame.AvatarFrameWidget, tabName=" 时装 "
+        self, avatarF: avatar_frame.AvatarFrameWidget, tabName=" 时装 "
     ):
         def deleteItems():
             if not messagebox.askokcancel("删除确认", f"确定删除{tabName}所选物品？"):
@@ -2815,7 +2815,7 @@ class GuiApp:
         delBtn.config(command=deleteItems)
 
     def _buildtab_itemTab_mail(
-        self, mailF: mailFrame.MailFrameWidget, tabName=" 邮件 "
+        self, mailF: mail_frame.MailFrameWidget, tabName=" 邮件 "
     ):
         def deleteItems():
             if not messagebox.askokcancel("删除确认", f"确定删除{tabName}所选物品？"):
