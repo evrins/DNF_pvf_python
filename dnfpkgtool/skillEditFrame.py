@@ -1,9 +1,8 @@
-from .pvfEditor import *
-
 import tkinter as tk
 import tkinter.ttk as ttk
 
 from . import cacheManager as cacheM
+from .pvfEditor import *
 
 if not hasattr(ttk, "Spinbox"):
 

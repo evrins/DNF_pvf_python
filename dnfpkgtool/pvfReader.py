@@ -1,8 +1,9 @@
-import struct
-from struct import unpack
-from zhconv import convert
 import json
+import struct
 from pathlib import Path
+from struct import unpack
+
+from zhconv import convert
 
 try:
     import multiprocessing

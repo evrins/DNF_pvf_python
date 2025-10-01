@@ -1,11 +1,13 @@
-from dnfpkgtool import sqlManager2 as sqlM
-from dnfpkgtool import cacheManager as cacheM
 import tkinter as tk
 from tkinter import ttk
-from dnfpkgtool.widgets.toolTip import CreateToolTip
+
 from zhconv import convert
+
 import dnfpkgtool.serverProtocol as server
+from dnfpkgtool import cacheManager as cacheM
+from dnfpkgtool import sqlManager2 as sqlM
 from dnfpkgtool.widgets.imageLabel import ImageLabel
+from dnfpkgtool.widgets.toolTip import CreateToolTip
 
 IconPath = "./config/ico.ico"
 if not hasattr(ttk, "Spinbox"):

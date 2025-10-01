@@ -1,6 +1,6 @@
 # Credit to https://stackoverflow.com/a/22722889/122364
-import uuid
 import tkinter as tk
+import uuid
 from tkinter import ttk
 
 

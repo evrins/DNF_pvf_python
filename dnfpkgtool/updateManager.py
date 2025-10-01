@@ -1,8 +1,9 @@
-import requests
-from pathlib import Path
-import os
 import json
+import os
 import threading
+from pathlib import Path
+
+import requests
 
 LOCAL_VERSION_PATH = Path("./config/versionDict2.json")
 

@@ -1,19 +1,20 @@
+import base64
+import hashlib
+import json
+import pathlib
+import socket
+import subprocess
+import threading
+import time
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import messagebox
-from PIL import Image, ImageTk
-import time
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_v1_5 as PKCS1_cipher
-import base64
-import json
-import socket
-import hashlib
 import uuid
-import threading
-import pathlib
-import subprocess
 import zlib
+from tkinter import messagebox
+
+from Crypto.Cipher import PKCS1_v1_5 as PKCS1_cipher
+from Crypto.PublicKey import RSA
+from PIL import Image, ImageTk
 
 VERSION = "alpha 0.0.1"
 

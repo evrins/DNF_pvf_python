@@ -3,8 +3,8 @@ import tkinter.ttk as ttk
 from tkinter import messagebox
 
 if __name__ == "__main__":
-    import sys
     import os
+    import sys
 
     sys.path.append(os.getcwd())
 import dnfpkgtool.cacheManager as cacheM

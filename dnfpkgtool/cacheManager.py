@@ -1,14 +1,15 @@
-import zlib
-from pathlib import Path
-import csv
-import json
-from dnfpkgtool import pvfReader
 import copy
+import csv
 import hashlib
+import json
 import pickle
 import re
-import time
 import threading
+import time
+import zlib
+from pathlib import Path
+
+from dnfpkgtool import pvfReader
 
 __version__ = ""
 

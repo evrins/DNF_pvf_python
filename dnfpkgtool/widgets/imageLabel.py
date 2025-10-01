@@ -1,9 +1,10 @@
+import threading
 import tkinter as tk
-from PIL import Image, ImageTk
 from itertools import count, cycle
 from pathlib import Path
 from random import choice
-import threading
+
+from PIL import Image, ImageTk
 
 
 def resize(pil_image, size=(100, 100)):

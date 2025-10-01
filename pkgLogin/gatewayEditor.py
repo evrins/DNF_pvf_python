@@ -1,13 +1,14 @@
-import tkinter as tk
-import tkinter.ttk as ttk
-from tkinter import messagebox
-from Crypto.PublicKey import RSA
-import os
-import time
 import json
-import zlib
+import os
 import pathlib
 import shutil
+import time
+import tkinter as tk
+import tkinter.ttk as ttk
+import zlib
+from tkinter import messagebox
+
+from Crypto.PublicKey import RSA
 
 
 def genPEM(bits=2048):

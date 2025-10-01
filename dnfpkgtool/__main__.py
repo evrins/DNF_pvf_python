@@ -12,49 +12,53 @@ if not hasattr(ttk, "Spinbox"):
             self.tk.call(self._w, "set", value)
 
     ttk.Spinbox = Spinbox
-from ttkbootstrap import Style
-from tkinter import ttk, messagebox
-from tkinter.filedialog import askopenfilename, asksaveasfilename, askdirectory
+
 import ipaddress
 import os
+from tkinter import messagebox, ttk
+from tkinter.filedialog import askdirectory, askopenfilename, asksaveasfilename
+
+from ttkbootstrap import Style
 
 if __name__ == "__main__":
     import sys
 
     sys.path.append(os.getcwd())
     sys.path.append(os.path.join(os.getcwd(), "dnfpkgtool"))
-from dnfpkgtool import itemSlotFrame
-from dnfpkgtool import creature_frame
-from dnfpkgtool import avatar_frame
-from dnfpkgtool import mail_frame
-from dnfpkgtool import character_frame
-import threading
-from dnfpkgtool import cacheManager as cacheM
 
-from dnfpkgtool import sqlManager2 as sqlM
-from pathlib import Path
-import time
-from copy import deepcopy
-import struct
-from dnfpkgtool.widgets.toolTip import CreateToolTip, CreateOnceToolTip, ToolTip
-from dnfpkgtool.widgets.imageLabel import ImageLabel
-from dnfpkgtool import ps
-import webbrowser
-from dnfpkgtool.widgets.titleBar import TitleBarFrame
-from dnfpkgtool import gmTool_resize as gmToolGUI
-from dnfpkgtool import pvfEditorGUI
-
-# from dnfpkgtool import findServerFrame
-from dnfpkgtool import questFrame
-from dnfpkgtool import sqlUserManager
-import pyperclip
-import pickle
-import json
 import base64
 import datetime
-from PIL import Image
-from PIL import ImageTk
+import json
+import pickle
+import struct
+import threading
+import time
+import webbrowser
+from copy import deepcopy
+from pathlib import Path
+
+import pyperclip
 import pyqrcode
+from PIL import Image, ImageTk
+
+# from dnfpkgtool import findServerFrame
+from dnfpkgtool import (
+    avatar_frame,
+    character_frame,
+    creature_frame,
+    itemSlotFrame,
+    mail_frame,
+    ps,
+    pvfEditorGUI,
+    quest_frame,
+    sqlUserManager,
+)
+from dnfpkgtool import cacheManager as cacheM
+from dnfpkgtool import gmTool_resize as gmToolGUI
+from dnfpkgtool import sqlManager2 as sqlM
+from dnfpkgtool.widgets.imageLabel import ImageLabel
+from dnfpkgtool.widgets.titleBar import TitleBarFrame
+from dnfpkgtool.widgets.toolTip import CreateOnceToolTip, CreateToolTip, ToolTip
 
 WIDTH = 1
 

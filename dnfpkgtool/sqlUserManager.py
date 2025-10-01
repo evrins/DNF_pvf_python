@@ -1,8 +1,9 @@
+import threading
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox
+
 from . import sqlManager2 as sqlM
-import threading
 
 
 def inThread(func):

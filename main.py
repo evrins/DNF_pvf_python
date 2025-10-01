@@ -1,11 +1,11 @@
 import tkinter
 from tkinter import ttk
-from PIL import Image
-from PIL import ImageTk
+
+from PIL import Image, ImageTk
 
 configPath = "config/config.json"
-import sys
 import os
+import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if os.path.exists(configPath):

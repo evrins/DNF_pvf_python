@@ -13,6 +13,7 @@ dependencies = [
     "pymysql>=1.1.2",
     "pyperclip>=1.11.0",
     "pyqrcode>=1.2.1",
+    "requests>=2.32.5",
     "ttkbootstrap>=1.14.2",
     "zhconv>=1.4.3",
 ]

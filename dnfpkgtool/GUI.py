@@ -1,9 +1,10 @@
-import cacheManager as cacheM
-from cacheManager import config
-import updateManager as updateM
-import sqlManager2 as sqlM
 import tkinter as tk
-from tkinter import ttk, messagebox, font
+from tkinter import font, messagebox, ttk
+
+import cacheManager as cacheM
+import sqlManager2 as sqlM
+import updateManager as updateM
+from cacheManager import config
 
 if not hasattr(ttk, "Spinbox"):
 
@@ -15,18 +16,19 @@ if not hasattr(ttk, "Spinbox"):
             self.tk.call(self._w, "set", value)
 
     ttk.Spinbox = Spinbox
-from tkinter.filedialog import askopenfilename, asksaveasfilename
-import threading
-from pathlib import Path
-import time
-from copy import deepcopy
-import struct
-from widgets.toolTip import CreateToolTip, CreateOnceToolTip, ToolTip
 import json
+import struct
+import threading
+import time
+import webbrowser
+from copy import deepcopy
+from pathlib import Path
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+
+import ps
 from widgets.imageLabel import ImageLabel
 from widgets.titleBar import TitleBarFrame
-import ps
-import webbrowser
+from widgets.toolTip import CreateOnceToolTip, CreateToolTip, ToolTip
 
 oldPrint = print
 logFunc = [oldPrint]

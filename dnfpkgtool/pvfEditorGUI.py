@@ -1,25 +1,27 @@
-from .pvfEditor import *
 import copy
-from . import pvfEditor
+import pickle
 
 #!/usr/bin/python3
 import tkinter as tk
 import tkinter.ttk as ttk
+import zlib
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-import zlib
-import pickle
+
+from . import pvfEditor
+from .pvfEditor import *
 
 try:
     import jsoneditor
 except:
     pass
-import time
 import threading
-from .widgets.toolTip import CreateToolTip
+import time
+
 from . import cacheManager as cacheM
 from .EtcEditFrame import EtcframeWidget
 from .skillEditFrame import SkilleditframeWidget
+from .widgets.toolTip import CreateToolTip
 
 if not hasattr(ttk, "Spinbox"):
 

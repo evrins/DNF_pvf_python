@@ -1,23 +1,24 @@
-import zlib
-import struct
-
 # from mysql import connector
 import datetime
 import os
+import struct
+import zlib
 
 if __name__ == "__main__":
     import sys
 
     sys.path.append(os.getcwd())
-import pymysql
-from pymysql.constants import CLIENT
-from dnfpkgtool import cacheManager as cacheM
-from zhconv import convert
-import time
-import threading
-from hashlib import md5
 import pickle
 import random
+import threading
+import time
+from hashlib import md5
+
+import pymysql
+from pymysql.constants import CLIENT
+from zhconv import convert
+
+from dnfpkgtool import cacheManager as cacheM
 
 __version__ = ""
 # print(f'物品栏装备删除工具_CMD {__version__}\n\n')

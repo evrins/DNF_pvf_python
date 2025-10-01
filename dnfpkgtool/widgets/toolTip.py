@@ -1,4 +1,5 @@
 from tkinter import *
+
 from dnfpkgtool.cacheManager import config
 
 W, H = config["SIZE"]

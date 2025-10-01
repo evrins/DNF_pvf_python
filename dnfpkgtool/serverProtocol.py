@@ -1,13 +1,15 @@
-from dnfpkgtool import cacheManager as cacheM
-import tkinter as tk
-from tkinter.filedialog import askopenfilename
-from tkinter import ttk, messagebox
+import os
 import threading
 import time
-from dnfpkgtool.widgets.toolTip import CreateToolTip
+import tkinter as tk
 from pathlib import Path
+from tkinter import messagebox, ttk
+from tkinter.filedialog import askopenfilename
+
 import paramiko
-import os
+
+from dnfpkgtool import cacheManager as cacheM
+from dnfpkgtool.widgets.toolTip import CreateToolTip
 
 WIDTH, HEIGHT = cacheM.config["SIZE"]
 

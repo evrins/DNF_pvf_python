@@ -1,10 +1,11 @@
 import os
-import psutil
 import subprocess
-from tkinter.filedialog import asksaveasfilename
-from pathlib import Path
 import threading
 import time
+from pathlib import Path
+from tkinter.filedialog import asksaveasfilename
+
+import psutil
 
 ICON_PATH = r".\config\DNF.ico"
 B2E_PATH = r"config\b2e.exe"

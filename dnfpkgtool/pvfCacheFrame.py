@@ -1,12 +1,13 @@
-from dnfpkgtool import cacheManager as cacheM
-from dnfpkgtool.widgets.titleBar import TitleBarFrame
-import tkinter as tk
-from tkinter import ttk, messagebox
-from tkinter.filedialog import asksaveasfilename
-from dnfpkgtool.widgets.toolTip import CreateToolTip
-import time
 import csv
+import time
+import tkinter as tk
+from tkinter import messagebox, ttk
+from tkinter.filedialog import asksaveasfilename
+
+from dnfpkgtool import cacheManager as cacheM
 from dnfpkgtool.jsonViewer import json_tree
+from dnfpkgtool.widgets.titleBar import TitleBarFrame
+from dnfpkgtool.widgets.toolTip import CreateToolTip
 
 rarityMap = {
     0: "普通",

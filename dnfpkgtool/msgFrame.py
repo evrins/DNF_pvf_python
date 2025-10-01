@@ -1,13 +1,12 @@
+import json
+import pickle
+import socket
+import threading
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import messagebox
-import socket
-import pickle
-import json
-import zlib
-import threading
-
 import uuid
+import zlib
+from tkinter import messagebox
 
 mac_address = uuid.uuid1().hex[-12:].upper()
 mac_address = "-".join([mac_address[i : i + 2] for i in range(0, 11, 2)])
