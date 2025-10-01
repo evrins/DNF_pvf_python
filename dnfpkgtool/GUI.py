@@ -25,6 +25,7 @@ from copy import deepcopy
 from pathlib import Path
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
+from utils import in_thread
 import ps
 from widgets.imageLabel import ImageLabel
 from widgets.titleBar import TitleBarFrame
@@ -37,15 +38,6 @@ logFunc = [oldPrint]
 def print(*args, **kw):
     logFunc[-1](*args, **kw)
 
-
-def inThread(func):
-    def inner(*args, **kw):
-        t = threading.Thread(target=lambda: func(*args, **kw))
-        t.setDaemon(True)
-        t.start()
-        return t
-
-    return inner
 
 
 DEBUG = True
@@ -345,7 +337,7 @@ class App:
             print("加载角色列表", characs)
             fill_charac_treeview(charac_list=characs)
 
-        @inThread
+        @in_thread
         def selectCharac(showTitle=False):
             if len(self.characTreev.selection()) == 0:
                 return
