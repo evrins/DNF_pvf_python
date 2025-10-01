@@ -3092,7 +3092,7 @@ class GuiApp:
             cacheM.config["HD_RESOLUTION"] = HDVar.get()
             cacheM.save_config()
 
-        HDBtn = characF.HDResolutionBtn  # HDResolutionBtn
+        # HDBtn = characF.HDResolutionBtn  # HDResolutionBtn
 
         # HDBtn.config(command=setHD)
         # CreateToolTip(HDBtn,'开启高清分辨率，重启程序后生效')
