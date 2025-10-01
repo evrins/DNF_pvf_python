@@ -3,56 +3,65 @@ from tkinter import *
 
 
 class TitleBarFrame(Frame):
-    def __init__(self,master,root,title='',closeFunc=lambda:...,*args):
-        Frame.__init__(self,master=master,highlightthickness=1,highlightcolor='gray',highlightbackground='gray',*args)
-        
+    def __init__(self, master, root, title="", closeFunc=lambda: ..., *args):
+        Frame.__init__(
+            self,
+            master=master,
+            highlightthickness=1,
+            highlightcolor="gray",
+            highlightbackground="gray",
+            *args,
+        )
+
         self.x, self.y = root.winfo_x(), root.winfo_y()
         self.root = root
         self.title_bar = Frame(self, bg="gray", relief="raised", bd=0)
-        #self.title_bar.pack(expand=1, fill=X)
+        # self.title_bar.pack(expand=1, fill=X)
         self.title_bar.bind("<B1-Motion>", self.move_app)
-        self.title_bar.bind('<Button-1>',self.setxy)
-        self.title_bar.bind('<Escape>',self.quitter)
+        self.title_bar.bind("<Button-1>", self.setxy)
+        self.title_bar.bind("<Escape>", self.quitter)
 
         self.title_label = Label(self.title_bar, text=title, bg="gray", fg="white")
         self.title_label.pack(side=LEFT, pady=4)
         self.title_label.bind("<B1-Motion>", self.move_app)
-        self.title_label.bind('<Button-1>',self.setxy)
-        self.close_label = Label(self.title_bar, text="[ X ]", bg="gray", fg="white", relief="sunken", bd=0)
+        self.title_label.bind("<Button-1>", self.setxy)
+        self.close_label = Label(
+            self.title_bar, text="[ X ]", bg="gray", fg="white", relief="sunken", bd=0
+        )
         self.close_label.pack(side=RIGHT, pady=4)
         self.close_label.bind("<Button-1>", self.quitter)
 
         self.innerFrame = Frame(self)
-        self.innerFrame.pack(pady=5,anchor=N+W,fill='both',expand=True)
-        self.innerFrame.bind('<Escape>',self.quitter)
+        self.innerFrame.pack(pady=5, anchor=N + W, fill="both", expand=True)
+        self.innerFrame.bind("<Escape>", self.quitter)
         self.closeFunc = closeFunc
-        self.bind('<Escape>',self.quitter)
-    
-    def move_app(self,event):
+        self.bind("<Escape>", self.quitter)
+
+    def move_app(self, event):
         new_x = (event.x - self.x) + self.root.winfo_x()
         new_y = (event.y - self.y) + self.root.winfo_y()
-        s = f'+{new_x}+{new_y}'
+        s = f"+{new_x}+{new_y}"
         self.root.geometry(s)
-    
-    def setxy(self,event):
+
+    def setxy(self, event):
         self.x = event.x
         self.y = event.y
-    
-    def quitter(self,e):
+
+    def quitter(self, e):
         self.root.destroy()
         self.closeFunc()
 
 
 # remove title bar
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     root = Tk()
-    root.geometry('500x300')
-    #root.overrideredirect(True)
-    
-    TitleBarFrame(root,root,'title').pack(fill=X,expand=1,anchor=N)
+    root.geometry("500x300")
+    # root.overrideredirect(True)
+
+    TitleBarFrame(root, root, "title").pack(fill=X, expand=1, anchor=N)
     root.mainloop()
-'''
+"""
 def move_app(event):
     new_x = (event.x - x) + root.winfo_x()
     new_y = (event.y - y) + root.winfo_y()
@@ -89,4 +98,4 @@ my_button.pack(pady=100)
 
 
 
-root.mainloop()'''
+root.mainloop()"""

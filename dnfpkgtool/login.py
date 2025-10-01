@@ -1,9 +1,9 @@
-
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5 as PKCS1_cipher
 import base64
 import struct
-public_key_str = '''-----BEGIN PUBLIC KEY-----
+
+public_key_str = """-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsz6g1F4gCkpSuwUSk4Di
 y1SxXVHEHKen2A2e+JCRxYuPGvJEYlaJpmaGABEeydzStronNX7O5Fdo1rQ2RHwu
 OFPNnugAUk138HlsK+v2MHpur9mzRK2L6C7amgxtBu+mFXV8wcwvuuDp1a+LFzCo
@@ -12,9 +12,9 @@ bQn7jivGoUNbXeTqdEDKXDFRbXWpxtUxiklC949h0dtoYLmALmt/bWKbK+DpwwJL
 c0BD/nEJKhP/x4YubwBaHdcagZlIX+rQQnABt+yaNYbYWKoV8eHGifAH9OEYnL/T
 UwIDAQAB
 -----END PUBLIC KEY-----
-'''
+"""
 
-private_key_str = '''-----BEGIN RSA PRIVATE KEY-----
+private_key_str = """-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA4WPn+6Fmt8bpHwDV4QqVFzno+z2xzDhzc680ZkNhzVUEX95m
 uDfVntqZlYRWtfcjklo6m1/sp3DNosq4ASQgFgf+gKDZDWqekprQcZuHaBfGgw5r
 1OUnAkJFYbgLKVem/2B8mKyZivDkKdrcPmYih77zt0kWRBroxDwv7k4Ia0vhEdaK
@@ -40,25 +40,28 @@ RE7o7SPgoYSBxRUfR/+hoeaSeRmJoTc3LupUmkMcT7sPE3Xf9faOjdNhQ0VzKaTe
 2mhcD9ECgYBdUbpCjK/D0+Gw9Xb3ZmzA+8q83PftlWtMx+3RfXfC8gssUA6hFFro
 zmN3e4dRlCUEd3y5G9TMWF9F3odNY542gGO8JziwXX/BGzB8JuS8uxwkofqqd4Vm
 Zvvd6g34siiE6Nj94kfz1BUF6c0grb8hDDUpASHGzktC5fRzUOZRMg==
------END RSA PRIVATE KEY-----'''
+-----END RSA PRIVATE KEY-----"""
+
 
 def login(uid):
     public_key = RSA.importKey(public_key_str)
     cipher = PKCS1_cipher.new(public_key)
-    data = '%08x010101010101010101010101010101010101010101010101010101010101010155914510010403030101' % uid
-    dataInBytes = b''
-    for i in range(0,len(data),2):
-        dataInBytes += struct.pack('H',int(data[i:i+2],16))
+    data = (
+        "%08x010101010101010101010101010101010101010101010101010101010101010155914510010403030101"
+        % uid
+    )
+    dataInBytes = b""
+    for i in range(0, len(data), 2):
+        dataInBytes += struct.pack("H", int(data[i : i + 2], 16))
 
-
-        
-    '''dataInBytes = bytes.fromhex(data)
+    """dataInBytes = bytes.fromhex(data)
     print(dataInBytes)
     data2 = b'\x00'.join(dataInBytes)
-    print(data2)'''
+    print(data2)"""
     encryptedStr = cipher.encrypt(dataInBytes)
     return base64.b64encode(encryptedStr).decode()
 
-if __name__=='__main__':
+
+if __name__ == "__main__":
     uid = 8
     print(login(uid))
