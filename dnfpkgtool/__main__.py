@@ -1529,7 +1529,7 @@ class GuiApp:
         self.creatureItemFrame = creature_frame.CreatureFrameWidget(
             self.creatureItemFrame
         )
-        self.questFrame = questFrame.QuestframeWidget(self.questFrame, self)
+        self.questFrame = quest_frame.QuestFrameWidget(self.questFrame, self)
         self.sqlUserManageF = sqlUserManager.SqluserframeWidget(self.sqlUserManageFrame)
 
         for tab in self.tabView.tabs():
@@ -2728,7 +2728,7 @@ class GuiApp:
             CreateToolTip(commitBtn, f"提交当前[{tabName}]页面的所有修改")
 
     def _buildtab_itemTab_creature(
-        self, creatureF: creatureFeame.CreatureFrameWidget, tabName=" 宠物 "
+        self, creatureF: creature_frame.CreatureFrameWidget, tabName=" 宠物 "
     ):
         def deleteItems():
             if not messagebox.askokcancel("删除确认", f"确定删除{tabName}所选物品？"):

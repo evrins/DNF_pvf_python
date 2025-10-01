@@ -11,13 +11,16 @@ import dnfpkgtool.cacheManager as cacheM
 import dnfpkgtool.sqlManager2 as sqlM
 
 
-class QuestframeWidget(ttk.Frame):
+class QuestFrameWidget(ttk.Frame):
     def __init__(self, master=None, app=None, **kw):
-        super(QuestframeWidget, self).__init__(master, **kw)
+        super(QuestFrameWidget, self).__init__(master, **kw)
+
         labelframe1 = ttk.Labelframe(self)
         labelframe1.configure(height=200, text="当前任务列表", width=200)
+
         frame2 = ttk.Frame(labelframe1)
         frame2.configure(height=200, width=200)
+
         self.questTree = ttk.Treeview(frame2)
         self.questTree.configure(selectmode="extended", show="headings")
         self.questTree_cols = ["column4", "column1", "column2", "column3"]
@@ -26,16 +29,16 @@ class QuestframeWidget(ttk.Frame):
             columns=self.questTree_cols, displaycolumns=self.questTree_dcols
         )
         self.questTree.column(
-            "column4", anchor="center", stretch="true", width=50, minwidth=20
+            "column4", anchor="center", stretch=True, width=50, minwidth=20
         )
         self.questTree.column(
-            "column1", anchor="center", stretch="true", width=100, minwidth=20
+            "column1", anchor="center", stretch=True, width=100, minwidth=20
         )
         self.questTree.column(
-            "column2", anchor="center", stretch="true", width=200, minwidth=20
+            "column2", anchor="center", stretch=True, width=200, minwidth=20
         )
         self.questTree.column(
-            "column3", anchor="center", stretch="true", width=60, minwidth=20
+            "column3", anchor="center", stretch=True, width=60, minwidth=20
         )
         self.questTree.heading("column4", anchor="center", text=" ")
         self.questTree.heading("column1", anchor="center", text="任务ID")
@@ -43,58 +46,79 @@ class QuestframeWidget(ttk.Frame):
         self.questTree.heading("column3", anchor="center", text="任务状态")
         self.questTree.pack(fill="both", side="left")
         self.questTree.bind("<<TreeviewSelect>>", self.show_sel_quest, add="")
+
         self.questBar = ttk.Scrollbar(frame2)
         self.questBar.configure(orient="vertical")
         self.questBar.pack(fill="y", side="right")
-        frame2.pack(expand="true", fill="both", side="top")
+
+        frame2.pack(expand=True, fill="both", side="top")
+
         frame3 = ttk.Frame(labelframe1)
         frame3.configure(height=200, width=200)
+
         button2 = ttk.Button(frame3)
         button2.configure(text="放弃选中任务")
-        button2.pack(expand="true", fill="x", side="left")
+        button2.pack(expand=True, fill="x", side="left")
         button2.configure(command=self.give_up_sel_quest)
+
         button3 = ttk.Button(frame3)
         button3.configure(text="放弃所有任务")
-        button3.pack(expand="true", fill="x", side="left")
+        button3.pack(expand=True, fill="x", side="left")
         button3.configure(command=self.give_up_all_quest)
+
         button4 = ttk.Button(frame3)
         button4.configure(text="标记状态为完成")
-        button4.pack(expand="true", fill="x", side="left")
+        button4.pack(expand=True, fill="x", side="left")
         button4.configure(command=self.clear_sel_trigger)
+
         frame3.pack(fill="x", side="top")
+
         labelframe1.pack(fill="both", side="left")
+
         labelframe2 = ttk.Labelframe(self)
         labelframe2.configure(height=200, text="任务信息", width=200)
+
         frame4 = ttk.Frame(labelframe2)
         frame4.configure(height=200, width=200)
+
         label1 = ttk.Label(frame4)
         label1.configure(text="任务名：")
         label1.grid(column=0, row=0)
+
         self.questNameE = ttk.Combobox(frame4)
         self.questNameE.grid(column=1, row=0, sticky="ew")
+
         label2 = ttk.Label(frame4)
         label2.configure(text="ID：")
         label2.grid(column=0, row=1)
+
         self.questIDE = ttk.Combobox(frame4)
         self.questIDE.grid(column=1, row=1, sticky="ew")
+
         label3 = ttk.Label(frame4)
         label3.configure(text="任务状态：")
         label3.grid(column=0, row=2)
+
         self.questTrigerE = ttk.Combobox(frame4)
         self.questTrigerE.configure(values="0 1")
         self.questTrigerE.grid(column=1, row=2, sticky="ew")
+
         button5 = ttk.Button(frame4)
         button5.configure(text="保存状态")
         button5.grid(column=0, columnspan=2, row=3, sticky="ew")
         button5.configure(command=self.save_current_quest)
+
         frame4.pack(fill="x", side="top")
         frame4.columnconfigure(1, weight=1)
+
         self.questPvfE = tk.Text(labelframe2)
         self.questPvfE.configure(height=10, width=30)
-        self.questPvfE.pack(expand="true", fill="both", side="top")
-        labelframe2.pack(expand="true", fill="both", side="left")
+        self.questPvfE.pack(expand=True, fill="both", side="top")
+
+        labelframe2.pack(expand=True, fill="both", side="left")
+
         self.configure(height=200, width=200)
-        self.pack(expand="true", fill="both", side="top")
+        self.pack(expand=True, fill="both", side="top")
 
         from dnfpkgtool.__main__ import GuiApp as App
 
@@ -108,21 +132,21 @@ class QuestframeWidget(ttk.Frame):
         self.currentIndex = -1
         self.questDict = {}
 
-        self.questNameE.bind("<Button-1>", self.search_Quest)
+        self.questNameE.bind("<Button-1>", self.search_quest)
         self.questNameE.bind(
             "<<ComboboxSelected>>",
-            lambda e: self.readSlotName("name", self.questIDE, self.questNameE),
+            lambda e: self.read_slot_name("name", self.questIDE, self.questNameE),
         )
         self.questIDE.bind(
             "<FocusOut>",
-            lambda e: self.readSlotName("id", self.questIDE, self.questNameE),
+            lambda e: self.read_slot_name("id", self.questIDE, self.questNameE),
         )
         self.questIDE.bind(
             "<Return>",
-            lambda e: self.readSlotName("id", self.questIDE, self.questNameE),
+            lambda e: self.read_slot_name("id", self.questIDE, self.questNameE),
         )
 
-    def search_Quest(self, e: tk.Event):
+    def search_quest(self, e: tk.Event):
         """搜索任务名"""
         if e.x < 100:
             return
@@ -138,7 +162,7 @@ class QuestframeWidget(ttk.Frame):
                 values=[item[1] + " " + str([item[0]]) for item in res]
             )
 
-    def readSlotName(self, name_id="id", itemIDEntry=None, itemNameEntry=None):
+    def read_slot_name(self, name_id="id", itemIDEntry=None, itemNameEntry=None):
         if name_id == "id":
             id_ = itemIDEntry.get()
             try:
@@ -237,6 +261,6 @@ class QuestframeWidget(ttk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = QuestframeWidget(root)
+    widget = QuestFrameWidget(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()
