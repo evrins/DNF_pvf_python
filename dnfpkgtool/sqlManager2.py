@@ -11,7 +11,6 @@ if __name__ == "__main__":
     sys.path.append(os.getcwd())
 import pymysql
 from pymysql.constants import CLIENT
-import json
 from dnfpkgtool import cacheManager as cacheM
 from zhconv import convert
 import time
@@ -203,7 +202,7 @@ class DnfItemSlot:
             s += f"数量:{self.num_grade}"
         elif self.typeDict.get(self.type) in ["装备"]:
             if self.isSeal != 0:
-                s += f"[封装]"
+                s += "[封装]"
             if self.enhancementLevel > 0:
                 s += f" 强化:+{self.enhancementLevel}"
             s += f" 耐久:{self.durability}"
@@ -273,7 +272,7 @@ def newConnector(db=""):
                 dbConn.select_db(db)
 
                 return True
-            except Exception as e:
+            except Exception:
                 pass
     return False
 
@@ -331,7 +330,7 @@ def execute(db, sql, args=None, charset="utf8", reConn=True):
             cursor.execute(sql, args)
         print(sql)
         return True
-    except Exception as e:
+    except Exception:
         if reConn:
             # print(f'数据库{db}连接失败，尝试重新连接... 错误信息:{e}')
             connectorDict[db] = None
@@ -355,7 +354,7 @@ def execute_fech(db, sql, args=None, charset="utf8", reConn=True):
             cursor.execute(sql, args)
         res = cursor.fetchall()
         return res
-    except Exception as e:
+    except Exception:
         if reConn:
             # print(f'数据库{db}连接失败，尝试重新连接... 错误信息:{e}')
             connectorDict[db] = None
@@ -533,14 +532,14 @@ def getCharacterInfo(cName="", uid=0, cNo=0):
     else:
         # print(f'查询{cName}')
         name_new = cName.encode("utf-8", "replace")
-        sql = f"select m_id, charac_no, charac_name, lev, job, grow_type, delete_flag, expert_job  from charac_info where charac_name=%s;"
+        sql = "select m_id, charac_no, charac_name, lev, job, grow_type, delete_flag, expert_job  from charac_info where charac_name=%s;"
         res = list(execute_and_fetch("taiwan_cain", sql, (name_new,), "latin1"))
         res.extend(execute_and_fetch("taiwan_cain", sql, (name_new,), "utf-8"))
 
         name_tw = convert(cName, "zh-tw")
         if cName != name_tw:
             name_tw_new = name_tw.encode("utf-8", "replace")
-            sql = f"select m_id, charac_no, charac_name, lev, job, grow_type, delete_flag, expert_job from charac_info where charac_name=%s;"
+            sql = "select m_id, charac_no, charac_name, lev, job, grow_type, delete_flag, expert_job from charac_info where charac_name=%s;"
             res.extend(execute_and_fetch("taiwan_cain", sql, (name_tw_new,), "latin1"))
             res.extend(execute_and_fetch("taiwan_cain", sql, (name_tw_new,), "utf-8"))
     res = decode_charac_list(res)
@@ -634,7 +633,7 @@ def getCreatureItem(cName="", cNo=0):
 
 def get_online_uid():
     get_login_account_sql = (
-        f"select m_id,login_ip from login_account_3 where login_status=1"
+        "select m_id,login_ip from login_account_3 where login_status=1"
     )
     onlineAccounts = execute_and_fetch("taiwan_login", get_login_account_sql)
     onlineAccountIPDict = {item[0]: item[1] for item in onlineAccounts}
@@ -642,7 +641,7 @@ def get_online_uid():
 
 
 def get_online_charac():
-    get_login_account_sql = f"select m_id from login_account_3 where login_status=1"
+    get_login_account_sql = "select m_id from login_account_3 where login_status=1"
     res = execute_and_fetch("taiwan_login", get_login_account_sql)
     onlineAccounts = [item[0] for item in res]
     result = []
@@ -660,14 +659,14 @@ def get_online_charac():
 def get_online_charac_3():
     """[[uid,cNo,ip]...]"""
     get_login_account_sql = (
-        f"select m_id,login_ip from login_account_3 where login_status=1"
+        "select m_id,login_ip from login_account_3 where login_status=1"
     )
     res = execute_and_fetch("taiwan_login", get_login_account_sql)
     uid_ip_dict = {item[0]: item[1] for item in res}
     onlineAccounts = [item[0] for item in res]
     if len(onlineAccounts) == 0:
         return []
-    sql = f"select m_id,charac_no from event_1306_account_reward where "
+    sql = "select m_id,charac_no from event_1306_account_reward where "
     for uid in onlineAccounts:
         sql += f" m_id={uid} or"
     sql = sql[:-2]
@@ -682,7 +681,7 @@ VIP_KEY = "VIP"
 def check_VIP_column():
     global VIP_KEY
 
-    sql = f"""select column_name,data_type from information_schema.columns where table_schema='d_taiwan' and table_name='accounts';"""
+    sql = """select column_name,data_type from information_schema.columns where table_schema='d_taiwan' and table_name='accounts';"""
     res = execute_and_fetch("d_taiwan", sql)
     for column_name, data_type in res:
         if column_name.lower() == "vip":
@@ -708,9 +707,9 @@ def get_VIP_charac(all=False):
 
 
 def get_all_charac():
-    sql = f"select UID from accounts;"
+    sql = "select UID from accounts;"
     res = execute_and_fetch("d_taiwan", sql)
-    sql = f"select m_id, charac_no, charac_name, lev, job, grow_type, delete_flag, expert_job from charac_info;"
+    sql = "select m_id, charac_no, charac_name, lev, job, grow_type, delete_flag, expert_job from charac_info;"
     res = execute_and_fetch("taiwan_cain", sql)
     characs = decode_charac_list(res)
     characs = list(filter(lambda x: x[-2] != 1, characs))
@@ -826,7 +825,7 @@ def set_return_user(cNo):
     sql = f"select m_id,expire_time from return_user where m_id={uid}"
     res = execute_and_fetch("taiwan_game_event", sql)
     if len(res) > 0:
-        sql = f"""update return_user set expire_time='2023-12-31 00:00:00';"""
+        sql = """update return_user set expire_time='2023-12-31 00:00:00';"""
     else:
         sql = f"""insert into return_user (m_id,expire_time) values ({uid},'2023-12-31 00:00:00');"""
     execute_and_commit("taiwan_game_event", sql)
@@ -1080,19 +1079,19 @@ def delete_all_mail_cNo(cNo):
     """传入-1删除所有邮件"""
     sql = f"update postal set delete_flag=1 where receive_charac_no={cNo};"
     if cNo == -1:  #
-        sql = f"update postal set delete_flag=1;"
+        sql = "update postal set delete_flag=1;"
     execute_and_commit("taiwan_cain_2nd", sql)
 
 
 def get_all_postalID():
-    sql = f"select postal_id from postal where delete_flag=0;"
+    sql = "select postal_id from postal where delete_flag=0;"
     res = execute_and_fetch("taiwan_cain_2nd", sql)
     return res
 
 
 def delete_mail_postal(postal_id):
     sql = (
-        f"select item_id,avata_flag,creature_flag,add_info,letter_id from postal"
+        "select item_id,avata_flag,creature_flag,add_info,letter_id from postal"
         + f" where postal_id={postal_id};"
     )
     item_id, avata_flag, creature_flag, add_info, letter_id = execute_and_fetch(
@@ -1168,7 +1167,7 @@ def send_message(cNo, sender="测试发件人", message="测试邮件") -> int:
 
     reg_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     sql = (
-        f"insert into letter (charac_no,send_charac_no,send_charac_name,letter_text,reg_date,stat) "
+        "insert into letter (charac_no,send_charac_no,send_charac_name,letter_text,reg_date,stat) "
         + f"values ({cNo},0,%s,%s,'{reg_time}',1);"
     )
     execute_and_commit(
@@ -1251,7 +1250,7 @@ def send_postal(
 
 def get_postal(cNo, ret="name"):
     sql = (
-        f"select postal_id,send_charac_name,receive_charac_no,item_id,avata_flag,creature_flag,add_info,gold,letter_id from postal"
+        "select postal_id,send_charac_name,receive_charac_no,item_id,avata_flag,creature_flag,add_info,gold,letter_id from postal"
         + f" where receive_charac_no={cNo} and delete_flag=0 and item_id!=0;"
     )
     results = execute_and_fetch("taiwan_cain_2nd", sql)
@@ -1282,7 +1281,7 @@ def get_postal(cNo, ret="name"):
 
 def get_postal_new(cNo):
     sql = (
-        f"select postal_id,send_charac_name,receive_charac_no,item_id,avata_flag,creature_flag,add_info,gold,letter_id from postal"
+        "select postal_id,send_charac_name,receive_charac_no,item_id,avata_flag,creature_flag,add_info,gold,letter_id from postal"
         + f" where receive_charac_no={cNo} and delete_flag=0 and item_id!=0;"
     )
     results = execute_and_fetch("taiwan_cain_2nd", sql)
@@ -1523,7 +1522,7 @@ def restore_db(db, bakPath="sql_backup"):
             execute_and_commit(db, sql)
 
             # check if table is created
-            sql = f"show tables;"
+            sql = "show tables;"
             res = execute_and_fetch(db, sql)
             tableList = [table[0] for table in res]
             if table not in tableList:
@@ -1616,7 +1615,7 @@ def clear_all_table():
         if db in allDB:
             db_avaliable.append(db)
     for db in db_avaliable:
-        sql = f"show tables;"
+        sql = "show tables;"
         res = execute_and_fetch(db, sql)
         for table in res:
             table = table[0]
@@ -1641,7 +1640,7 @@ def connect(infoFunc=lambda x: ..., conn=None):  # 多线程连接
         connectorAvailuableList.append(conn)
         return f"数据库连接成功({len(connectorAvailuableList)})"
     config = cacheM.config
-    print(f"连接数据库（sqlmanager）")
+    print("连接数据库（sqlmanager）")
 
     def innerThread():
         for i, connector_ in enumerate(SQL_CONNECTOR_LIST):
@@ -1677,4 +1676,4 @@ def connect(infoFunc=lambda x: ..., conn=None):  # 多线程连接
             "pwd": config["DB_PWD"],
         }
         cacheM.save_config()
-        return f"数据库连接成功"
+        return "数据库连接成功"

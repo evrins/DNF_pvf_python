@@ -863,7 +863,7 @@ def loadItems2(
         if MD5 in cacheManager.allMD5():
             if cacheManager.get(MD5) is not None:
                 PVFcacheDict = cacheManager.get(MD5)
-                info = f"加载pvf缓存完成"
+                info = "加载pvf缓存完成"
                 print(info)
                 config["PVF_PATH"] = MD5
         elif ".pvf" in pvfPath and p.exists():
@@ -873,7 +873,7 @@ def loadItems2(
                 if PVFcacheDict.get("encode") != encode:  # 编码不同
                     print("编码变化，重新加载")
                     return loadItems2(usePVF, pvfPath, "", retType, encode, False)
-                info = f"加载pvf缓存完成..."
+                info = "加载pvf缓存完成..."
                 if retType == "pvf":
                     pvf = PVFClass(
                         pvfHeader=pvfReader.PVFHeader(pvfPath, True), encode=encode
@@ -922,7 +922,7 @@ def loadItems2(
                 PVFcacheDict["spPath"] = all_items_dict.pop("spPath")
                 PVFcacheDict["tpPath"] = all_items_dict.pop("tpPath")
                 PVFcacheDict["encode"] = encode
-                info = f"加载pvf文件完成"
+                info = "加载pvf文件完成"
 
                 save_PVF_cache()
                 # print(f'pvf cache saved. {PVFcacheDict.keys()}')

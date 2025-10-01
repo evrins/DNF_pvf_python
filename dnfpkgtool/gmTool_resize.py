@@ -946,7 +946,7 @@ class GMToolWindow(tk.Toplevel):
         def send_mail_group_a():
             if not messagebox.askokcancel(
                 "发送确认",
-                f"确定发送到所有账号？\n将发送到当前分组每个账号最高等级角色的邮箱",
+                "确定发送到所有账号？\n将发送到当前分组每个账号最高等级角色的邮箱",
             ):
                 return False
             self.focus_force()
@@ -968,7 +968,7 @@ class GMToolWindow(tk.Toplevel):
 
         def send_mail_group_c():
             if not messagebox.askokcancel(
-                "发送确认", f"确定发送到分组所有角色？\n将发送到当前分组每个角色的邮箱"
+                "发送确认", "确定发送到分组所有角色？\n将发送到当前分组每个角色的邮箱"
             ):
                 return False
             self.focus_force()
@@ -991,7 +991,7 @@ class GMToolWindow(tk.Toplevel):
         def send_mail_group_online():
             if not messagebox.askokcancel(
                 "发送确认",
-                f"确定发送到分组所有在线？\n将发送到当前分组每个在线角色的邮箱",
+                "确定发送到分组所有在线？\n将发送到当前分组每个在线角色的邮箱",
             ):
                 return False
             self.focus_force()
@@ -1030,7 +1030,7 @@ class GMToolWindow(tk.Toplevel):
 
         def groupCharge():
             if not messagebox.askokcancel(
-                "充值确认", f"确定充值？\n将充值到当前分组每个账号"
+                "充值确认", "确定充值？\n将充值到当前分组每个账号"
             ):
                 return False
             self.focus_force()
@@ -1225,7 +1225,8 @@ class GMToolWindow(tk.Toplevel):
             self.eventList = [
                 [item[0], item[1], convert(item[2], "zh-cn")] for item in eventList
             ]
-            import json, pathlib
+            import json
+            import pathlib
 
             EventPath = "./config/eventList.json"
             if self.localEventList is None and pathlib.Path(EventPath).exists():
@@ -1309,7 +1310,7 @@ class GMToolWindow(tk.Toplevel):
                 return False
             sqlM.del_event(id)
             self.update_Info()
-            self.title(f"活动已删除，请重启服务器")
+            self.title("活动已删除，请重启服务器")
 
         def set_event():
             try:
@@ -1324,7 +1325,7 @@ class GMToolWindow(tk.Toplevel):
             except:
                 self.title("活动添加失败")
                 return False
-            self.title(f"活动已添加，请重启服务器")
+            self.title("活动已添加，请重启服务器")
             self.update_Info()
 
         def select_new_event(e):

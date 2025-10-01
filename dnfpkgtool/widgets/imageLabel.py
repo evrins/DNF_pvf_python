@@ -6,7 +6,7 @@ from random import choice
 import threading
 
 
-def resize(pil_image, size=[100, 100]):
+def resize(pil_image, size=(100, 100)):
     """
     resize a pil_image object so it will fit into
     a box of size w_box times h_box, but retain aspect ratio
@@ -92,7 +92,7 @@ class ImageLabel(tk.Label):
         if len(self.framesList) > 0:
             self.delay, self.frames = choice(self.framesList)
 
-    def load(self, im: str, size=[100, 100], root=None):
+    def load(self, im: str, size=(100, 100), root=None):
         if root is not None:
             self.x, self.y = root.winfo_x(), root.winfo_y()
             self.root = root

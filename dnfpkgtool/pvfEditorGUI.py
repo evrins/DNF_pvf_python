@@ -7,7 +7,6 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-import json
 import zlib
 import pickle
 
@@ -1950,9 +1949,9 @@ class PvfeditmainframeApp:
                 leaf["jsonEditorServer"] = None
         if self.editCachePath == "":
             path = asksaveasfilename(
-                title=f"保存文件(.pvfEdit)",
-                filetypes=[("二进制文件", f"*.pvfEdit")],
-                initialfile=f"PVF编辑缓存.pvfEdit",
+                title="保存文件(.pvfEdit)",
+                filetypes=[("二进制文件", "*.pvfEdit")],
+                initialfile="PVF编辑缓存.pvfEdit",
             )
             if path == "":
                 self.log("文件路径错误，操作取消")
@@ -1970,9 +1969,9 @@ class PvfeditmainframeApp:
     def resave_PVF_edit(self):
         editLeafs = {"stackable": self.stkTab.editLeafDict}
         path = asksaveasfilename(
-            title=f"保存文件(.pvfEdit)",
-            filetypes=[("二进制文件", f"*.pvfEdit")],
-            initialfile=f"PVF编辑缓存.pvfEdit",
+            title="保存文件(.pvfEdit)",
+            filetypes=[("二进制文件", "*.pvfEdit")],
+            initialfile="PVF编辑缓存.pvfEdit",
         )
         if path == "":
             self.log("文件路径错误，操作取消")
@@ -2008,9 +2007,9 @@ class PvfeditmainframeApp:
                 "注意事项", "此工具为测试版本！请在替换PVF前对原始文件进行备份！"
             )
             savePath = asksaveasfilename(
-                title=f"保存文件(.pvf)",
-                filetypes=[("二进制文件", f"*.pvf")],
-                initialfile=f"Script_new.pvf",
+                title="保存文件(.pvf)",
+                filetypes=[("二进制文件", "*.pvf")],
+                initialfile="Script_new.pvf",
             )
             if savePath == "":
                 self.log("文件路径错误，操作取消")

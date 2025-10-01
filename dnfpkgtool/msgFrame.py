@@ -4,7 +4,6 @@ from tkinter import messagebox
 import socket
 import pickle
 import json
-import datetime
 import zlib
 import threading
 
@@ -173,7 +172,6 @@ class MessageframeWidget(ttk.Frame):
             msgDictBytes = zlib.decompress(messageDictBytesCompressed)
             self.msgDict = pickle.loads(msgDictBytes)
         except:
-            import traceback
 
             # print(traceback.format_exc())
             print("获取留言失败")

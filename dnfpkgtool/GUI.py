@@ -22,7 +22,6 @@ import time
 from copy import deepcopy
 import struct
 from toolTip import CreateToolTip, CreateOnceToolTip, ToolTip
-from zhconv import convert
 import json
 from imageLabel import ImageLabel
 from titleBar import TitleBarFrame
@@ -134,7 +133,7 @@ class GitHubFrame(tk.Frame):
 
         gitHubLogo.load(gitHubLogoPath, [int(150 * para), int(150 * para)])
         gitHubLogo.bind("<Button-1>", openWeb)
-        CreateToolTip(self, f"点击加入群聊查看最新动态")
+        CreateToolTip(self, "点击加入群聊查看最新动态")
 
 
 PADX = 1
@@ -360,7 +359,7 @@ class App:
                 self.titleLog("等待PVF加载中")
                 return False
             if len(cacheM.ITEMS_dict.keys()) < 10:
-                self.titleLog(f"请选择物品列表来源")
+                self.titleLog("请选择物品列表来源")
                 return False
             log(f"加载角色物品[{sel}]")
             inventory, equipslot, creature = sqlM.getInventoryAll(cNo=cNo)[0]
@@ -708,7 +707,7 @@ class App:
                     if attach_type is not None and attach_type[0] != "[sealing]":
                         self.errorItemsListDict[tabName].append(index)
                         self.errorInfoDict[tabName][index] += (
-                            f"物品封装状态冲突-当前为封装 \n"
+                            "物品封装状态冲突-当前为封装 \n"
                         )
                 typeID, typeZh = cacheM.getStackableTypeMainIdAndZh(itemSlot.id)
                 # print(typeID,typeZh,cacheM.ITEMS_dict.get(itemSlot.id))
@@ -1016,7 +1015,7 @@ class App:
         def clear_item_Edit_Frame(clearTitle=True):
             """清空右侧编辑槽"""
             if clearTitle:
-                itemEditFrame.config(text=f"物品信息编辑")
+                itemEditFrame.config(text="物品信息编辑")
             itemIDEntry.delete(0, tk.END)
             itemNameEntry.delete(0, tk.END)
             numEntry.delete(0, tk.END)
@@ -1384,7 +1383,7 @@ class App:
             if True:
                 exportBtn = ttk.Button(
                     blobFuncFrame,
-                    text=f"导出字段",
+                    text="导出字段",
                     command=lambda: save_blob(globalBlobs_map[tabName]),
                     width=int(WIDTH * 15),
                 )
@@ -1394,7 +1393,7 @@ class App:
                 CreateToolTip(exportBtn, text="保存当前数据到文件")
                 importBtn = ttk.Button(
                     blobFuncFrame,
-                    text=f"导入字段",
+                    text="导入字段",
                     command=lambda: load_blob(globalBlobs_map[tabName]),
                     width=int(WIDTH * 15),
                 )
@@ -2055,7 +2054,7 @@ class App:
         def commit():
             if not messagebox.askokcancel(
                 "修改确认",
-                f"确定修改角色数据信息？\n请保证账号不在线或正在登陆其他角色",
+                "确定修改角色数据信息？\n请保证账号不在线或正在登陆其他角色",
             ):
                 return False
             cName = nameE.get()
@@ -3003,7 +3002,7 @@ class App:
             pvfMD5 = self.pvfComboBox.get().split("-")[-1]
             if len(pvfMD5) > 0:
                 if cacheM.cacheManager.tinyCache.get(pvfMD5) is None:
-                    self.pvfComboBox.set(f"请选择PVF缓存")
+                    self.pvfComboBox.set("请选择PVF缓存")
                 else:
                     self.pvfComboBox.set(
                         f"{cacheM.cacheManager.tinyCache[pvfMD5].get('nickName')}-{pvfMD5}"
@@ -3225,7 +3224,7 @@ class App:
             self.tabView.tab(i, state="disable")
 
     def check_Update(self):
-        import subprocess, os
+        import subprocess
 
         def update_fin():
             openACK = messagebox.askyesno("下载完成", "是否打开文件位置？")

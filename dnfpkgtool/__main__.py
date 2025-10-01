@@ -204,7 +204,7 @@ class GitHubFrame(tk.Frame):
 
         gitHubLogo.load(gitHubLogoPath, [150, 150])
         gitHubLogo.bind("<Button-1>", openWeb)
-        CreateToolTip(self, f"点击加入群聊查看最新动态")
+        CreateToolTip(self, "点击加入群聊查看最新动态")
 
 
 letter_send_dict = {}
@@ -1469,7 +1469,7 @@ class GuiApp:
         self.openGMExFunc = lambda GMtool=None: ...
         self.quit_GM_Ex_func = lambda: ...
         self.tabIDDict = tabIDDict
-        self.titleString = f"背包编辑工具 - [在线人数][NA/NA]"
+        self.titleString = "背包编辑工具 - [在线人数][NA/NA]"
 
         self.tabViewChangeFuncs = []  # 切换tab时执行的function列表
         self.tabNames = []
@@ -1713,7 +1713,7 @@ class GuiApp:
                 print("等待PVF加载中")
                 return False
             if len(cacheM.ITEMS_dict.keys()) < 10:
-                print(f"请选择物品列表来源")
+                print("请选择物品列表来源")
                 return False
             log(f"加载角色物品[{sel}]")
             inventory, equipslot, creature, inventory_capacity = sqlM.getInventoryAll(
@@ -2016,7 +2016,7 @@ class GuiApp:
             """清空右侧编辑槽"""
             # if clearTitle:
             #    itemSlotEditFrame.config(text=f'物品信息编辑')
-            itemEditFrame.currentEditLabelVar.set(f"(0)")
+            itemEditFrame.currentEditLabelVar.set("(0)")
             itemIDEntry.delete(0, tk.END)
             itemNameEntry.delete(0, tk.END)
             numEntry.delete(0, tk.END)
@@ -2854,7 +2854,7 @@ class GuiApp:
         def commit():
             if not messagebox.askokcancel(
                 "修改确认",
-                f"确定修改角色数据信息？\n请保证账号不在线或正在登陆其他角色",
+                "确定修改角色数据信息？\n请保证账号不在线或正在登陆其他角色",
             ):
                 return False
             cName = nameE.get()
@@ -3783,7 +3783,7 @@ class GuiApp:
                     [item[0], item[1], convert(item[2], "zh-cn")] for item in eventList
                 ]
                 self.localEventList = None
-                import json, pathlib
+                import pathlib
 
                 EventPath = "./config/eventList.json"
                 if self.localEventList is None and pathlib.Path(EventPath).exists():
@@ -3837,7 +3837,7 @@ class GuiApp:
                     return False
                 sqlM.del_event(id)
                 update_event_list_func()
-                print(f"活动已删除，请重启服务器")
+                print("活动已删除，请重启服务器")
 
             def set_event():
                 try:
@@ -3850,7 +3850,7 @@ class GuiApp:
                 except:
                     print("活动添加失败")
                     return False
-                print(f"活动已添加，请重启服务器")
+                print("活动已添加，请重启服务器")
                 update_event_list_func()
 
             def select_new_event(e):
@@ -4326,7 +4326,7 @@ class GuiApp:
                     except:
                         break
                 # self.title(f'指令执行完毕')
-                print(f"指令执行完毕")
+                print("指令执行完毕")
                 # time.sleep(60)
 
             t = threading.Thread(target=inner)
@@ -4825,7 +4825,7 @@ class GuiApp:
             pvfMD5 = self.PVFCacheE.get().split("-")[-1]
             if len(pvfMD5) > 0:
                 if cacheM.cacheManager.tinyCache.get(pvfMD5) is None:
-                    self.PVFCacheE.set(f"请选择PVF缓存")
+                    self.PVFCacheE.set("请选择PVF缓存")
                 else:
                     self.PVFCacheE.set(
                         f"{cacheM.cacheManager.tinyCache[pvfMD5].get('nickName')}-{pvfMD5}"
@@ -5582,12 +5582,12 @@ class GuiApp:
                     if attach_type is not None and attach_type[0] != "[sealing]":
                         self.errorItemsListDict[tabName].append(index)
                         self.errorInfoDict[tabName][index] += (
-                            f"物品封装状态冲突-当前为封装 \n"
+                            "物品封装状态冲突-当前为封装 \n"
                         )
                 if attach_type[0] != "[sealing]" and itemSlot.sealCnt != 0:
                     self.errorItemsListDict[tabName].append(index)
                     self.errorInfoDict[tabName][index] += (
-                        f"物品封装次数冲突-当前不为0 \n"
+                        "物品封装次数冲突-当前不为0 \n"
                     )
                 typeID, typeZh = cacheM.getStackableTypeMainIdAndZh(itemSlot.id)
                 # print(typeID,typeZh,cacheM.ITEMS_dict.get(itemSlot.id))
@@ -5741,7 +5741,7 @@ class GuiApp:
             try:
                 if self.onlineNumVar.get() == 0:
                     self.titleString = (
-                        f"背包编辑工具 - [在线人数实时更新已关闭][泡点已关闭]"
+                        "背包编辑工具 - [在线人数实时更新已关闭][泡点已关闭]"
                     )
                     time.sleep(5)
                     continue
@@ -5759,7 +5759,7 @@ class GuiApp:
                         playerNum += 1
                         self.onlinePlayerUIDCnos.append((uid, cNo, ipaddr))
                 self.titleString = f"背包编辑工具 - [内网/外网在线][{len(self.onlineBotUIDCnos)}/{len(self.onlinePlayerUIDCnos)}]"
-            except Exception as e:
+            except Exception:
                 pass
             time.sleep(5)
 
@@ -5834,7 +5834,7 @@ class GuiApp:
                             line, values=[db, f"[备份中 {bakNum}/{totalNum}]"]
                         )
                     elif totalNum == 0:
-                        self.remoteSqlTree.item(line, values=[db, f"等待备份"])
+                        self.remoteSqlTree.item(line, values=[db, "等待备份"])
                     else:
                         self.remoteSqlTree.item(
                             line, values=[db, f"备份完成({bakNum})"]
@@ -5901,7 +5901,7 @@ class GuiApp:
                             line, values=[db, f"[还原中 {restoredNum}/{totalNum}]"]
                         )
                     elif totalNum == 0:
-                        self.localSqlTree.item(line, values=[db, f"等待还原"])
+                        self.localSqlTree.item(line, values=[db, "等待还原"])
                     else:
                         self.localSqlTree.item(
                             line, values=[db, f"还原完成({restoredNum})"]

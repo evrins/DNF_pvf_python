@@ -1560,7 +1560,6 @@ def test_new_list2Dict():
     path = "clientonly/skilltree/mage_sp.co"
     path = "skill/mage/strengthhandstrike.skl"
     # path = 'stackable/monstercard/mcard_2015_mercenary_card_10008454.stk'
-    import time
 
     print(pvf.fileTreeDict.get(path))
     """res = pvf.read_File_In_List2(path)

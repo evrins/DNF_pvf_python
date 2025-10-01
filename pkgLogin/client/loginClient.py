@@ -25,7 +25,6 @@ public_key_str = """-----BEGIN RSA PUBLIC KEY-----
 
 import os
 import sys
-import os
 
 oldPrint = print
 logFunc = [oldPrint]

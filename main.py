@@ -4,7 +4,8 @@ from PIL import Image
 from PIL import ImageTk
 
 configPath = "config/config.json"
-import sys, os
+import sys
+import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if os.path.exists(configPath):

@@ -1,7 +1,7 @@
-import os, shutil, psutil
-from tkinter import ttk, messagebox
+import os
+import psutil
 import subprocess
-from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.filedialog import asksaveasfilename
 from pathlib import Path
 import threading
 import time
@@ -46,9 +46,9 @@ def saveStart(runFunc=lambda: ...):
         b2ePath = os.path.join(os.getcwd(), B2E_PATH)
         outPath = Path(
             asksaveasfilename(
-                title=f"请保存至DNF.exe同级游戏目录",
-                filetypes=[("可执行文件", f"*.exe")],
-                initialfile=f"DNF一键登录.exe",
+                title="请保存至DNF.exe同级游戏目录",
+                filetypes=[("可执行文件", "*.exe")],
+                initialfile="DNF一键登录.exe",
                 initialdir=dnfPath.parent,
             )
         )

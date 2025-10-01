@@ -2,13 +2,10 @@
 import socket
 import pymysql_new as pymysql
 from pymysql_new.cursors import Cursor
-import asyncio
 from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_v1_5 as PKCS1_signature
 from Crypto.Cipher import PKCS1_v1_5 as PKCS1_cipher
 import base64
 import json
-import pickle
 import datetime
 import threading
 import signal
@@ -122,7 +119,7 @@ def newConnector(db=""):
             connectorDict[db] = dbConn
 
             return True
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
             pass
     return False
@@ -144,7 +141,7 @@ def execute(db, sql, args=None, charset="utf8", reConn=True):
             cursor.execute(sql, args)
         print(sql)
         return True
-    except Exception as e:
+    except Exception:
         if reConn:
             # print(f'数据库{db}连接失败，尝试重新连接... 错误信息:{e}')
             connectorDict[db] = None
@@ -262,7 +259,6 @@ def connect_sql():
         cur = db.cursor()
     except:
         import pymysql_old as pymysql
-        from pymysql_old.cursors import Cursor
 
         db = pymysql.connect(
             user=DB_USER,
@@ -349,7 +345,6 @@ def check_mac(macAddr):
     return True
 
 
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 

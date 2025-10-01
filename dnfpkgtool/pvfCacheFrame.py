@@ -2,12 +2,11 @@ from dnfpkgtool import cacheManager as cacheM
 from dnfpkgtool.widgets.titleBar import TitleBarFrame
 import tkinter as tk
 from tkinter import ttk, messagebox
-from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.filedialog import asksaveasfilename
 from dnfpkgtool.widgets.toolTip import CreateToolTip
 import time
 import csv
 from dnfpkgtool.jsonViewer import json_tree
-import threading
 
 rarityMap = {
     0: "普通",
@@ -174,7 +173,7 @@ class PVFCacheCfgFrame(TitleBarFrame):
         self.saveFunc()
 
     def delCache(self):
-        if not messagebox.askokcancel("修改确认", f"确定当前所选缓存？"):
+        if not messagebox.askokcancel("修改确认", "确定当前所选缓存？"):
             return False
         MD5 = self.MD5E.get()
         cacheM.cacheManager.delCache(MD5)
@@ -316,7 +315,7 @@ class PVFCacheCfgFrame(TitleBarFrame):
                     "文件导出失败", "请检查文件是否被占用，是否进行重试？"
                 ):
                     continue
-                self.title_label.config(text=f"导出取消")
+                self.title_label.config(text="导出取消")
                 return False
 
 

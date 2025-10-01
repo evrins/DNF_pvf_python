@@ -2,8 +2,9 @@ from dnfpkgtool import cacheManager as cacheM
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 from tkinter import ttk, messagebox
-import threading, time
-from dnfpkgtool.widgets.toolTip import CreateOnceToolTip, CreateToolTip
+import threading
+import time
+from dnfpkgtool.widgets.toolTip import CreateToolTip
 from pathlib import Path
 import paramiko
 import os
@@ -159,7 +160,7 @@ class SSHServerProtocol:
                 except:
                     break
             # self.title(f'指令执行完毕')
-            print(f"指令执行完毕")
+            print("指令执行完毕")
             # time.sleep(60)
 
         t = threading.Thread(target=inner)
@@ -480,7 +481,7 @@ class ServerCtrlFrame(tk.Frame):
                     except:
                         break
                 # self.title(f'指令执行完毕')
-                print(f"指令执行完毕")
+                print("指令执行完毕")
                 # time.sleep(60)
 
             t = threading.Thread(target=inner)
