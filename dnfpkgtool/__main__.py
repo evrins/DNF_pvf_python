@@ -26,7 +26,7 @@ if __name__ == "__main__":
 from dnfpkgtool import itemSlotFrame
 from dnfpkgtool import creature_frame
 from dnfpkgtool import avatar_frame
-from dnfpkgtool import mailFrame
+from dnfpkgtool import mail_frame
 from dnfpkgtool import character_frame
 import threading
 from dnfpkgtool import cacheManager as cacheM
@@ -1524,7 +1524,7 @@ class GuiApp:
             itemEditFrame = itemSlotFrame.ItemslotframeWidget(frame)
             self.blobFrameWids.append(itemEditFrame)
             self._buildtab_itemTab(itemEditFrame, tabName)
-        self.mailFrame = mailFrame.MailframeWidget(self.mailFrame)
+        self.mailFrame = mail_frame.MailFrameWidget(self.mailFrame)
         self.avatarFrame = avatar_frame.AvatarFrameWidget(self.avatarFrame)
         self.creatureItemFrame = creature_frame.CreatureFrameWidget(
             self.creatureItemFrame
@@ -2815,7 +2815,7 @@ class GuiApp:
         delBtn.config(command=deleteItems)
 
     def _buildtab_itemTab_mail(
-        self, mailF: mailFrame.MailframeWidget, tabName=" 邮件 "
+        self, mailF: mailFrame.MailFrameWidget, tabName=" 邮件 "
     ):
         def deleteItems():
             if not messagebox.askokcancel("删除确认", f"确定删除{tabName}所选物品？"):
