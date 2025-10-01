@@ -2,6 +2,8 @@ import platform
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from dnfpkgtool.utils import in_thread
+
 if not hasattr(ttk, "Spinbox"):
 
     class Spinbox(ttk.Entry):
@@ -79,14 +81,7 @@ def print(*args, **kw):
     logFunc[-1](*args, **kw)
 
 
-def inThread(func):
-    def inner(*args, **kw):
-        t = threading.Thread(target=lambda: func(*args, **kw))
-        t.setDaemon(True)
-        t.start()
-        return t
 
-    return inner
 
 
 logPath = Path("log/")
@@ -1700,7 +1695,7 @@ class GuiApp:
             print("加载角色列表", characs)
             fill_charac_treeview(charac_list=characs)
 
-        @inThread
+        @in_thread
         def selectCharac(showTitle=False):
             if len(self.characTreeV.selection()) == 0:
                 return
@@ -2107,7 +2102,7 @@ class GuiApp:
             if itemSlot.id == 0:
                 typeEntry.config(state="readonly")
 
-        @inThread
+        @in_thread
         def set_inv_capacity(event=None):
             capacity = int(itemEditFrame.inv_capacityE.get())
             sql = f"update inventory set inventory_capacity={capacity} where charac_no={self.cNo}"
@@ -2926,7 +2921,7 @@ class GuiApp:
             growTypeE.set(f"{growType}-{cacheM.jobDict.get(job).get(growType)}")
             wakeFlgE.set(wakeFlg)
 
-        @inThread
+        @in_thread
         def set_ban_var(e: tk.Event = None):
             time.sleep(0.3)
             if self.isBanedUser.get() == 1:
@@ -3683,7 +3678,7 @@ class GuiApp:
                     i += 1
                 print(f"发送完成({len(onlineCharacList)})!")
 
-            @inThread
+            @in_thread
             def clearAllMail():
                 allPostalID = sqlM.get_all_postalID()
                 if not messagebox.askokcancel(
@@ -3892,7 +3887,7 @@ class GuiApp:
         buildTab_mail()
         self.update_event_list_func = buildTab_event()
 
-    @inThread
+    @in_thread
     def _buildTab_bubble(self):
         bubbleUserTamplete = {
             "value": 10,
@@ -4055,10 +4050,10 @@ class GuiApp:
                 self.bubbleAccountTree.insert("", tk.END, values=values)
             cacheM.config["BUBBLE"][bubbleID] = bubbleIDDict
 
-        @inThread
+        @in_thread
         def bubble_RUN():
             # check bubble every 60s
-            @inThread
+            @in_thread
             def sendBubble():
                 timeNow = time.time()
                 timeNow_ = datetime.datetime.now()
@@ -4511,7 +4506,7 @@ class GuiApp:
             11: "限制交易",
         }
 
-        @inThread
+        @in_thread
         def refill_baned_tree():
             self.banedTreeV.delete(*self.banedTreeV.get_children())
             banedDict = sqlM.get_baned_Dict_detail()
@@ -5720,7 +5715,7 @@ class GuiApp:
     def openPVF(self):
         self.load_PVF("")
 
-    @inThread
+    @in_thread
     def selectCharac(self, event=None):
         t = self.selectCharac_(True)
         t.join()
@@ -5739,7 +5734,7 @@ class GuiApp:
                 continue
             creat_cxv_pkg(tree, self, tabName)
 
-    @inThread
+    @in_thread
     def get_online_num(self):
         while True:
             try:
@@ -5798,7 +5793,7 @@ class GuiApp:
         for db in self.db_avaliable:
             self.remoteSqlTree.insert("", tk.END, values=[db, "未备份"])
 
-    @inThread
+    @in_thread
     def init_db(self):
         bakPath = "sql_bak/初始数据库"
         if not messagebox.askokcancel(
@@ -5825,7 +5820,7 @@ class GuiApp:
         for line in self.remoteSqlTree.get_children():
             self.remoteSqlTree.selection_add(line)
 
-    @inThread
+    @in_thread
     def backup_sel_db(self):
         def read_bak_stat():
             for line in self.remoteSqlTree.get_children():
@@ -5890,7 +5885,7 @@ class GuiApp:
         for fileName in bakFiles:
             self.localSqlTree.insert("", tk.END, values=[fileName, "待还原"])
 
-    @inThread
+    @in_thread
     def restore_sel_db(self):
         def read_restore_stat():
             for line in self.localSqlTree.get_children():
@@ -5943,7 +5938,7 @@ def run(finCallBackFunc=lambda: None, root_: tk.Tk = None):
     lastTitleTimeStamp = time.time()
     global print2title
 
-    @inThread
+    @in_thread
     def resetTitle():
         while True:
             if time.time() - lastTitleTimeStamp > 5:
@@ -5953,7 +5948,7 @@ def run(finCallBackFunc=lambda: None, root_: tk.Tk = None):
                     pass
             time.sleep(5)
 
-    @inThread
+    @in_thread
     def print2title(*args):
         """输出到title和日志"""
         if len(args) == 1:

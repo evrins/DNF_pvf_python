@@ -4,6 +4,8 @@ import os
 import struct
 import zlib
 
+from dnfpkgtool.utils import in_thread
+
 if __name__ == "__main__":
     import sys
 
@@ -46,15 +48,6 @@ logFunc = [oldPrint]
 def print(*args, **kw):
     logFunc[-1](*args, **kw)
 
-
-def inThread(func):
-    def inner(*args, **kw):
-        t = threading.Thread(target=lambda: func(*args, **kw))
-        t.setDaemon(True)
-        t.start()
-        return t
-
-    return inner
 
 
 class DnfItemSlot:
@@ -295,7 +288,7 @@ def gen_task_id():
 
 
 # executorList = []
-@inThread
+@in_thread
 def executor(db):
     global execute_queue_Dict
     ID = str(time.time())
@@ -1399,7 +1392,7 @@ total_bak_db_num = 0
 db_bak_stat = {}  # db:{'bak':[...],'total':[...]} 表示备份进度
 
 
-@inThread
+@in_thread
 def backup_db(db, bakPath):
     db_bak_dict = {}
     print(f"---{db}备份开始")
@@ -1446,7 +1439,7 @@ total_restore_db_num = 0
 filedTableDict = {}
 
 
-@inThread
+@in_thread
 def restore_db(db, bakPath="sql_backup"):
     def recover(dataPart, checkLen=False):
         # nonlocal recoveredNum

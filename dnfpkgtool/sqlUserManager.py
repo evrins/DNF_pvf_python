@@ -1,19 +1,10 @@
-import threading
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox
 
+from dnfpkgtool.utils import in_thread
 from . import sqlManager2 as sqlM
 
-
-def inThread(func):
-    def inner(*args, **kw):
-        t = threading.Thread(target=lambda: func(*args, **kw))
-        t.setDaemon(True)
-        t.start()
-        return t
-
-    return inner
 
 
 class SqluserframeWidget(ttk.Frame):
@@ -77,7 +68,7 @@ class SqluserframeWidget(ttk.Frame):
         self.configure(height=200, width=200)
         self.pack(expand=True, fill="both", side="top")
 
-    @inThread
+    @in_thread
     def get_all_users(self):
         self.sqlUserTree.delete(*self.sqlUserTree.get_children())
         sql = "select user, host from mysql.user"
@@ -105,7 +96,7 @@ class SqluserframeWidget(ttk.Frame):
         self.sqlUserTree.selection_set()
         pass
 
-    @inThread
+    @in_thread
     def del_user(self):
         sels = self.sqlUserTree.selection()
         if not messagebox.askokcancel(
@@ -121,7 +112,7 @@ class SqluserframeWidget(ttk.Frame):
 
         messagebox.showinfo("删除用户", f"删除{len(sels)}个用户完成")
 
-    @inThread
+    @in_thread
     def save_user(self):
         userName = self.sqlUserE.get()
         host = self.sqlUserIPE.get().split("-")[0].strip()

@@ -1,15 +1,13 @@
 import json
 import pickle
 import socket
-import threading
 import tkinter as tk
 import tkinter.ttk as ttk
-import uuid
 import zlib
 from tkinter import messagebox
 
-mac_address = uuid.uuid1().hex[-12:].upper()
-mac_address = "-".join([mac_address[i : i + 2] for i in range(0, 11, 2)])
+from dnfpkgtool.utils import gen_mac_address, in_thread
+
 # print(mac_address)
 
 oldPrint = print
@@ -20,36 +18,36 @@ def print(*args, **kw):
     logFunc[-1](*args, **kw)
 
 
-def inThread(func):
-    def inner(*args, **kw):
-        t = threading.Thread(target=lambda: func(*args, **kw))
-        t.setDaemon(True)
-        t.start()
-        return t
-
-    return inner
+mac_address = gen_mac_address()
 
 
-class MessageframeWidget(ttk.Frame):
+class MessageFrameWidget(ttk.Frame):
     def __init__(self, master=None, **kw):
-        super(MessageframeWidget, self).__init__(master, **kw)
+        super(MessageFrameWidget, self).__init__(master, **kw)
+
         self.msgListFrame = ttk.Labelframe(self)
         self.msgListFrame.configure(height=200, text="留言列表", width=200)
+
         frame3 = ttk.Frame(self.msgListFrame)
         frame3.configure(height=200, width=200)
+
         self.msgFilterE = ttk.Combobox(frame3)
         self.msgFilterE.configure(
-            state="readonly", values="全部 普通 发电 广告 求助 分享"
+            state="readonly", values=['全部', '普通', '发电', '广告', '求助', '分享']
         )
         self.msgFilterE.pack(side="left")
-        self.msgFilterE.bind("<<ComboboxSelected>>", self.filt_message, add="")
+        self.msgFilterE.bind("<<ComboboxSelected>>", self.filter_message, add="")
+
         button3 = ttk.Button(frame3)
         button3.configure(text="发布留言")
         button3.pack(side="right")
-        button3.configure(command=self.prePostMessage)
+        button3.configure(command=self.pre_post_message)
+
         frame3.pack(fill="x", padx=5, side="top")
+
         frame2 = ttk.Frame(self.msgListFrame)
         frame2.configure(height=200, width=200)
+
         self.msgListTree = ttk.Treeview(frame2)
         self.msgListTree.configure(selectmode="extended", show="headings")
         self.msgListTree_cols = [
@@ -61,30 +59,32 @@ class MessageframeWidget(ttk.Frame):
             "column7",
             "column6",
         ]
+
         self.msgListTree_dcols = ["column2", "column3", "column4", "column5", "column7"]
+
         self.msgListTree.configure(
             columns=self.msgListTree_cols, displaycolumns=self.msgListTree_dcols
         )
         self.msgListTree.column(
-            "column1", anchor="center", stretch="true", width=40, minwidth=20
+            "column1", anchor="center", stretch=True, width=40, minwidth=20
         )
         self.msgListTree.column(
-            "column2", anchor="center", stretch="true", width=40, minwidth=20
+            "column2", anchor="center", stretch=True, width=40, minwidth=20
         )
         self.msgListTree.column(
-            "column3", anchor="center", stretch="true", width=20, minwidth=20
+            "column3", anchor="center", stretch=True, width=20, minwidth=20
         )
         self.msgListTree.column(
-            "column4", anchor="center", stretch="true", width=80, minwidth=20
+            "column4", anchor="center", stretch=True, width=80, minwidth=20
         )
         self.msgListTree.column(
-            "column5", anchor="center", stretch="true", width=50, minwidth=20
+            "column5", anchor="center", stretch=True, width=50, minwidth=20
         )
         self.msgListTree.column(
-            "column7", anchor="center", stretch="true", width=25, minwidth=20
+            "column7", anchor="center", stretch=True, width=25, minwidth=20
         )
         self.msgListTree.column(
-            "column6", anchor="center", stretch="true", width=80, minwidth=20
+            "column6", anchor="center", stretch=True, width=80, minwidth=20
         )
         self.msgListTree.heading("column1", anchor="center", text="留言IP")
         self.msgListTree.heading("column2", anchor="center", text="昵称")
@@ -93,59 +93,78 @@ class MessageframeWidget(ttk.Frame):
         self.msgListTree.heading("column5", anchor="center", text="时间")
         self.msgListTree.heading("column7", anchor="center", text="赞数")
         self.msgListTree.heading("column6", anchor="center", text="ID")
-        self.msgListTree.pack(expand="true", fill="both", side="left")
-        self.msgListTree.bind("<<TreeviewSelect>>", self.showMessage, add="")
+        self.msgListTree.pack(expand=True, fill="both", side="left")
+        self.msgListTree.bind("<<TreeviewSelect>>", self.show_message, add="")
+
         self.msgListBar = ttk.Scrollbar(frame2)
         self.msgListBar.configure(orient="vertical")
-        self.msgListBar.pack(expand="false", fill="y", side="right")
-        frame2.pack(expand="true", fill="both", side="top")
-        self.msgListFrame.pack(expand="true", fill="both", side="left")
+        self.msgListBar.pack(expand=False, fill="y", side="right")
+
+        frame2.pack(expand=True, fill="both", side="top")
+
+        self.msgListFrame.pack(expand=True, fill="both", side="left")
+
         self.msgDetailFrame = ttk.Labelframe(self)
         self.msgDetailFrame.configure(height=200, text="留言详情", width=200)
+
         self.ip_topicLabel = ttk.Label(self.msgDetailFrame)
         self.ip_topicLabel.configure(text="标题")
         self.ip_topicLabel.grid(column=0, row=0)
+
         self.msgTopic_IPE = ttk.Entry(self.msgDetailFrame)
         self.msgTopic_IPE.grid(column=1, row=0, sticky="ew")
+
         label2 = ttk.Label(self.msgDetailFrame)
         label2.configure(text="昵称")
         label2.grid(column=0, row=1)
+
         self.msgNameE = ttk.Entry(self.msgDetailFrame)
         self.msgNameE.grid(column=1, row=1, sticky="ew")
         self.msgMainE = tk.Text(self.msgDetailFrame)
         self.msgMainE.configure(height=10, width=30)
+
         _text_ = "每个IP每天可以发送3条留言\n字数限制200字"
+
         self.msgMainE.insert("0.0", _text_)
         self.msgMainE.grid(column=0, columnspan=2, row=3, sticky="nsew")
+
         label3 = ttk.Label(self.msgDetailFrame)
         label3.configure(text="分类")
         label3.grid(column=0, row=2)
+
         self.msgBtnFrame = ttk.Frame(self.msgDetailFrame)
         self.msgBtnFrame.configure(height=200, width=200)
+
         self.reportBtn = ttk.Button(self.msgBtnFrame)
         self.reportBtn.configure(text="举报留言")
-        self.reportBtn.pack(expand="true", fill="x", side="left")
-        self.reportBtn.configure(command=self.reportMsg)
+        self.reportBtn.pack(expand=True, fill="x", side="left")
+        self.reportBtn.configure(command=self.report_message)
+
         self.likeBtn = ttk.Button(self.msgBtnFrame)
         self.likeBtn.configure(text="点赞留言")
-        self.likeBtn.pack(expand="true", fill="x", side="left")
-        self.likeBtn.configure(command=self.likeMsg)
+        self.likeBtn.pack(expand=True, fill="x", side="left")
+        self.likeBtn.configure(command=self.like_message)
+
         self.postBtn = ttk.Button(self.msgBtnFrame)
         self.postBtn.configure(text="发布留言")
-        self.postBtn.pack(expand="true", fill="x", side="left")
-        self.postBtn.configure(command=self.postMsg)
+        self.postBtn.pack(expand=True, fill="x", side="left")
+        self.postBtn.configure(command=self.post_message)
+
         self.msgBtnFrame.grid(column=0, columnspan=2, row=8, sticky="ew")
+
         self.msgTypeE = ttk.Combobox(self.msgDetailFrame)
-        self.msgTypeE.configure(state="readonly", values="普通 发电 广告 求助 分享")
+        self.msgTypeE.configure(state="readonly", values=['普通', '发电', '广告', '求助', '分享'])
         self.msgTypeE.grid(column=1, row=2, sticky="ew")
+
         self.msgDetailFrame.pack(fill="both", side="left")
         self.msgDetailFrame.rowconfigure(3, weight=1)
+
         self.configure(height=200, width=200)
-        self.pack(expand="true", fill="both", side="top")
+        self.pack(expand=True, fill="both", side="top")
 
         self._build()
 
-    @inThread
+    @in_thread
     def _build(self):
         bar = self.msgListBar
         box = self.msgListTree
@@ -153,10 +172,9 @@ class MessageframeWidget(ttk.Frame):
         box.config(yscrollcommand=bar.set)
         self.msgFilterE.set("全部")
         self.msgDict = {}
-        self.prePostMessage()
+        self.pre_post_message()
         self.get_messages()
-        self.filt_message()
-        #
+        self.filter_message()
 
     def get_messages(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -177,11 +195,11 @@ class MessageframeWidget(ttk.Frame):
             pass
         # print(self.msgDict)
 
-    def filt_message(self, event=None):
-        typeFilt = self.msgFilterE.get()
+    def filter_message(self, event=None):
+        type_filter = self.msgFilterE.get()
         self.msgListTree.delete(*self.msgListTree.get_children())
         for msgID, msgDict in self.msgDict.items():
-            if typeFilt == "全部" or typeFilt == msgDict["type"]:
+            if type_filter == "全部" or type_filter == msgDict["type"]:
                 self.msgListTree.insert(
                     "",
                     "end",
@@ -196,7 +214,7 @@ class MessageframeWidget(ttk.Frame):
                     ),
                 )
 
-    def prePostMessage(self):
+    def pre_post_message(self):
         self.msgTopic_IPE.configure(state="normal")
         self.msgNameE.configure(state="normal")
         self.msgTypeE.configure(state="readonly")
@@ -210,9 +228,7 @@ class MessageframeWidget(ttk.Frame):
         self.likeBtn.configure(state="disabled")
         self.postBtn.configure(state="normal")
 
-        pass
-
-    def showMessage(self, event=None):
+    def show_message(self, event=None):
         self.msgTopic_IPE.configure(state="normal")
         self.msgNameE.configure(state="normal")
         self.msgTypeE.configure(state="disabled")
@@ -245,7 +261,7 @@ class MessageframeWidget(ttk.Frame):
         self.msgNameE.configure(state="readonly")
         self.msgMainE.configure(state="disabled")
 
-    def reportMsg(self):
+    def report_message(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sel = self.msgListTree.selection()[-1]
         values = self.msgListTree.item(sel, "values")
@@ -256,7 +272,7 @@ class MessageframeWidget(ttk.Frame):
         s.close()
         messagebox.showinfo("举报完成", "举报信已发送")
 
-    def likeMsg(self):
+    def like_message(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sel = self.msgListTree.selection()[-1]
         values = self.msgListTree.item(sel, "values")
@@ -267,7 +283,7 @@ class MessageframeWidget(ttk.Frame):
         s.close()
         messagebox.showinfo("点赞完成", "点赞已发送")
 
-    def postMsg(self):
+    def post_message(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         topic = self.msgTopic_IPE.get()[:20]
         if len(topic) < 5:
@@ -286,8 +302,8 @@ class MessageframeWidget(ttk.Frame):
             messagebox.showerror("内容为空", "内容不能为空")
             return
         if not messagebox.askokcancel(
-            "确认发布",
-            f"确认发布留言\n主题：{topic}\n昵称：{name}\n类型：{type_}\n内容：{msgMain}",
+                "确认发布",
+                f"确认发布留言\n主题：{topic}\n昵称：{name}\n类型：{type_}\n内容：{msgMain}",
         ):
             return
         msg = {
@@ -318,6 +334,6 @@ class MessageframeWidget(ttk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = MessageframeWidget(root)
+    widget = MessageFrameWidget(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()
