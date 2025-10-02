@@ -3,6 +3,7 @@ import tkinter
 from tkinter import ttk
 
 from PIL import Image, ImageTk
+from loguru import logger
 
 configPath = "config/config.json"
 import os
@@ -16,6 +17,10 @@ if os.path.exists(configPath):
     config = json.loads(configBytes)
 else:
     config = {}
+# setup logger
+
+logger.add('log/{time}.log')
+
 # loading window
 theme = config.get("THEME", "默认主题")
 if theme == "默认主题":
@@ -45,7 +50,7 @@ if platform.platform().lower() == "windows":
         # Add the rowheight
         s.configure("Treeview", rowheight=20 * ScaleFactor // 100)
     except:
-        print("高清缩放失败")
+        logger.error("高清缩放失败")
 
 
 root.geometry("1x1")
@@ -98,5 +103,5 @@ def load_callback():
 
 if __name__ == "__main__":
     import dnfpkgtool.__main__ as main
-
+    logger.info('app starting')
     main.run(load_callback, root)

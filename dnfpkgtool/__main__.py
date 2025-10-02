@@ -2,16 +2,18 @@ import platform
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from loguru import logger
+
 from dnfpkgtool.utils import in_thread
 
 if not hasattr(ttk, "Spinbox"):
-
     class Spinbox(ttk.Entry):
         def __init__(self, master=None, **kw):  # from_=0,to=99,
             ttk.Entry.__init__(self, master, "ttk::spinbox", **kw)
 
         def set(self, value):
             self.tk.call(self._w, "set", value)
+
 
     ttk.Spinbox = Spinbox
 
@@ -64,42 +66,14 @@ from dnfpkgtool.widgets.toolTip import CreateOnceToolTip, CreateToolTip, ToolTip
 
 WIDTH = 1
 
-oldPrint = print
-logFunc = [oldPrint]
-print2title = lambda x: ...
-
-
-def print(*args, **kw):
-    try:
-        if len(args) == 1:
-            text = str(args[0])
-            print2title(text)
-        else:
-            text = str(args)
-    except:
-        pass
-    logFunc[-1](*args, **kw)
-
-
-
-
-
-logPath = Path("log/")
 gifPath_1 = Path("config/gif")
 gifPath_2 = Path("config/gif2")
 gitHubLogoPath = Path("config/github.png")
 IconPath = "config/ico.png"
+
+logPath = Path("log/")
 if not logPath.exists():
     logPath.mkdir()
-tm = time.localtime()
-LOGFile = f"./log/{'%02d' % tm.tm_mon}-{'%02d' % tm.tm_mday} {'%02d' % tm.tm_hour}_{'%02d' % tm.tm_min}_{'%02d' % tm.tm_sec}.log"
-
-
-def log(text):
-    tm = time.localtime()
-    with open(LOGFile, "a+", encoding="utf-8") as f:
-        log = f"[{'%02d' % tm.tm_mon}-{'%02d' % tm.tm_mday} {'%02d' % tm.tm_hour}:{'%02d' % tm.tm_min}:{'%02d' % tm.tm_sec}] {text}\n"
-        f.write(log)
 
 
 def str2bytes(s) -> bytes:
@@ -107,7 +81,7 @@ def str2bytes(s) -> bytes:
     length = len(s)
     nums = []
     while i < length:
-        nums.append(int(s[i : i + 2], base=16))
+        nums.append(int(s[i: i + 2], base=16))
         i += 2
     return struct.pack("B" * len(nums), *nums)
 
@@ -182,7 +156,7 @@ def configBtnPack(frame: tk.Frame, value=1, attr="padx"):
                 try:
                     widget.grid_configure({attr: value})
                 except:
-                    print("配置失败")
+                    logger.warning("配置失败")
                     continue
         else:
             configBtnPack(widget, value, attr)
@@ -1411,7 +1385,6 @@ class GuiApp:
                 value = tree.set(itemStr, col).replace(",", "")
                 try:
                     if value in ["paycoin", "money", "cera", "cera_point"]:
-                        # print(value)
                         value = 0
                     value = int(value)
                     lst_int.append([value, itemStr])
@@ -1420,14 +1393,12 @@ class GuiApp:
                     break
             if useInt:
                 lst = lst_int
-            # print(lst)                                 # 打印列表
             lst.sort(
                 key=lambda x: x[0]
                 if isinstance(x[0], int)
                 else x[0].encode("gbk", errors="replace"),
                 reverse=reverseFlag,
             )  # 排序列表
-            # print(lst)                                 # 打印列表
             reverseFlag = not reverseFlag  # 更改排序标识
             for index, item in enumerate(lst):  # 重新移动项目内容
                 if len(sortQueue) > sortID + 1:
@@ -1559,7 +1530,6 @@ class GuiApp:
                         f"#{colIndex + 1}",
                         command=lambda c=col, t=tree: treeview_sortColumn(c, t),
                     )
-                    # print(colIndex,col)
                 except:
                     break
 
@@ -1692,11 +1662,11 @@ class GuiApp:
                     characs = sqlM.get_online_charac()
                 else:
                     characs = sqlM.getCharacterInfo(cName=self.cNameE.get())
-            print("加载角色列表", characs)
+            logger.info("加载角色列表", characs)
             fill_charac_treeview(charac_list=characs)
 
         @in_thread
-        def selectCharac(showTitle=False):
+        def selectCharac(showTitle=False) -> None:
             if len(self.characTreeV.selection()) == 0:
                 return
             taskID = len(self.loadPkgTaskList)
@@ -1706,15 +1676,15 @@ class GuiApp:
             try:
                 cNo, cName, lev, job, uid = sel
             except:
-                print("未选择角色")
-                return False
+                logger.warning("未选择角色")
+                return
             if self.PVF_LOADING_FLG:
-                print("等待PVF加载中")
-                return False
+                logger.info("等待PVF加载中")
+                return
             if len(cacheM.ITEMS_dict.keys()) < 10:
-                print("请选择物品列表来源")
-                return False
-            log(f"加载角色物品[{sel}]")
+                logger.info("请选择物品列表来源")
+                return
+            logger.info(f"加载角色物品[{sel}]")
             inventory, equipslot, creature, inventory_capacity = sqlM.getInventoryAll(
                 cNo=cNo
             )[0]
@@ -1723,11 +1693,10 @@ class GuiApp:
             user_items = sqlM.getAvatar(cNo=cNo, ability_=True)
             account_cargo = sqlM.get_Account_Cargo(cNo=cNo)
             user_postals = sqlM.get_postal_new(cNo=cNo)
-            # print(user_postals)
             if showTitle:
-                print(f"角色[{cName}]物品已加载")
+                logger.info(f"角色[{cName}]物品已加载")
             else:
-                log(f"角色[{cName}]物品已加载")
+                logger.info(f"角色[{cName}]物品已加载")
             # self.enable_Tabs()
             blobsItemsDict = {}
             for key, name in globalBlobs_map.items():
@@ -1746,12 +1715,10 @@ class GuiApp:
             self.invCapacityE.set(f"{inventory_capacity}")
             self.globalCharacNonBlobs = nonBlobItemsDict
             self.importFlgDict = {}
-            # print('填充treev')
             self.w.after(1, lambda: self.fill_tab_treeviews(taskID))
             self.fill_charac_tab_fun()
             while self.fillingFlg and len(self.loadPkgTaskList) == taskID + 1:
                 time.sleep(0.01)
-                # print(self.fillingFlg)
             self.update_GM()
             if self.GM_Tool_Flg:  # 同步修改角色
                 self.GMTool.cNo = cNo
@@ -1763,14 +1730,14 @@ class GuiApp:
 
             def inner():
                 nonlocal pvfPath
-                print("数据源加载中...PVF：", pvfPath)
+                logger.info("数据源加载中...PVF：", pvfPath)
                 if cacheM.config.get("PVF_PATH") == "":
                     messagebox.askokcancel(
                         "这是一个初次运行的广告",
                         "全服背包管理工具赞助即可获得！详情请点击其它->Github图标。",
                     )
                 if self.PVF_LOADING_FLG:
-                    print("等待PVF加载")
+                    logger.info("等待PVF加载")
                     return False
                 if pvfPath == "":
                     pvfPath = askopenfilename(
@@ -1779,7 +1746,7 @@ class GuiApp:
                 if pvfPath != "":
                     cacheM.pvfReader.LOAD_FUNC = cacheM.pvfReader.get_Item_Dict
                     t1 = time.time()
-                    print("加载PVF中...")
+                    logger.info("加载PVF中...")
                     self.PVF_LOADING_FLG = True
                     info = cacheM.loadItems2(
                         True, pvfPath, encode=self.PVFEncodeE.get()
@@ -1799,10 +1766,10 @@ class GuiApp:
                     [func() for func in self.updateMagicSealFuncs.values()]
                     self.hiddenCom.config(
                         values=["0-None"]
-                        + [
-                            f"{i + 1}-{value}"
-                            for i, value in enumerate(cacheM.avatarHiddenList[0])
-                        ]
+                               + [
+                                   f"{i + 1}-{value}"
+                                   for i, value in enumerate(cacheM.avatarHiddenList[0])
+                               ]
                     )
                     self.jobE.config(
                         values=[
@@ -1825,9 +1792,9 @@ class GuiApp:
 
                     if self.PVF_CACHE_EDIT_OPEN_FLG:
                         self.PVFEditWinFrame.fillTree()
-                    print(info)
+                    logger.info(info)
                 else:
-                    print("PVF路径为空，加载CSV")
+                    logger.info("PVF路径为空，加载CSV")
                     cacheM.loadItems2(False)
                     self.PVFCacheE.set("使用CSV")
                 selectCharac()
@@ -1903,24 +1870,23 @@ class GuiApp:
         self.tabViewChangeFuncs.append(changeGif)
 
     def _buildtab_itemTab(
-        self, itemEditFrame: itemSlotFrame.ItemslotframeWidget, tabName
+            self, itemEditFrame: itemSlotFrame.ItemslotframeWidget, tabName
     ):
         def ask_commit():
             if showSelectedItemInfo() != True or self.cNo == 0:
                 return False
             if not messagebox.askokcancel(
-                "修改确认",
-                f"确定修改{tabName}所选物品？\n请确认账号不在线或正在使用其他角色\n{self.editedItemsDict[tabName]}",
+                    "修改确认",
+                    f"确定修改{tabName}所选物品？\n请确认账号不在线或正在使用其他角色\n{self.editedItemsDict[tabName]}",
             ):
                 return False
             cNo = self.cNo
             key = globalBlobs_map[tabName]
             originblob = self.globalCharacBlobs[tabName]
-            # print(originblob,self.editedItemsDict[tabName],cNo,key)
             sqlM.commit_change_blob(originblob, self.editedItemsDict[tabName], cNo, key)
-            print(f"修改列表{tabName}-{self.editedItemsDict[tabName]}")
+            logger.info(f"修改列表{tabName}-{self.editedItemsDict[tabName]}")
             self.blobCommitExFunc(self.cNo)
-            print(f"====修改成功==== {tabName} 角色ID：{self.cNo}")
+            logger.info(f"====修改成功==== {tabName} 角色ID：{self.cNo}")
             return self.selectCharac()
 
         def save_blob(fileType="blob", additionalTag=tabName):
@@ -1931,17 +1897,16 @@ class GuiApp:
             )
             if filePath == "":
                 return False
-            if filePath[-1 - len(fileType) :] != f".{fileType}":
+            if filePath[-1 - len(fileType):] != f".{fileType}":
                 filePath += f".{fileType}"
             filePath = (
-                filePath[: -1 - len(fileType)] + filePath[-1 - len(fileType) :]
+                    filePath[: -1 - len(fileType)] + filePath[-1 - len(fileType):]
             )  # + f'-{additionalTag}'
             with open(filePath, "wb") as f:
                 f.write(self.globalCharacBlobs[tabName])
-            print(f"文件已保存{filePath}")
+            logger.info(f"文件已保存{filePath}")
 
         def load_blob(fileType="blob"):
-            # print('load')
             filePath = askopenfilename(
                 filetypes=[(f"DNF {tabName} file", f"*.{fileType}")]
             )
@@ -1963,16 +1928,14 @@ class GuiApp:
         def changeItemSlotType(e=None):
             """点击修改物品类别或点击新物品时，修改控件可编辑状态"""
             typeZh = typeEntry.get().split("-")[1]
-            # print(typeZh)
             if (
-                typeZh in ["装备", "宠物装备"]
-                or cacheM.config.get("TYPE_CHANGE_ENABLE") == 1
+                    typeZh in ["装备", "宠物装备"]
+                    or cacheM.config.get("TYPE_CHANGE_ENABLE") == 1
             ):
                 numGradeLabel.config(text="品级：")
                 configFrame(equipmentExFrame, "normal")
                 configFrame(itemEditFrame.itemBasicInfoFrame, "normal")
                 for widget in equipmentExFrame.children:
-                    # print(widget)
                     try:
                         equipmentExFrame.children[widget].config(state="normal")
                     except:
@@ -2076,7 +2039,7 @@ class GuiApp:
                     setOrbTypeCom(1)
                     orbValueEntry.set(value)
                 except:
-                    print(f"宝珠加载失败，{itemSlot.orb}")
+                    logger.warning(f"宝珠加载失败，{itemSlot.orb}")
                     pass
             coverMagic, magicSeals = itemSlot.readMagicSeal()
             itemSlotBytesE.insert(0, itemSlot.build_bytes().hex())
@@ -2110,7 +2073,7 @@ class GuiApp:
             self.inventory_capacity = capacity
             self.checkBloblegal()
             set_treeview_color()
-            print(f"修改背包容量为{capacity}")
+            logger.info(f"修改背包容量为{capacity}")
 
         def getItemPVFInfo() -> str:
             try:
@@ -2120,13 +2083,13 @@ class GuiApp:
             res = cacheM.get_Item_Info_In_Text(itemID).replace(r"%%", r"%").strip()
             return res
 
-        def delete_all_item():
+        def delete_all_item() -> None:
             """删除所有物品"""
             if not messagebox.askokcancel(
-                "删除确认",
-                f"确定删除{tabName}所有物品？\n请确认账号不在线或正在使用其他角色\n",
+                    "删除确认",
+                    f"确定删除{tabName}所有物品？\n请确认账号不在线或正在使用其他角色\n",
             ):
-                return False
+                return
             setDelete()
             CharacItemsDict = self.selectedCharacItemsDict[tabName]
             editedDict = {i: sqlM.DnfItemSlot() for i in CharacItemsDict.keys()}
@@ -2138,7 +2101,7 @@ class GuiApp:
                 globalBlobs_map[tabName],
             )
             self.selectCharac_()
-            print(f"====清空成功==== {tabName} 角色ID：{self.cNo}")
+            logger.info(f"====清空成功==== {tabName} 角色ID：{self.cNo}")
 
         def set_treeview_color():
             if self.importFlgDict.get(tabName) is not None:
@@ -2216,8 +2179,6 @@ class GuiApp:
                 itemSlot.magicSeal = magicSeal
             slotBytes = itemSlot.build_bytes()
             itemSlot.oriBytes = slotBytes
-            # print(slotBytes)
-            # print(self.selectedCharacItemsDict[tabName][index].oriBytes)
             if retType == "bool":
                 if slotBytes != self.selectedCharacItemsDict[tabName][index].oriBytes:
                     if itemSlot.id != 0 and itemSlot.type == 0:
@@ -2269,12 +2230,12 @@ class GuiApp:
                 itemsTreev_now.item(item, values=values_unpack)
             set_treeview_color()
 
-        def showSelectedItemInfo(save=True, reset=False):
+        def showSelectedItemInfo(save=True, reset=False) -> bool:
             """显示当前选中物品槽，save:保存当前物品编辑状态，reset：重置当前编辑槽，而不是显示选中的槽"""
             if save:
                 saveState = editSave()
                 if self.currentItemDict.get(tabName) is not None and saveState == True:
-                    print("物品被编辑保存", self.editedItemsDict)
+                    logger.info("物品被编辑保存", self.editedItemsDict)
                 elif saveState == "TypeEmptyFalse":
                     return False
                 elif saveState == "AvatarItemFalse":
@@ -2286,7 +2247,7 @@ class GuiApp:
                         .split("(")[-1]
                         .replace(")", "")
                     )
-                    # print(index)
+                    logger.debug(index)
                 except:
                     return False
             else:
@@ -2300,7 +2261,7 @@ class GuiApp:
 
                 update_Treeview()
             if (
-                self.editedItemsDict.get(tabName).get(index) is not None and not reset
+                    self.editedItemsDict.get(tabName).get(index) is not None and not reset
             ):  # save and
                 itemSlot: sqlM.DnfItemSlot = self.editedItemsDict.get(tabName).get(
                     index
@@ -2310,14 +2271,13 @@ class GuiApp:
                     index
                 ]
             fillItemEditFrame(itemSlot)
-            log(f"{tabName}-{index}-{itemSlot}")
-            print(itemSlot)
+            logger.info(f"{tabName}-{index}-{itemSlot}")
             self.currentItemDict[tabName] = [index, itemSlot, itemsTreev_now.focus()]
             # itemSlotEditFrame.config(text=f'物品信息编辑({index})')
             itemEditFrame.currentEditLabelVar.set(f"({index})")
             if (
-                len(cacheM.PVFcacheDict.keys()) != 0
-                and self.errorInfoDict.get(tabName) is not None
+                    len(cacheM.PVFcacheDict.keys()) != 0
+                    and self.errorInfoDict.get(tabName) is not None
             ):
                 errorInfo = self.errorInfoDict[tabName].get(index)
                 if errorInfo is not None:
@@ -2344,7 +2304,6 @@ class GuiApp:
                 res_ = list(cacheM.magicSealDict.items())
                 res_.sort()
                 res += res_
-            # print(res)
             com.config(values=[item[1].strip() + " " + str([item[0]]) for item in res])
 
         def setMagicSeal(sealNameEntry, sealIDEntry):
@@ -2373,7 +2332,6 @@ class GuiApp:
             itemNameEntry.delete(0, tk.END)
             itemNameEntry.insert(0, name)
             itemNameEntry.config(values=[])
-            # print(name,id_)
 
         def reset():
             showSelectedItemInfo(save=False, reset=True)
@@ -2411,7 +2369,7 @@ class GuiApp:
                     if dnfItemSlot.id != 0:
                         continue
                 if (
-                    emptySlotVar.get() == 0 and dnfItemSlot.id == 0
+                        emptySlotVar.get() == 0 and dnfItemSlot.id == 0
                 ):  # 不显示空位，过滤空位
                     continue
 
@@ -2461,9 +2419,9 @@ class GuiApp:
         itemEditFrame.showEmptyBtn.config(command=refill_Tree_View)
 
         values = [
-            f"0x{'%02x' % item[0]}-{item[1]}"
-            for item in sqlM.DnfItemSlot.typeDict.items()
-        ] + ["0xff-全部"]
+                     f"0x{'%02x' % item[0]}-{item[1]}"
+                     for item in sqlM.DnfItemSlot.typeDict.items()
+                 ] + ["0xff-全部"]
         typeBox = itemEditFrame.typeBoxE
         typeBox.config(values=values, state="readonly")
         typeBox.set("0xff-全部")
@@ -2544,7 +2502,6 @@ class GuiApp:
 
         # 7
         def enableTypeChange():
-            # print(itemEditFrame.enableTypeChangeVar.get())
             typeEntry.config(
                 state="readonly"
                 if itemEditFrame.enableTypeChangeVar.get() == 1
@@ -2573,14 +2530,14 @@ class GuiApp:
         typeEntry.bind("<<ComboboxSelected>>", changeItemSlotType)
         tip = "物品栏仅3-8可随意修改类型，否则炸角色\n"
         tip += (
-            "快捷栏：3 - 8\n"
-            + "装备栏：9 - 56\n"
-            + "消耗品：57 - 104\n"
-            + "材   料：105 - 152\n"
-            + "任务材料：153 - 200\n"
-            + "副职业：201 - 248\n"
-            + "宠物装备：0-48, 99-101\n"
-            + "宠物消耗品：49-97"
+                "快捷栏：3 - 8\n"
+                + "装备栏：9 - 56\n"
+                + "消耗品：57 - 104\n"
+                + "材   料：105 - 152\n"
+                + "任务材料：153 - 200\n"
+                + "副职业：201 - 248\n"
+                + "宠物装备：0-48, 99-101\n"
+                + "宠物消耗品：49-97"
         )
 
         CreateToolTip(typeEntry, tip)
@@ -2594,7 +2551,6 @@ class GuiApp:
             enhanceKeyZh = orbTypeEntry.get()
             enhanceItems = cacheM.enhanceDict_zh.get(enhanceKeyZh)
             enhanceItemsList = list(enhanceItems.items())
-            # print(items)
             try:
                 enhanceItemsList.sort(key=lambda x: x[1][0], reverse=True)
             except:
@@ -2603,9 +2559,9 @@ class GuiApp:
             for item in enhanceItemsList:
                 if isinstance(item, list):
                     item_str = (
-                        "|".join([str(value) for value in item[1]])
-                        + " " * 20
-                        + f"-{item[0]}"
+                            "|".join([str(value) for value in item[1]])
+                            + " " * 20
+                            + f"-{item[0]}"
                     )
                 else:
                     item_str = str(item[1]) + " " * 20 + f"-{item[0]}"
@@ -2727,7 +2683,7 @@ class GuiApp:
             CreateToolTip(commitBtn, f"提交当前[{tabName}]页面的所有修改")
 
     def _buildtab_itemTab_creature(
-        self, creatureF: creature_frame.CreatureFrameWidget, tabName=" 宠物 "
+            self, creatureF: creature_frame.CreatureFrameWidget, tabName=" 宠物 "
     ):
         def deleteItems():
             if not messagebox.askokcancel("删除确认", f"确定删除{tabName}所选物品？"):
@@ -2737,13 +2693,13 @@ class GuiApp:
                 delID = itemsTree_now.item(sel)["values"][0]
                 deleteIDs.append(delID)
 
-            print(f"删除{deleteIDs}")
+            logger.info(f"删除{deleteIDs}")
             tableName = globalNonBlobs_map[tabName]
             for ui_id in deleteIDs:
                 if sqlM.delNoneBlobItem(ui_id, tableName):
-                    print("====删除成功====\n")
+                    logger.info("====删除成功====\n")
                 else:
-                    print("====删除失败，请检查数据库连接状况====\n")
+                    logger.warning("====删除失败，请检查数据库连接状况====\n")
             self.blobCommitExFunc(self.cNo)
             self.selectCharac()
 
@@ -2754,7 +2710,7 @@ class GuiApp:
         delBtn.config(command=deleteItems)
 
     def _buildtab_itemTab_avatar(
-        self, avatarF: avatar_frame.AvatarFrameWidget, tabName=" 时装 "
+            self, avatarF: avatar_frame.AvatarFrameWidget, tabName=" 时装 "
     ):
         def deleteItems():
             if not messagebox.askokcancel("删除确认", f"确定删除{tabName}所选物品？"):
@@ -2764,14 +2720,14 @@ class GuiApp:
                 delID = itemsTree_now.item(sel)["values"][0]
                 deleteIDs.append(delID)
 
-            print(f"删除{deleteIDs}")
+            logger.info(f"删除{deleteIDs}")
 
             tableName = globalNonBlobs_map[tabName]
             for ui_id in deleteIDs:
                 if sqlM.delNoneBlobItem(ui_id, tableName):
-                    print("====删除成功====\n")
+                    logger.info("====删除成功====\n")
                 else:
-                    print("====删除失败，请检查数据库连接状况====\n")
+                    logger.warning("====删除失败，请检查数据库连接状况====\n")
             self.blobCommitExFunc(self.cNo)
             self.selectCharac()
 
@@ -2783,13 +2739,13 @@ class GuiApp:
             for sel in itemsTree_now.selection():
                 delID = itemsTree_now.item(sel)["values"][0]
                 editIDS.append(delID)
-            log("编辑非BLOB")
+            logger.info("编辑非BLOB")
             tableName = globalNonBlobs_map[tabName]
             for ui_id in editIDS:
                 if sqlM.enable_Hidden_Item(ui_id, tableName, value):
-                    print("====修改成功====\n")
+                    logger.info("====修改成功====\n")
                 else:
-                    print("====修改失败，请检查数据库连接状况====\n")
+                    logger.warning("====修改失败，请检查数据库连接状况====\n")
             self.selectCharac()
 
         itemsTree_now = avatarF.itemsTreev_now
@@ -2800,9 +2756,9 @@ class GuiApp:
         hiddenCom = avatarF.avatarHiddenE
         hiddenCom.config(
             values=["0-None"]
-            + [
-                f"{i + 1}-{value}" for i, value in enumerate(cacheM.avatarHiddenList[0])
-            ],
+                   + [
+                       f"{i + 1}-{value}" for i, value in enumerate(cacheM.avatarHiddenList[0])
+                   ],
             width=int(WIDTH * 10),
         )
 
@@ -2814,7 +2770,7 @@ class GuiApp:
         delBtn.config(command=deleteItems)
 
     def _buildtab_itemTab_mail(
-        self, mailF: mail_frame.MailFrameWidget, tabName=" 邮件 "
+            self, mailF: mail_frame.MailFrameWidget, tabName=" 邮件 "
     ):
         def deleteItems():
             if not messagebox.askokcancel("删除确认", f"确定删除{tabName}所选物品？"):
@@ -2823,13 +2779,13 @@ class GuiApp:
             for sel in itemsTree_now.selection():
                 delID = itemsTree_now.item(sel)["values"][0]
                 deleteIDs.append(delID)
-            print(f"删除{deleteIDs}")
+            logger.info(f"删除{deleteIDs}")
             tableName = globalNonBlobs_map[tabName]
             for ui_id in deleteIDs:
                 if sqlM.delNoneBlobItem(ui_id, tableName):
-                    print("====删除成功====\n")
+                    logger.info("====删除成功====\n")
                 else:
-                    print("====删除失败，请检查数据库连接状况====\n")
+                    logger.warning("====删除失败，请检查数据库连接状况====\n")
             self.blobCommitExFunc(self.cNo)
             self.selectCharac()
 
@@ -2852,8 +2808,8 @@ class GuiApp:
 
         def commit():
             if not messagebox.askokcancel(
-                "修改确认",
-                "确定修改角色数据信息？\n请保证账号不在线或正在登陆其他角色",
+                    "修改确认",
+                    "确定修改角色数据信息？\n请保证账号不在线或正在登陆其他角色",
             ):
                 return False
             cName = nameE.get()
@@ -2876,7 +2832,7 @@ class GuiApp:
                 "VIP": isVIP.get(),
                 "expert_job": expert_job,
             }
-            print(kwDict)
+            logger.debug(kwDict)
             if cName == self.cName:
                 kwDict.pop("charac_name")
 
@@ -2890,7 +2846,6 @@ class GuiApp:
         def fill_charac_Info_tab():
             """根据当前选中的cNo填充角色数据"""
             cInfos = sqlM.getCharacterInfo(cNo=self.cNo)
-            # print(cInfos)
             if len(cInfos) == 0:
                 cName = self.characInfos[self.cNo].get("name")
                 lev = self.characInfos[self.cNo].get("lev")
@@ -3069,7 +3024,7 @@ class GuiApp:
         updateCheckVar.set(
             1
             if cacheM.config.get("UPDATE_CHECK") is None
-            or cacheM.config.get("UPDATE_CHECK") == 1
+               or cacheM.config.get("UPDATE_CHECK") == 1
             else 0
         )
 
@@ -3176,8 +3131,8 @@ class GuiApp:
         def buildTab_usual():
             def charge(type="cera"):
                 if not messagebox.askokcancel(
-                    "充值确认",
-                    f"确定充值？\n将充值到当前角色[{self.cNo}][{self.cName}]",
+                        "充值确认",
+                        f"确定充值？\n将充值到当前角色[{self.cNo}][{self.cName}]",
                 ):
                     return False
                 # update_cera_and_SP()
@@ -3204,7 +3159,7 @@ class GuiApp:
                     sqlM.charge_quest_point(self.cNo, value)
                     # sqlM.set_quest_point(self.cNo,value+cNoInfoDict['qp'])
                 update_Info()
-                print(
+                logger.info(
                     f"角色[{self.cNo}][{self.cName}]-[{type}]充值完成 [{oldValue}]->[{oldValue + value}]"
                 )
                 self.blobCommitExFunc(self.cNo)
@@ -3227,7 +3182,7 @@ class GuiApp:
                 elif type == "QP":
                     sqlM.set_quest_point(self.cNo, 0)
                 update_Info()
-                print("清空成功！")
+                logger.info("清空成功！")
                 self.blobCommitExFunc(self.cNo)
 
             def update_cera_and_SP():
@@ -3293,7 +3248,7 @@ class GuiApp:
                 win_point = pvp_point
                 sqlM.set_PVP(self.cNo, pvp_grade, win, pvp_point, win_point)
                 update_Info()
-                print("PVP数据提交完成")
+                logger.info("PVP数据提交完成")
 
             self.updateFuncList.append(update_PVP)
 
@@ -3308,7 +3263,7 @@ class GuiApp:
 
             def unlock_dungeon():
                 if not messagebox.askyesno("确认提交", "确认解锁副本难度？"):
-                    return False
+                    return
                 dungeonList = list(cacheM.dungeonDict.keys())
 
                 if dungeonList != []:
@@ -3318,42 +3273,41 @@ class GuiApp:
                     dungeons = dungeons[:-1]
                 else:
                     dungeons = "1|3,2|3,3|3,4|3,5|3,6|3,7|3,8|3,9|3,11|3,12|3,13|3,14|3,15|3,16|1,17|3,21|3,22|3,23|3,24|3,25|3,26|3,27|3,31|3,32|3,33|3,34|3,35|3,36|3,37|3,40|3,41|2,42|3,43|3,44|3,45|3,50|3,51|3,52|3,53|3,60|3,61|3,62|2,63|3,64|3,65|3,67|3,70|3,71|3,72|3,73|3,74|3,75|3,76|3,77|3,80|3,81|3,82|3,83|3,84|3,85|3,86|3,87|3,88|3,89|3,90|3,91|2,92|3,93|3,100|3,101|3,102|3,103|3,104|3,110|3,111|3,112|3,140|3,141|3,502|3,511|3,515|1,518|1,521|3,1000|3,1500|3,1501|3,1502|3,1507|1,3506|3,10000|3"
-                # print(dungeons)
                 sqlM.unlock_all_lev_dungeon(self.uid, dungeons)
-                print("解锁副本难度指令执行完成")
+                logger.info("解锁副本难度指令执行完成")
 
             def reset_blood_dungeon():
                 if not messagebox.askyesno(
-                    "确认提交", "确认重置祭坛与异界副本入场次数？"
+                        "确认提交", "确认重置祭坛与异界副本入场次数？"
                 ):
-                    return False
+                    return
                 sqlM.reset_blood_dungeon(self.cNo)
                 sqlM.reset_dimension(self.cNo)
-                print("重置祭坛与异界次数指令执行完成")
+                logger.info("重置祭坛与异界次数指令执行完成")
 
             def unlock_ALL_Level_equip():
                 if not messagebox.askyesno("确认提交", "确认解锁装备等级限制？"):
-                    return False
+                    return
                 sqlM.unlock_ALL_Level_equip(self.cNo)
-                print("解锁装备等级限制指令执行完成")
+                logger.info("解锁装备等级限制指令执行完成")
 
             def enable_LR_slot():
                 if not messagebox.askyesno("确认提交", "确认解锁左右槽位？"):
-                    return False
+                    return
                 sqlM.enable_LR_slot(self.cNo)
-                print("解锁左右槽位指令执行完成")
+                logger.info("解锁左右槽位指令执行完成")
 
             def maxmize_expert_lev():
                 if not messagebox.askyesno("确认提交", "确认提升副职业至满级？"):
-                    return False
+                    return
                 sqlM.maxmize_expert_lev(self.cNo)
-                print("提升副职业至满级指令执行完成")
+                logger.info("提升副职业至满级指令执行完成")
 
             def unlock_register_limit():
                 if not messagebox.askyesno("确认提交", "确认解除账号限制？"):
-                    return False
+                    return
                 sqlM.unlock_register_limit(self.uid)
-                print("解除账号限制指令执行完成")
+                logger.info("解除账号限制指令执行完成")
 
             unlockBtn = self.liftLimitBtn
             unlockBtn.config(command=unlock_register_limit)
@@ -3388,7 +3342,7 @@ class GuiApp:
                     return False
                 money = int(pkgMoneyE.get())
                 sqlM.set_charac_money(self.cNo, money)
-                print(
+                logger.info(
                     f"角色[{self.cNo}][{self.cName}]金币修改完成[{money}]，请手动重载数据"
                 )
 
@@ -3407,7 +3361,7 @@ class GuiApp:
                     return False
                 money = int(accountMoneyE.get())
                 sqlM.set_account_money(self.uid, money)
-                print(f"账号[{self.uid}]金币修改完成[{money}]，请手动重载数据")
+                logger.info(f"账号[{self.uid}]金币修改完成[{money}]，请手动重载数据")
                 # app.blobCommitExFunc(app.cNo)
 
             def get_pay_coin():
@@ -3425,7 +3379,7 @@ class GuiApp:
                     return False
                 paycoin = int(payCoinE.get())
                 sqlM.set_pay_coin(self.cNo, paycoin)
-                print(
+                logger.info(
                     f"角色[{self.cNo}][{self.cName}]复活币修改完成[{paycoin}]，请手动重载数据"
                 )
 
@@ -3468,7 +3422,6 @@ class GuiApp:
                 itemID = int(id_)
                 typeid, itemType = cacheM.getStackableTypeMainIdAndZh(itemID)
 
-                # print(int(id_),name,typeid,itemType)
                 typeEntry.set(str(typeid) + "-" + itemType)
 
                 changeItemSlotType()
@@ -3561,7 +3514,7 @@ class GuiApp:
             def send_mail(cNo, confirm=False):
                 if confirm:
                     if not messagebox.askokcancel(
-                        "发送确认", f"确定发送邮件到当前角色[{self.cName}][{cNo}]？"
+                            "发送确认", f"确定发送邮件到当前角色[{self.cName}][{cNo}]？"
                     ):
                         return False
                 if cNo == 0:
@@ -3598,7 +3551,7 @@ class GuiApp:
                     avatar_flag,
                 ) = get_Item_info()
                 if itemID == 0 and gold == 0:
-                    print(f"发送文本完成-{cNo}")
+                    logger.info(f"发送文本完成-{cNo}")
                     return True
                 sqlM.send_postal(
                     cNo,
@@ -3619,7 +3572,7 @@ class GuiApp:
                 )
                 if cacheM.stackableDict.get(itemID) is None:
                     num = 1
-                print(
+                logger.info(
                     f"发送完成-角色[{cNo}]-物品[{cacheM.ITEMS_dict.get(itemID)}][{itemID}]-数量[{num}]-金币[{gold}]"
                 )
                 self.blobCommitExFunc(cNo)
@@ -3634,14 +3587,14 @@ class GuiApp:
 
             def send_mail_all():
                 characs = sqlM.get_all_charac()
-                # print(characs)
+
                 if not messagebox.askokcancel(
-                    "发送确认", f"确定发送邮件到当前所有的{len(characs)}个角色？"
+                        "发送确认", f"确定发送邮件到当前所有的{len(characs)}个角色？"
                 ):
                     return False
                 i = 1
                 for uid, cNo, *_ in characs:
-                    print(f"当前发送({i}/{len(characs)}/{characs[i - 1]})")
+                    logger.info(f"当前发送({i}/{len(characs)}/{characs[i - 1]})")
                     send_mail(cNo)
                     i += 1
 
@@ -3650,45 +3603,45 @@ class GuiApp:
                     characs = sqlM.get_VIP_charac()
                 else:
                     characs = sqlM.get_VIP_charac(True)
-                print(characs)
+                logger.info(characs)
                 if not messagebox.askokcancel(
-                    "发送确认", f"确定发送邮件到当前VIP的{len(characs)}个角色？"
+                        "发送确认", f"确定发送邮件到当前VIP的{len(characs)}个角色？"
                 ):
                     return False
                 i = 1
                 for uid, cNo, *_ in characs:
                     send_mail(cNo)
-                    print(f"当前发送({i}/{len(characs)})")
+                    logger.info(f"当前发送({i}/{len(characs)})")
                     i += 1
-                print(f"发送完成({len(characs)})!")
+                logger.info(f"发送完成({len(characs)})!")
 
             def send_mail_online():
                 onlineCharacList = sqlM.get_online_charac()
-                print(onlineCharacList)
+                logger.info(onlineCharacList)
                 if not messagebox.askokcancel(
-                    "发送确认",
-                    f"确定发送邮件到当前在线的{len(onlineCharacList)}个角色？",
+                        "发送确认",
+                        f"确定发送邮件到当前在线的{len(onlineCharacList)}个角色？",
                 ):
                     return False
 
                 i = 1
                 for uid, cNo, *_ in onlineCharacList:
                     send_mail(cNo)
-                    print(f"当前发送({i}/{len(onlineCharacList)})")
+                    logger.info(f"当前发送({i}/{len(onlineCharacList)})")
                     i += 1
-                print(f"发送完成({len(onlineCharacList)})!")
+                logger.info(f"发送完成({len(onlineCharacList)})!")
 
             @in_thread
             def clearAllMail():
                 allPostalID = sqlM.get_all_postalID()
                 if not messagebox.askokcancel(
-                    "发送确认", f"确定清空当前所有的{len(allPostalID)}封邮件？"
+                        "发送确认", f"确定清空当前所有的{len(allPostalID)}封邮件？"
                 ):
                     return False
                 i = 1
                 for postalID in allPostalID:
                     sqlM.delete_mail_postal(postalID[0])
-                    print(f"删除邮件{postalID} {i}/{len(allPostalID)}")
+                    logger.info(f"删除邮件{postalID} {i}/{len(allPostalID)}")
                     i += 1
 
             self.readSlotID = readSlotName
@@ -3795,7 +3748,7 @@ class GuiApp:
                     elif self.localEventList is not None:
                         self.eventList = self.localEventList
                 eventList_new = [f"{item[0]}-{item[2]}" for item in self.eventList]
-                # print(eventList)
+
                 eventNameE.set(f"选择活动({len(eventList_new)})")
                 eventNameE.config(values=eventList_new)
 
@@ -3812,7 +3765,6 @@ class GuiApp:
                     if flg:
                         continue
                     runningList.append([log_id, "explain", para1, para2])
-                # print(eventList,runningList)
                 for child in eventTreeNow.get_children():
                     eventTreeNow.delete(child)
                 for item in runningList:
@@ -3829,14 +3781,14 @@ class GuiApp:
             def del_event():
                 try:
                     sel = eventTreeNow.item(eventTreeNow.focus())
-                    print(sel["values"])
+                    logger.info(sel["values"])
                     id = int(sel["values"][0])
                 except:
-                    print("未选中活动")
+                    logger.info("未选中活动")
                     return False
                 sqlM.del_event(id)
                 update_event_list_func()
-                print("活动已删除，请重启服务器")
+                logger.info("活动已删除，请重启服务器")
 
             def set_event():
                 try:
@@ -3847,9 +3799,9 @@ class GuiApp:
                     para2 = 0
                     sqlM.set_event(id, para1, para2)
                 except:
-                    print("活动添加失败")
+                    logger.info("活动添加失败")
                     return False
-                print("活动已添加，请重启服务器")
+                logger.info("活动已添加，请重启服务器")
                 update_event_list_func()
 
             def select_new_event(e):
@@ -3870,7 +3822,7 @@ class GuiApp:
 
             refreshBtn = self.refreshEventBtn
             refreshBtn.config(
-                command=lambda: print(f"活动已刷新({len(get_running_event())})")
+                command=lambda: logger.info(f"活动已刷新({len(get_running_event())})")
             )
 
             deleteBtn = self.delEventBtn
@@ -3942,7 +3894,7 @@ class GuiApp:
             bubbleDict[bubbleID]["enable"] = enableStat2
             cacheM.config["BUBBLE"] = bubbleDict
             cacheM.save_config()
-            print(bubbleDict)
+            logger.info(bubbleDict)
 
         def add_uid():
             aName = self.bubbleUIDE.get()
@@ -3976,7 +3928,7 @@ class GuiApp:
             cacheM.config["BUBBLE"] = bubbleDict
             cacheM.save_config()
             self.infoSvar.set(f"已添加账号[{uid}]")
-            print(f"泡点[{bubbleID}]已添加账号[{uid}]")
+            logger.info(f"泡点[{bubbleID}]已添加账号[{uid}]")
             select_bubble(None)
 
         def rmUID():
@@ -4095,16 +4047,16 @@ class GuiApp:
                             if uid not in bubbleIDDict["uids"]:
                                 continue
                         if (
-                            self.privateIPVar.get() == 0
-                            and ipaddress.ip_address(onlineUIDs[uid]).is_private
+                                self.privateIPVar.get() == 0
+                                and ipaddress.ip_address(onlineUIDs[uid]).is_private
                         ):
                             continue
                         if timeNow == onlineDict[uid]:
                             continue
                         if (
-                            int((timeNow - onlineDict[uid]) / 60)
-                            % bubbleIDDict["interval"]
-                            != 0
+                                int((timeNow - onlineDict[uid]) / 60)
+                                % bubbleIDDict["interval"]
+                                != 0
                         ):
                             continue
                         uidBubbleValueDict[uid]["bubbles"].append(bubbleName)
@@ -4118,7 +4070,7 @@ class GuiApp:
                     timeString = time.strftime(
                         "%Y-%m-%d %H:%M:%S", time.localtime(timeNow)
                     )
-                    print(
+                    logger.info(
                         f"[{timeString}] 账号[{uid}] +[{value}]泡点,泡点列表{uBubbleDict['bubbles']}"
                     )
 
@@ -4128,7 +4080,7 @@ class GuiApp:
                 try:
                     sendBubble()
                 except Exception as e:
-                    print(f"泡点发送错误{e}")
+                    logger.warning(f"泡点发送错误{e}")
                 time.sleep(61 - (time.time() - startTime) % 60)
 
         get_normal_bubble()
@@ -4188,7 +4140,7 @@ class GuiApp:
                         self.transPort.connect(username=user, pkey=private_key)
                     except Exception as e:
                         if show:
-                            print(f"连接失败 {e}")
+                            logger.info(f"连接失败 {e}")
                             self.title(f"连接失败 {e}")
                         self.connectedFlg = False
                         self.connectingFlg = False
@@ -4205,7 +4157,7 @@ class GuiApp:
 
                     except Exception as e:
                         if show:
-                            print(f"连接失败 {e}")
+                            logger.info(f"连接失败 {e}")
                             self.title(f"连接失败 {e}")
                         self.connectedFlg = False
                         self.connectingFlg = False
@@ -4238,21 +4190,21 @@ class GuiApp:
             def inner():
                 nonlocal startingFlg
                 if startingFlg:
-                    print("服务器正在启动中！请点击停止服务器")
+                    logger.info("服务器正在启动中！请点击停止服务器")
                     return False
                 startingFlg = True
                 ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sh /root/run")
-                print("DNF服务器启动中...")
+                logger.info("DNF服务器启动中...")
                 while True:
                     res = ssh_stdout.readline()
-                    print(res)
+                    logger.info(res)
                     if res == "":
                         break
                     if "Connect To Guild Server" in str(res):
-                        print("服务器启动完成")
+                        logger.info("服务器启动完成")
                         break
                     if "success" in str(res).lower() or "error" in str(res).lower():
-                        print(str(res).strip())
+                        logger.info(str(res).strip())
                         insert2cmdLog(res)
                 startingFlg = False
 
@@ -4269,7 +4221,7 @@ class GuiApp:
                 ssh_stdout.readlines()
                 ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sh /root/stop")
                 ssh_stdout.readlines()
-                print("服务器已停止")
+                logger.info("服务器已停止")
                 self.title("服务器已停止")
 
             t = threading.Thread(target=inner)
@@ -4320,12 +4272,12 @@ class GuiApp:
                             if endStr is not None and endStr in res:
                                 break
                             insert2cmdLog(res)
-                            print(res.replace("\n", ""))
+                            logger.debug(res.replace("\n", ""))
                         time.sleep(0.02)
                     except:
                         break
                 # self.title(f'指令执行完毕')
-                print("指令执行完毕")
+                logger.info("指令执行完毕")
                 # time.sleep(60)
 
             t = threading.Thread(target=inner)
@@ -4363,7 +4315,7 @@ class GuiApp:
                 def printTotals(transferred, toBeTransferred):
                     nonlocal time_now
                     if time.time() - time_now > 1:
-                        print(
+                        logger.info(
                             "Transferred: {0}\tOut of: {1}".format(
                                 transferred, toBeTransferred
                             )
@@ -4377,13 +4329,13 @@ class GuiApp:
                 if pvfPath == "" or not Path(pvfPath).exists():
                     self.title("文件错误")
                     return False
-                print(pvfPath)
+                logger.info(pvfPath)
                 sftp = paramiko.SFTPClient.from_transport(self.transPort)
                 remote_path = r"/home/neople/game/Script.pvf"
                 cmd = r"ls /home/neople/game/"
                 ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
                 res = ssh_stdout.readlines()
-                # print(res)
+
                 if len(res) < 5:
                     self.title("目标文件夹异常")
                     return False
@@ -4408,13 +4360,12 @@ class GuiApp:
             return files
 
         def downloadFile(
-            filePath="",
-            targetPath="",
-            progressBarPos=[200, 200],
-            progressBarMaster=None,
+                filePath="",
+                targetPath="",
+                progressBarPos=[200, 200],
+                progressBarMaster=None,
         ):
             def showProgress(transferred, toBeTransferred):
-                # print(transferred,toBeTransferred)
                 nonlocal time_now
                 if time.time() - time_now > 1:
                     progressBar["maximum"] = toBeTransferred
@@ -4514,14 +4465,14 @@ class GuiApp:
             for uid, BanInfo in banedDict.items():
                 characs = sqlM.getCharacterInfo(uid=uid)
                 for (
-                    uid_,
-                    cNo,
-                    name,
-                    lev,
-                    job,
-                    growType,
-                    deleteFlag,
-                    expert_job,
+                        uid_,
+                        cNo,
+                        name,
+                        lev,
+                        job,
+                        growType,
+                        deleteFlag,
+                        expert_job,
                 ) in characs:
                     if deleteFlag == 1:
                         continue
@@ -4587,7 +4538,7 @@ class GuiApp:
                 return False
             sqlM.resume_baned(uid)
             sqlM.set_baned(uid, punish_type=punishTypeValue)
-            print(f"封禁完成-{uid}")
+            logger.info(f"封禁完成-{uid}")
             self.refill_baned_tree()
 
         def set_baned_c():
@@ -4605,13 +4556,13 @@ class GuiApp:
                 return False
             elif len(characs) == 1:
                 if not messagebox.askokcancel(
-                    "封禁确认", f"确定封禁角色{characs[0]}？"
+                        "封禁确认", f"确定封禁角色{characs[0]}？"
                 ):
                     return False
                 uid = characs[0][0]
                 sqlM.resume_baned(uid)
                 sqlM.set_baned(uid, punish_type=punishTypeValue)
-                print(f"封禁完成-{uid}")
+                logger.info(f"封禁完成-{uid}")
                 self.refill_baned_tree()
             else:
                 messagebox.askokcancel("未查询到角色", "请检查输入的角色名是否正确")
@@ -4624,7 +4575,7 @@ class GuiApp:
             for sel in sels:
                 uid = self.banedTreeV.item(sel)["values"][1]
                 sqlM.resume_baned(uid)
-                print(f"解封账号-{uid}")
+                logger.info(f"解封账号-{uid}")
             self.refill_baned_tree()
 
         self.setBanedABtn.config(command=set_baned_a)
@@ -4641,7 +4592,7 @@ class GuiApp:
         height = self.mainwindow.winfo_height()
         cacheM.config["RESOLUTION"] = f"{width}x{height}"
         cacheM.save_config()
-        print("分辨率已保存")
+        logger.info("分辨率已保存")
         # self.infoLabel.config(text=f'分辨率已保存 {width}x{height}')
         self.infoSvar.set(f"分辨率已保存 {width}x{height}")
 
@@ -4652,21 +4603,21 @@ class GuiApp:
             self.editedItemsDict[key] = {}  # 清空编辑的对象
 
         # 填充blob字段
-        # print(self.globalCharacBlobs.keys())
-        # print(len(self.globalCharacBlobs.keys()))
+        # logger.info(self.globalCharacBlobs.keys())
+        # logger.info(len(self.globalCharacBlobs.keys()))
         for (
-            tabName,
-            currentTabBlob,
+                tabName,
+                currentTabBlob,
         ) in self.globalCharacBlobs.items():  # 替换填充TreeView
-            # print(tabName)
+            # logger.info(tabName)
             CharacItemsList = []
             itemsTreev_now = self.itemsTreevs_now[tabName]
             itemsTreev_now.delete(*itemsTreev_now.get_children())
 
             CharacItemsList = sqlM.unpackBLOB_Item(currentTabBlob)
-            # print(len(CharacItemsList))
+            # logger.info(len(CharacItemsList))
             if len(CharacItemsList) == 0:
-                print(f"{tabName}字段解压错误或不存在")
+                logger.info(f"{tabName}字段解压错误或不存在")
             CharacItemsDict = {}
             self.currentItemDict = {}
             for values in CharacItemsList:
@@ -4674,13 +4625,13 @@ class GuiApp:
                 name = str(cacheM.ITEMS_dict.get(dnfItemSlot.id))
                 CharacItemsDict[index] = dnfItemSlot
             self.selectedCharacItemsDict[tabName] = CharacItemsDict
-            # print('字段处理完成')
+            # logger.info('字段处理完成')
             if len(self.loadPkgTaskList) > taskID + 1:
                 return
             self.itemInfoClrFuncs[tabName]()  # 清除物品信息显示
             self.fillTreeFunctions[tabName]()  # 填充treeview
-            # print(tabName,'填充完毕')
-        # print('blob字段填充完毕')
+            # logger.info(tabName,'填充完毕')
+        # logger.info('blob字段填充完毕')
         self.hiddenCom.set("0-None")
         self.checkBloblegal()  # 检查物品合法
 
@@ -4697,7 +4648,7 @@ class GuiApp:
                 CharacNoneBlobItemsDict[values[0]] = values
             self.selectedCharacItemsDict[tabName] = CharacNoneBlobItemsDict
         except:
-            print(f"{tabName}加载失败")
+            logger.info(f"{tabName}加载失败")
 
         tabName = " 时装 "
         currentTabItems = self.globalCharacNonBlobs.get(tabName)
@@ -4720,7 +4671,7 @@ class GuiApp:
                 CharacNoneBlobItemsDict[values[0]] = values
             self.selectedCharacItemsDict[tabName] = CharacNoneBlobItemsDict
         except:
-            print(f"{tabName}加载失败")
+            logger.info(f"{tabName}加载失败")
 
         tabName = " 邮件 "
         currentTabItems = self.globalCharacNonBlobs.get(tabName)
@@ -4731,7 +4682,7 @@ class GuiApp:
             for values in currentTabItems:
                 if len(self.loadPkgTaskList) > taskID + 1:
                     return
-                # print(values)
+                # logger.info(values)
                 try:
                     itemID = values[2]
                     values[1] = cacheM.ITEMS_dict.get(itemID)
@@ -4743,7 +4694,7 @@ class GuiApp:
                 CharacNoneBlobItemsDict[values[0]] = values
             self.selectedCharacItemsDict[tabName] = CharacNoneBlobItemsDict
         except:
-            print(f"{tabName}加载失败")
+            logger.info(f"{tabName}加载失败")
         if len(self.loadPkgTaskList) > taskID + 1:
             return
         self.questFrame.load_quest()
@@ -4784,13 +4735,13 @@ class GuiApp:
                 self.connectorE.set(f"0-{sqlM.connectorAvailuableList[0]}")
                 onlineCharacs = sqlM.get_online_charac()
                 self.fillCharac(onlineCharacs)
-                print(f"当前在线角色已加载({len(onlineCharacs)})")
+                logger.info(f"当前在线角色已加载({len(onlineCharacs)})")
                 if self.GM_Tool_Flg:
                     self.GMTool.update_Info()
                 self.update_event_list_func()
                 self.refill_baned_tree()
                 self.db_conBTN.config(text="重新连接", state="normal")
-            print(sqlresult)
+            logger.info(sqlresult)
             self.password = pwd
 
             self.db_pwdE.delete(0, tk.END)
@@ -4805,7 +4756,7 @@ class GuiApp:
         # if self.CONNECTING_FLG == False:
         self.db_conBTN.config(state="disable")
         self.CONNECTING_FLG = True
-        print("正在连接数据库...")
+        logger.info("正在连接数据库...")
         t = threading.Thread(target=inner)
         t.start()
 
@@ -4829,7 +4780,7 @@ class GuiApp:
                     self.PVFCacheE.set(
                         f"{cacheM.cacheManager.tinyCache[pvfMD5].get('nickName')}-{pvfMD5}"
                     )
-            print("PVF缓存已保存")
+            logger.info("PVF缓存已保存")
 
         from dnfpkgtool.pvfCacheFrame import PVFCacheCfgFrame
 
@@ -4956,11 +4907,11 @@ class GuiApp:
                 if usePVF:
                     for id in searchDict.keys():
                         searchDict[id] = (
-                            searchDict[id]
-                            + "\n"
-                            + cacheM.get_Item_Info_In_Text(id)
-                            .replace(r"%%", r"%")
-                            .strip()
+                                searchDict[id]
+                                + "\n"
+                                + cacheM.get_Item_Info_In_Text(id)
+                                .replace(r"%%", r"%")
+                                .strip()
                         )
                 useFuzzy = useFuzzyVar.get()
                 searchList = cacheM.searchItem(
@@ -4985,7 +4936,7 @@ class GuiApp:
                     rarity = ""
                 equipment_type = fileInDict.get("[equipment type]")
                 if "avatar" in str(equipment_type) or (
-                    "avatar" in str(fileInDict.keys()) and "[stackable type]"
+                        "avatar" in str(fileInDict.keys()) and "[stackable type]"
                 ):
                     rarity += "时装"
                 """if 'avatar' in str(fileInDict.keys()):
@@ -5147,7 +5098,7 @@ class GuiApp:
             if type2 != ALLTYPE and type1 not in ["首饰", "特殊装备"]:
                 typeE3.config(
                     values=[ALLTYPE]
-                    + list(cacheM.equipmentForamted[type1][type2].keys()),
+                           + list(cacheM.equipmentForamted[type1][type2].keys()),
                     state="readonly",
                 )
             else:
@@ -5283,11 +5234,11 @@ class GuiApp:
                 if usePVF:
                     for i, id in enumerate(searchDict.keys()):
                         searchDict[id] = (
-                            searchDict[id]
-                            + "\n"
-                            + cacheM.get_Item_Info_In_Text(id).strip()
+                                searchDict[id]
+                                + "\n"
+                                + cacheM.get_Item_Info_In_Text(id).strip()
                         )
-                        # print(i)
+
                 useFuzzy = useFuzzyVar.get()
                 searchList = cacheM.searchItem(
                     nameKey, list(searchDict.items()), fuzzy=useFuzzy
@@ -5317,8 +5268,8 @@ class GuiApp:
                     itemType = None
 
                 if (
-                    type != "----"
-                    and itemType not in cacheM.formatedTypeDict[type].keys()
+                        type != "----"
+                        and itemType not in cacheM.formatedTypeDict[type].keys()
                 ):
                     continue
 
@@ -5555,7 +5506,8 @@ class GuiApp:
         )
         overViewTip: ToolTip = CreateOnceToolTip(searchResultTreeView)
 
-    def check_Update(self): ...
+    def check_Update(self):
+        ...
 
     def checkBloblegal(self):
         positionDict = self.positionDict
@@ -5575,8 +5527,8 @@ class GuiApp:
                     "[attach type]", [""]
                 )
                 if (
-                    itemSlot.isSeal == 1
-                    and cacheM.PVFcacheDict["stackable_detail"].get(itemSlot.id) is None
+                        itemSlot.isSeal == 1
+                        and cacheM.PVFcacheDict["stackable_detail"].get(itemSlot.id) is None
                 ):
                     if attach_type is not None and attach_type[0] != "[sealing]":
                         self.errorItemsListDict[tabName].append(index)
@@ -5589,7 +5541,7 @@ class GuiApp:
                         "物品封装次数冲突-当前不为0 \n"
                     )
                 typeID, typeZh = cacheM.getStackableTypeMainIdAndZh(itemSlot.id)
-                # print(typeID,typeZh,cacheM.ITEMS_dict.get(itemSlot.id))
+
                 # 常规判断，标记种类是否与实际种类冲突
 
                 if typeID not in [0, 1, 2, 3, 4, 5, 6, 7, 0x0A]:
@@ -5652,7 +5604,7 @@ class GuiApp:
                 elif tabName == "宠物栏":
                     try:
                         if index in range(*positionDict[typeID][1]) or index in range(
-                            *positionDict[typeID][2]
+                                *positionDict[typeID][2]
                         ):
                             pass
                         else:
@@ -5661,14 +5613,14 @@ class GuiApp:
                                 f"物品位置错误-当前{index}-{positionDict[typeID][1], positionDict[typeID][2]} \n"
                             )
                     except:
-                        print("宠物栏", index, typeID)
+                        logger.info("宠物栏", index, typeID)
                 elif tabName == " 仓库 ":
                     if itemSlot.type not in [1, 2, 3, 0x0A]:
                         self.errorItemsListDict[tabName].append(index)
                         self.errorInfoDict[tabName][index] += (
                             f"物品类型错误-当前{itemSlot.type}-{[1, 2, 3, 0x0A]} "
                         )
-        print(
+        logger.info(
             "未知物品", self.unknowItemsListDict, "\n错误物品", self.errorItemsListDict
         )
 
@@ -5782,7 +5734,7 @@ class GuiApp:
             "taiwan_se_event",
             "taiwan_login",
             "taiwan_login_play",
-        ]  #'taiwan_pvp',,'taiwan_siroco'
+        ]  # 'taiwan_pvp',,'taiwan_siroco'
         allDB = sqlM.execute_and_fetch("taiwan_cain", "show databases;")
         allDB = [db[0] for db in allDB]
         self.db_avaliable = []
@@ -5797,8 +5749,8 @@ class GuiApp:
     def init_db(self):
         bakPath = "sql_bak/初始数据库"
         if not messagebox.askokcancel(
-            "初始化确认",
-            "确认初始化数据库？当前数据库中所有存档将被清空，仅保留运行所需数据！",
+                "初始化确认",
+                "确认初始化数据库？当前数据库中所有存档将被清空，仅保留运行所需数据！",
         ):
             return False
         self.localSqlTree.delete(*self.localSqlTree.get_children())
@@ -5849,8 +5801,8 @@ class GuiApp:
         for sel in sels:
             selDBList.append(self.remoteSqlTree.item(sel)["values"][0])
         if not messagebox.askokcancel(
-            "确认备份",
-            f"确认备份选中的{len(selDBList)}个数据库？{selDBList}？\n数据库将被被分到目录{bakPath}下",
+                "确认备份",
+                f"确认备份选中的{len(selDBList)}个数据库？{selDBList}？\n数据库将被被分到目录{bakPath}下",
         ):
             return False
 
@@ -5874,7 +5826,7 @@ class GuiApp:
         bakPath = askdirectory(title="选择备份文件夹", initialdir="sql_bak")
         if bakPath == "":
             return False
-        print(f"打开备份文件夹{bakPath}")
+        logger.info(f"打开备份文件夹{bakPath}")
         files = os.listdir(bakPath)
         bakFiles = []
         for file in files:
@@ -5911,8 +5863,8 @@ class GuiApp:
         for sel in sels:
             selDBList.append(self.localSqlTree.item(sel)["values"][0])
         if not messagebox.askokcancel(
-            "确认还原",
-            f"确认还原选中的{len(selDBList)}个数据库？\n请停止游戏服务端并关闭其他链接以保证还原正常进行。\n{selDBList}",
+                "确认还原",
+                f"确认还原选中的{len(selDBList)}个数据库？\n请停止游戏服务端并关闭其他链接以保证还原正常进行。\n{selDBList}",
         ):
             return False
         if sqlM.restore_db_num != sqlM.total_restore_db_num:
@@ -5957,7 +5909,7 @@ def run(finCallBackFunc=lambda: None, root_: tk.Tk = None):
             root.title(str(args))
         nonlocal lastTitleTimeStamp
         lastTitleTimeStamp = time.time()
-        log(*args)
+        logger.info(*args)
 
     global root
     W = 720
@@ -6002,7 +5954,7 @@ def run(finCallBackFunc=lambda: None, root_: tk.Tk = None):
 
             s.configure("Treeview", rowheight=20 * ScaleFactor // 100)
     except:
-        print("高清缩放失败")
+        logger.warning("高清缩放失败")
 
     W, H = cacheM.config.get("RESOLUTION", f"{W}x{H}").split("x")
     W = int(W)
@@ -6029,7 +5981,7 @@ def run(finCallBackFunc=lambda: None, root_: tk.Tk = None):
         app.w.after(2000, lambda: app.load_PVF(cacheM.config.get("PVF_PATH")))
 
     app.w.after(200, app.connectSQL)
-    # print(ScaleFactor)
+
     root.deiconify()
     root.overrideredirect(False)
     # move root to center
@@ -6073,7 +6025,7 @@ def creat_cxv_pkg(t: ttk.Treeview, app: GuiApp, tabName: str):
         copyStringBytes = pickle.dumps(selItemSlots)
         copyString = base64.b64encode(copyStringBytes).decode()
         pyperclip.copy(copyString)
-        print(f"[{itemName0}]等{len(indexList)}个物品数据已复制至剪贴板")
+        logger.info(f"[{itemName0}]等{len(indexList)}个物品数据已复制至剪贴板")
 
     def pasteCode(event=None):
         try:
@@ -6082,10 +6034,10 @@ def creat_cxv_pkg(t: ttk.Treeview, app: GuiApp, tabName: str):
             itemDict = pickle.loads(copyStringBytes)
         except:
             itemDict = ""
-            print("剪贴板数据读取错误")
+            logger.warning("剪贴板数据读取错误")
             return False
-        if type(itemDict) is not dict:
-            print(f"剪贴板数据格式错误,{type(itemDict)}")
+        if not isinstance(itemDict, dict):
+            logger.warning(f"剪贴板数据格式错误,{type(itemDict)}")
             return False
         sel = t.selection()[0]
         values = t.item(sel)["values"]
@@ -6096,7 +6048,7 @@ def creat_cxv_pkg(t: ttk.Treeview, app: GuiApp, tabName: str):
         itemName0 = cacheM.ITEMS_dict.get(list(itemDict.values())[0].id)
         for itemSlot in itemDict.values():
             if characItemDict.get(index) is None:
-                print("物品位置超出，已跳过")
+                logger.warning("物品位置超出，已跳过")
                 continue
             editedDict[index] = itemSlot
             index += 1
@@ -6104,7 +6056,7 @@ def creat_cxv_pkg(t: ttk.Treeview, app: GuiApp, tabName: str):
         # t.selection_set(sel)
         editFrameShowFunc = app.editFrameShowFuncs[tabName]
         editFrameShowFunc(save=False)
-        print(f"已粘贴[{itemName0}]等{pasteNum}个物品数据")
+        logger.info(f"已粘贴[{itemName0}]等{pasteNum}个物品数据")
 
     def delSel(event=None):
         sels = t.selection()
@@ -6114,7 +6066,7 @@ def creat_cxv_pkg(t: ttk.Treeview, app: GuiApp, tabName: str):
             editedDict[index] = sqlM.DnfItemSlot(b"\x00" * 61)
         editFrameShowFunc = app.editFrameShowFuncs[tabName]
         editFrameShowFunc(save=False)
-        print(f"已标记{len(sels)}个物品为删除状态")
+        logger.info(f"已标记{len(sels)}个物品为删除状态")
 
     def sealSel(event=None):
         sels = t.selection()
