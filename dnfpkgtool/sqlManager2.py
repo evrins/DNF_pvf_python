@@ -49,7 +49,6 @@ def print(*args, **kw):
     logFunc[-1](*args, **kw)
 
 
-
 class DnfItemSlot:
     """物品格子对象，存储格子信息"""
 

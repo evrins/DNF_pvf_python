@@ -13,7 +13,7 @@ class ToolTip(object):
         self.x = self.y = 0
 
     def show_tip(self, text, xy=None, MouseWheel=True):
-        "Display text in tooltip window"
+        """Display text in tooltip window"""
 
         def processWheel(event):
             a = int(-(event.delta) / 60)

@@ -6,7 +6,6 @@ from dnfpkgtool.utils import in_thread
 from . import sqlManager2 as sqlM
 
 
-
 class SqluserframeWidget(ttk.Frame):
     def __init__(self, master=None, **kw):
         super(SqluserframeWidget, self).__init__(master, **kw)

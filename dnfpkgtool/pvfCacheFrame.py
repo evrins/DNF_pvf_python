@@ -19,6 +19,7 @@ rarityMap = {
     6: "传说",
     7: "神话",
 }
+
 rarityMapRev = {
     "普通": 0,
     "高级": 1,
@@ -29,6 +30,7 @@ rarityMapRev = {
     "传说": 6,
     "神话": 7,
 }
+
 equipmentForamted = {}  # 格式化的装备字典
 creatureEquipDict = {}  # 存储所有宠物装备
 

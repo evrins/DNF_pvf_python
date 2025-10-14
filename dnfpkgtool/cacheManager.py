@@ -858,9 +858,11 @@ def loadItems2(
         encode = "big5"
 
     if usePVF:
+        # 使用 pvfPath 作为缓存键
         if MD5 == "0":
             MD5 = pvfPath
         p = Path(pvfPath)
+        # 从已有的缓存中获取
         if MD5 in cacheManager.allMD5():
             if cacheManager.get(MD5) is not None:
                 PVFcacheDict = cacheManager.get(MD5)
@@ -868,7 +870,9 @@ def loadItems2(
                 print(info)
                 config["PVF_PATH"] = MD5
         elif ".pvf" in pvfPath and p.exists():
+            # 计算 pvf 文件 md5 值作为 缓存键
             MD5 = hashlib.md5(open(pvfPath, "rb").read()).hexdigest().upper()
+            # 查询缓存
             if useCache and MD5 in cacheManager.allMD5():
                 PVFcacheDict = cacheManager.get(MD5)
                 if PVFcacheDict.get("encode") != encode:  # 编码不同

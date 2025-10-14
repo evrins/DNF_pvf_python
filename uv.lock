@@ -8,6 +8,15 @@ resolution-markers = [
 ]
 
 [[package]]
+name = "annotated-types"
+version = "0.7.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/ee/67/531ea369ba64dcff5ec9c3402f9f51bf748cec26dde048a2f973a4eea7f5/annotated_types-0.7.0.tar.gz", hash = "sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl", hash = "sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53" },
+]
+
+[[package]]
 name = "bcrypt"
 version = "5.0.0"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
@@ -71,6 +80,15 @@ wheels = [
     { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/c0/f6/688d2cd64bfd0b14d805ddb8a565e11ca1fb0fd6817175d58b10052b6d88/bcrypt-5.0.0-cp39-abi3-win32.whl", hash = "sha256:64d7ce196203e468c457c37ec22390f1a61c85c6f0b8160fd752940ccfb3a683", size = 153725, upload-time = "2025-09-25T19:50:34.384Z" },
     { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/9f/b9/9d9a641194a730bda138b3dfe53f584d61c58cd5230e37566e83ec2ffa0d/bcrypt-5.0.0-cp39-abi3-win_amd64.whl", hash = "sha256:64ee8434b0da054d830fa8e89e1c8bf30061d539044a39524ff7dec90481e5c2", size = 150912, upload-time = "2025-09-25T19:50:35.69Z" },
     { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/27/44/d2ef5e87509158ad2187f4dd0852df80695bb1ee0cfe0a684727b01a69e0/bcrypt-5.0.0-cp39-abi3-win_arm64.whl", hash = "sha256:f2347d3534e76bf50bca5500989d6c1d05ed64b440408057a37673282c654927", size = 144953, upload-time = "2025-09-25T19:50:37.32Z" },
+]
+
+[[package]]
+name = "cachetools"
+version = "6.2.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/9d/61/e4fad8155db4a04bfb4734c7c8ff0882f078f24294d42798b3568eb63bff/cachetools-6.2.0.tar.gz", hash = "sha256:38b328c0889450f05f5e120f56ab68c8abaf424e1275522b138ffc93253f7e32", size = 30988, upload-time = "2025-08-25T18:57:30.924Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/6c/56/3124f61d37a7a4e7cc96afc5492c78ba0cb551151e530b54669ddd1436ef/cachetools-6.2.0-py3-none-any.whl", hash = "sha256:1c76a8960c0041fcc21097e357f882197c79da0dbff766e7317890a65d7d8ba6", size = 11276, upload-time = "2025-08-25T18:57:29.684Z" },
 ]
 
 [[package]]
@@ -182,6 +200,15 @@ wheels = [
 ]
 
 [[package]]
+name = "colorama"
+version = "0.4.6"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44", size = 27697, upload-time = "2022-10-25T02:36:22.414Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6", size = 25335, upload-time = "2022-10-25T02:36:20.889Z" },
+]
+
+[[package]]
 name = "cryptography"
 version = "46.0.2"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
@@ -242,33 +269,51 @@ name = "dnf-pvf-python"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "cachetools" },
+    { name = "loguru" },
     { name = "mysql-connector" },
     { name = "paramiko" },
     { name = "pillow" },
+    { name = "polars" },
     { name = "psutil" },
     { name = "pycrypto" },
+    { name = "pydantic" },
     { name = "pymysql" },
     { name = "pyperclip" },
     { name = "pyqrcode" },
+    { name = "pyside6" },
     { name = "requests" },
     { name = "ttkbootstrap" },
     { name = "zhconv" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
 [package.metadata]
 requires-dist = [
+    { name = "cachetools", specifier = ">=6.2.0" },
+    { name = "loguru", specifier = ">=0.7.3" },
     { name = "mysql-connector", specifier = ">=2.2.9" },
     { name = "paramiko", specifier = ">=4.0.0" },
     { name = "pillow", specifier = ">=10.4.0" },
+    { name = "polars", specifier = ">=1.34.0" },
     { name = "psutil", specifier = ">=7.1.0" },
     { name = "pycrypto", specifier = ">=2.6.1" },
+    { name = "pydantic", specifier = ">=2.11.9" },
     { name = "pymysql", specifier = ">=1.1.2" },
     { name = "pyperclip", specifier = ">=1.11.0" },
     { name = "pyqrcode", specifier = ">=1.2.1" },
+    { name = "pyside6", specifier = ">=6.10.0" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "ttkbootstrap", specifier = ">=1.14.2" },
     { name = "zhconv", specifier = ">=1.4.3" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8.4.2" }]
 
 [[package]]
 name = "idna"
@@ -280,12 +325,34 @@ wheels = [
 ]
 
 [[package]]
+name = "iniconfig"
+version = "2.1.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/f2/97/ebf4da567aa6827c909642694d71c9fcf53e5b504f2d96afea02718862f3/iniconfig-2.1.0.tar.gz", hash = "sha256:3abbd2e30b36733fee78f9c7f7308f2d0050e88f0087fd25c2645f63c773e1c7", size = 4793, upload-time = "2025-03-19T20:09:59.721Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/2c/e1/e6716421ea10d38022b952c159d5161ca1193197fb744506875fbb87ea7b/iniconfig-2.1.0-py3-none-any.whl", hash = "sha256:9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760", size = 6050, upload-time = "2025-03-19T20:10:01.071Z" },
+]
+
+[[package]]
 name = "invoke"
 version = "2.2.0"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
-sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/f9/42/127e6d792884ab860defc3f4d80a8f9812e48ace584ffc5a346de58cdc6c/invoke-2.2.0.tar.gz", hash = "sha256:ee6cbb101af1a859c7fe84f2a264c059020b0cb7fe3535f9424300ab568f6bd5" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/f9/42/127e6d792884ab860defc3f4d80a8f9812e48ace584ffc5a346de58cdc6c/invoke-2.2.0.tar.gz", hash = "sha256:ee6cbb101af1a859c7fe84f2a264c059020b0cb7fe3535f9424300ab568f6bd5", size = 299835, upload-time = "2023-07-12T18:05:17.998Z" }
 wheels = [
-    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/0a/66/7f8c48009c72d73bc6bbe6eb87ac838d6a526146f7dab14af671121eb379/invoke-2.2.0-py3-none-any.whl", hash = "sha256:6ea924cc53d4f78e3d98bc436b08069a03077e6f85ad1ddaa8a116d7dad15820" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/0a/66/7f8c48009c72d73bc6bbe6eb87ac838d6a526146f7dab14af671121eb379/invoke-2.2.0-py3-none-any.whl", hash = "sha256:6ea924cc53d4f78e3d98bc436b08069a03077e6f85ad1ddaa8a116d7dad15820", size = 160274, upload-time = "2023-07-12T18:05:16.294Z" },
+]
+
+[[package]]
+name = "loguru"
+version = "0.7.3"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "win32-setctime", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/3a/05/a1dae3dffd1116099471c643b8924f5aa6524411dc6c63fdae648c4f1aca/loguru-0.7.3.tar.gz", hash = "sha256:19480589e77d47b8d85b2c827ad95d49bf31b0dcde16593892eb51dd18706eb6", size = 63559, upload-time = "2024-12-06T11:20:56.608Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/0c/29/0348de65b8cc732daa3e33e67806420b2ae89bdce2b04af740289c5c6c8c/loguru-0.7.3-py3-none-any.whl", hash = "sha256:31a33c10c8e1e10422bfd431aeb5d351c7cf7fa671e3c4df004162264b28220c", size = 61595, upload-time = "2024-12-06T11:20:54.538Z" },
 ]
 
 [[package]]
@@ -293,6 +360,15 @@ name = "mysql-connector"
 version = "2.2.9"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
 sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/28/04/e40098f3730e75bbe36a338926f566ea803550a34fb50535499f4fc4787a/mysql-connector-2.2.9.tar.gz", hash = "sha256:1733e6ce52a049243de3264f1fbc22a852cb35458c4ad739ba88189285efdf32", size = 11852649, upload-time = "2019-04-01T14:40:08.091Z" }
+
+[[package]]
+name = "packaging"
+version = "25.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a1/d4/1fc4078c65507b51b96ca8f8c3ba19e6a61c8253c72794544580a7b6c24d/packaging-25.0.tar.gz", hash = "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f", size = 165727, upload-time = "2025-04-19T11:48:59.673Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl", hash = "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484", size = 66469, upload-time = "2025-04-19T11:48:57.875Z" },
+]
 
 [[package]]
 name = "paramiko"
@@ -340,6 +416,41 @@ wheels = [
 ]
 
 [[package]]
+name = "pluggy"
+version = "1.6.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/f9/e2/3e91f31a7d2b083fe6ef3fa267035b518369d9511ffab804f839851d2779/pluggy-1.6.0.tar.gz", hash = "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3", size = 69412, upload-time = "2025-05-15T12:30:07.975Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl", hash = "sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746", size = 20538, upload-time = "2025-05-15T12:30:06.134Z" },
+]
+
+[[package]]
+name = "polars"
+version = "1.34.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "polars-runtime-32" },
+]
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a1/3e/35fcf5bf51404371bb172b289a5065778dc97adca4416e199c294125eb05/polars-1.34.0.tar.gz", hash = "sha256:5de5f871027db4b11bcf39215a2d6b13b4a80baf8a55c5862d4ebedfd5cd4013", size = 684309, upload-time = "2025-10-02T18:31:04.396Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/6b/80/1791ac226bb989bef30fe8fde752b2021b6ec5dfd6e880262596aedf4c05/polars-1.34.0-py3-none-any.whl", hash = "sha256:40d2f357b4d9e447ad28bd2c9923e4318791a7c18eb68f31f1fbf11180f41391", size = 772686, upload-time = "2025-10-02T18:29:59.492Z" },
+]
+
+[[package]]
+name = "polars-runtime-32"
+version = "1.34.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/02/10/1189afb14cc47ed215ccf7fbd00ed21c48edfd89e51c16f8628a33ae4b1b/polars_runtime_32-1.34.0.tar.gz", hash = "sha256:ebe6f865128a0d833f53a3f6828360761ad86d1698bceb22bef9fd999500dc1c", size = 2634491, upload-time = "2025-10-02T18:31:05.502Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/97/35/bc4f1a9dcef61845e8e4e5d2318470b002b93a3564026f0643f562761ecb/polars_runtime_32-1.34.0-cp39-abi3-macosx_10_12_x86_64.whl", hash = "sha256:2878f9951e91121afe60c25433ef270b9a221e6ebf3de5f6642346b38cab3f03", size = 39655423, upload-time = "2025-10-02T18:30:02.846Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a6/bb/d655a103e75b7c81c47a3c2d276be0200c0c15cfb6fd47f17932ddcf7519/polars_runtime_32-1.34.0-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:fbc329c7d34a924228cc5dcdbbd4696d94411a3a5b15ad8bb868634c204e1951", size = 35986049, upload-time = "2025-10-02T18:30:05.848Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/9e/ce/11ca850b7862cb43605e5d86cdf655614376e0a059871cf8305af5406554/polars_runtime_32-1.34.0-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:93fa51d88a2d12ea996a5747aad5647d22a86cce73c80f208e61f487b10bc448", size = 40261269, upload-time = "2025-10-02T18:30:08.48Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/d8/25/77d12018c35489e19f7650b40679714a834effafc25d61e8dcee7c4fafce/polars_runtime_32-1.34.0-cp39-abi3-manylinux_2_24_aarch64.whl", hash = "sha256:79e4d696392c6d8d51f4347f0b167c52eef303c9d87093c0c68e8651198735b7", size = 37049077, upload-time = "2025-10-02T18:30:11.162Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/e2/75/c30049d45ea1365151f86f650ed5354124ff3209f0abe588664c8eb13a31/polars_runtime_32-1.34.0-cp39-abi3-win_amd64.whl", hash = "sha256:2501d6b29d9001ea5ea2fd9b598787e10ddf45d8c4a87c2bead75159e8a15711", size = 40105782, upload-time = "2025-10-02T18:30:14.597Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a3/31/84efa27aa3478c8670bac1a720c8b1aee5c58c9c657c980e5e5c47fde883/polars_runtime_32-1.34.0-cp39-abi3-win_arm64.whl", hash = "sha256:f9ed1765378dfe0bcd1ac5ec570dd9eab27ea728bbc980cc9a76eebc55586559", size = 35873216, upload-time = "2025-10-02T18:30:17.439Z" },
+]
+
+[[package]]
 name = "psutil"
 version = "7.1.0"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
@@ -369,6 +480,72 @@ name = "pycrypto"
 version = "2.6.1"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
 sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/60/db/645aa9af249f059cc3a368b118de33889219e0362141e75d4eaf6f80f163/pycrypto-2.6.1.tar.gz", hash = "sha256:f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c", size = 446240, upload-time = "2014-06-20T08:10:20.813Z" }
+
+[[package]]
+name = "pydantic"
+version = "2.11.9"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "annotated-types" },
+    { name = "pydantic-core" },
+    { name = "typing-extensions" },
+    { name = "typing-inspection" },
+]
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/ff/5d/09a551ba512d7ca404d785072700d3f6727a02f6f3c24ecfd081c7cf0aa8/pydantic-2.11.9.tar.gz", hash = "sha256:6b8ffda597a14812a7975c90b82a8a2e777d9257aba3453f973acd3c032a18e2", size = 788495, upload-time = "2025-09-13T11:26:39.325Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/3e/d3/108f2006987c58e76691d5ae5d200dd3e0f532cb4e5fa3560751c3a1feba/pydantic-2.11.9-py3-none-any.whl", hash = "sha256:c42dd626f5cfc1c6950ce6205ea58c93efa406da65f479dcb4029d5934857da2", size = 444855, upload-time = "2025-09-13T11:26:36.909Z" },
+]
+
+[[package]]
+name = "pydantic-core"
+version = "2.33.2"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/ad/88/5f2260bdfae97aabf98f1778d43f69574390ad787afb646292a638c923d4/pydantic_core-2.33.2.tar.gz", hash = "sha256:7cb8bc3605c29176e1b105350d2e6474142d7c1bd1d9327c4a9bdb46bf827acc", size = 435195, upload-time = "2025-04-23T18:33:52.104Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/18/8a/2b41c97f554ec8c71f2a8a5f85cb56a8b0956addfe8b0efb5b3d77e8bdc3/pydantic_core-2.33.2-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:a7ec89dc587667f22b6a0b6579c249fca9026ce7c333fc142ba42411fa243cdc", size = 2009000, upload-time = "2025-04-23T18:31:25.863Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a1/02/6224312aacb3c8ecbaa959897af57181fb6cf3a3d7917fd44d0f2917e6f2/pydantic_core-2.33.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:3c6db6e52c6d70aa0d00d45cdb9b40f0433b96380071ea80b09277dba021ddf7", size = 1847996, upload-time = "2025-04-23T18:31:27.341Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/d6/46/6dcdf084a523dbe0a0be59d054734b86a981726f221f4562aed313dbcb49/pydantic_core-2.33.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4e61206137cbc65e6d5256e1166f88331d3b6238e082d9f74613b9b765fb9025", size = 1880957, upload-time = "2025-04-23T18:31:28.956Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/ec/6b/1ec2c03837ac00886ba8160ce041ce4e325b41d06a034adbef11339ae422/pydantic_core-2.33.2-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:eb8c529b2819c37140eb51b914153063d27ed88e3bdc31b71198a198e921e011", size = 1964199, upload-time = "2025-04-23T18:31:31.025Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/2d/1d/6bf34d6adb9debd9136bd197ca72642203ce9aaaa85cfcbfcf20f9696e83/pydantic_core-2.33.2-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:c52b02ad8b4e2cf14ca7b3d918f3eb0ee91e63b3167c32591e57c4317e134f8f", size = 2120296, upload-time = "2025-04-23T18:31:32.514Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/e0/94/2bd0aaf5a591e974b32a9f7123f16637776c304471a0ab33cf263cf5591a/pydantic_core-2.33.2-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:96081f1605125ba0855dfda83f6f3df5ec90c61195421ba72223de35ccfb2f88", size = 2676109, upload-time = "2025-04-23T18:31:33.958Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/f9/41/4b043778cf9c4285d59742281a769eac371b9e47e35f98ad321349cc5d61/pydantic_core-2.33.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8f57a69461af2a5fa6e6bbd7a5f60d3b7e6cebb687f55106933188e79ad155c1", size = 2002028, upload-time = "2025-04-23T18:31:39.095Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/cb/d5/7bb781bf2748ce3d03af04d5c969fa1308880e1dca35a9bd94e1a96a922e/pydantic_core-2.33.2-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:572c7e6c8bb4774d2ac88929e3d1f12bc45714ae5ee6d9a788a9fb35e60bb04b", size = 2100044, upload-time = "2025-04-23T18:31:41.034Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/fe/36/def5e53e1eb0ad896785702a5bbfd25eed546cdcf4087ad285021a90ed53/pydantic_core-2.33.2-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:db4b41f9bd95fbe5acd76d89920336ba96f03e149097365afe1cb092fceb89a1", size = 2058881, upload-time = "2025-04-23T18:31:42.757Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/01/6c/57f8d70b2ee57fc3dc8b9610315949837fa8c11d86927b9bb044f8705419/pydantic_core-2.33.2-cp312-cp312-musllinux_1_1_armv7l.whl", hash = "sha256:fa854f5cf7e33842a892e5c73f45327760bc7bc516339fda888c75ae60edaeb6", size = 2227034, upload-time = "2025-04-23T18:31:44.304Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/27/b9/9c17f0396a82b3d5cbea4c24d742083422639e7bb1d5bf600e12cb176a13/pydantic_core-2.33.2-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:5f483cfb75ff703095c59e365360cb73e00185e01aaea067cd19acffd2ab20ea", size = 2234187, upload-time = "2025-04-23T18:31:45.891Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/b0/6a/adf5734ffd52bf86d865093ad70b2ce543415e0e356f6cacabbc0d9ad910/pydantic_core-2.33.2-cp312-cp312-win32.whl", hash = "sha256:9cb1da0f5a471435a7bc7e439b8a728e8b61e59784b2af70d7c169f8dd8ae290", size = 1892628, upload-time = "2025-04-23T18:31:47.819Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/43/e4/5479fecb3606c1368d496a825d8411e126133c41224c1e7238be58b87d7e/pydantic_core-2.33.2-cp312-cp312-win_amd64.whl", hash = "sha256:f941635f2a3d96b2973e867144fde513665c87f13fe0e193c158ac51bfaaa7b2", size = 1955866, upload-time = "2025-04-23T18:31:49.635Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/0d/24/8b11e8b3e2be9dd82df4b11408a67c61bb4dc4f8e11b5b0fc888b38118b5/pydantic_core-2.33.2-cp312-cp312-win_arm64.whl", hash = "sha256:cca3868ddfaccfbc4bfb1d608e2ccaaebe0ae628e1416aeb9c4d88c001bb45ab", size = 1888894, upload-time = "2025-04-23T18:31:51.609Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/46/8c/99040727b41f56616573a28771b1bfa08a3d3fe74d3d513f01251f79f172/pydantic_core-2.33.2-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:1082dd3e2d7109ad8b7da48e1d4710c8d06c253cbc4a27c1cff4fbcaa97a9e3f", size = 2015688, upload-time = "2025-04-23T18:31:53.175Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/3a/cc/5999d1eb705a6cefc31f0b4a90e9f7fc400539b1a1030529700cc1b51838/pydantic_core-2.33.2-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:f517ca031dfc037a9c07e748cefd8d96235088b83b4f4ba8939105d20fa1dcd6", size = 1844808, upload-time = "2025-04-23T18:31:54.79Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/6f/5e/a0a7b8885c98889a18b6e376f344da1ef323d270b44edf8174d6bce4d622/pydantic_core-2.33.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0a9f2c9dd19656823cb8250b0724ee9c60a82f3cdf68a080979d13092a3b0fef", size = 1885580, upload-time = "2025-04-23T18:31:57.393Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/3b/2a/953581f343c7d11a304581156618c3f592435523dd9d79865903272c256a/pydantic_core-2.33.2-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:2b0a451c263b01acebe51895bfb0e1cc842a5c666efe06cdf13846c7418caa9a", size = 1973859, upload-time = "2025-04-23T18:31:59.065Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/e6/55/f1a813904771c03a3f97f676c62cca0c0a4138654107c1b61f19c644868b/pydantic_core-2.33.2-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:1ea40a64d23faa25e62a70ad163571c0b342b8bf66d5fa612ac0dec4f069d916", size = 2120810, upload-time = "2025-04-23T18:32:00.78Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/aa/c3/053389835a996e18853ba107a63caae0b9deb4a276c6b472931ea9ae6e48/pydantic_core-2.33.2-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:0fb2d542b4d66f9470e8065c5469ec676978d625a8b7a363f07d9a501a9cb36a", size = 2676498, upload-time = "2025-04-23T18:32:02.418Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/eb/3c/f4abd740877a35abade05e437245b192f9d0ffb48bbbbd708df33d3cda37/pydantic_core-2.33.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9fdac5d6ffa1b5a83bca06ffe7583f5576555e6c8b3a91fbd25ea7780f825f7d", size = 2000611, upload-time = "2025-04-23T18:32:04.152Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/59/a7/63ef2fed1837d1121a894d0ce88439fe3e3b3e48c7543b2a4479eb99c2bd/pydantic_core-2.33.2-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:04a1a413977ab517154eebb2d326da71638271477d6ad87a769102f7c2488c56", size = 2107924, upload-time = "2025-04-23T18:32:06.129Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/04/8f/2551964ef045669801675f1cfc3b0d74147f4901c3ffa42be2ddb1f0efc4/pydantic_core-2.33.2-cp313-cp313-musllinux_1_1_aarch64.whl", hash = "sha256:c8e7af2f4e0194c22b5b37205bfb293d166a7344a5b0d0eaccebc376546d77d5", size = 2063196, upload-time = "2025-04-23T18:32:08.178Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/26/bd/d9602777e77fc6dbb0c7db9ad356e9a985825547dce5ad1d30ee04903918/pydantic_core-2.33.2-cp313-cp313-musllinux_1_1_armv7l.whl", hash = "sha256:5c92edd15cd58b3c2d34873597a1e20f13094f59cf88068adb18947df5455b4e", size = 2236389, upload-time = "2025-04-23T18:32:10.242Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/42/db/0e950daa7e2230423ab342ae918a794964b053bec24ba8af013fc7c94846/pydantic_core-2.33.2-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:65132b7b4a1c0beded5e057324b7e16e10910c106d43675d9bd87d4f38dde162", size = 2239223, upload-time = "2025-04-23T18:32:12.382Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/58/4d/4f937099c545a8a17eb52cb67fe0447fd9a373b348ccfa9a87f141eeb00f/pydantic_core-2.33.2-cp313-cp313-win32.whl", hash = "sha256:52fb90784e0a242bb96ec53f42196a17278855b0f31ac7c3cc6f5c1ec4811849", size = 1900473, upload-time = "2025-04-23T18:32:14.034Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a0/75/4a0a9bac998d78d889def5e4ef2b065acba8cae8c93696906c3a91f310ca/pydantic_core-2.33.2-cp313-cp313-win_amd64.whl", hash = "sha256:c083a3bdd5a93dfe480f1125926afcdbf2917ae714bdb80b36d34318b2bec5d9", size = 1955269, upload-time = "2025-04-23T18:32:15.783Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/f9/86/1beda0576969592f1497b4ce8e7bc8cbdf614c352426271b1b10d5f0aa64/pydantic_core-2.33.2-cp313-cp313-win_arm64.whl", hash = "sha256:e80b087132752f6b3d714f041ccf74403799d3b23a72722ea2e6ba2e892555b9", size = 1893921, upload-time = "2025-04-23T18:32:18.473Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a4/7d/e09391c2eebeab681df2b74bfe6c43422fffede8dc74187b2b0bf6fd7571/pydantic_core-2.33.2-cp313-cp313t-macosx_11_0_arm64.whl", hash = "sha256:61c18fba8e5e9db3ab908620af374db0ac1baa69f0f32df4f61ae23f15e586ac", size = 1806162, upload-time = "2025-04-23T18:32:20.188Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/f1/3d/847b6b1fed9f8ed3bb95a9ad04fbd0b212e832d4f0f50ff4d9ee5a9f15cf/pydantic_core-2.33.2-cp313-cp313t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:95237e53bb015f67b63c91af7518a62a8660376a6a0db19b89acc77a4d6199f5", size = 1981560, upload-time = "2025-04-23T18:32:22.354Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/6f/9a/e73262f6c6656262b5fdd723ad90f518f579b7bc8622e43a942eec53c938/pydantic_core-2.33.2-cp313-cp313t-win_amd64.whl", hash = "sha256:c2fc0a768ef76c15ab9238afa6da7f69895bb5d1ee83aeea2e3509af4472d0b9", size = 1935777, upload-time = "2025-04-23T18:32:25.088Z" },
+]
+
+[[package]]
+name = "pygments"
+version = "2.19.2"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/b0/77/a5b8c569bf593b0140bde72ea885a803b82086995367bf2037de0159d924/pygments-2.19.2.tar.gz", hash = "sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887", size = 4968631, upload-time = "2025-06-21T13:39:12.283Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b", size = 1225217, upload-time = "2025-06-21T13:39:07.939Z" },
+]
 
 [[package]]
 name = "pymysql"
@@ -432,6 +609,70 @@ source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
 sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/37/61/f07226075c347897937d4086ef8e55f0a62ae535e28069884ac68d979316/PyQRCode-1.2.1.tar.gz", hash = "sha256:fdbf7634733e56b72e27f9bce46e4550b75a3a2c420414035cae9d9d26b234d5", size = 36989, upload-time = "2016-06-20T03:28:03.411Z" }
 
 [[package]]
+name = "pyside6"
+version = "6.10.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "pyside6-addons" },
+    { name = "pyside6-essentials" },
+    { name = "shiboken6" },
+]
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/e6/98/84b16f78b5d92dd234fb1eb9890a350a5b0c83d985bb8c44a92f813a2d02/pyside6-6.10.0-cp39-abi3-macosx_13_0_universal2.whl", hash = "sha256:c2cbc5dc2a164e3c7c51b3435e24203e90e5edd518c865466afccbd2e5872bb0", size = 558115, upload-time = "2025-10-08T09:47:09.246Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/4e/76/0961c8c5653ecb60a6881b649dcb6b71a6be5bd1c8d441ecc48ac7f50b1a/pyside6-6.10.0-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:ae8c3c8339cd7c3c9faa7cc5c52670dcc8662ccf4b63a6fed61c6345b90c4c01", size = 557762, upload-time = "2025-10-08T09:47:11.819Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/c8/73/6187502fff8b6599443d15c46dd900b2ded24be5aacb2becce33f6faf566/pyside6-6.10.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:9f402f883e640048fab246d36e298a5e16df9b18ba2e8c519877e472d3602820", size = 558299, upload-time = "2025-10-08T09:47:14.255Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/43/67/94794ebaf198bbdb35cb77f19f38370f9b323b036ab149874bc33c38faab/pyside6-6.10.0-cp39-abi3-win_amd64.whl", hash = "sha256:70a8bcc73ea8d6baab70bba311eac77b9a1d31f658d0b418e15eb6ea36c97e6f", size = 564367, upload-time = "2025-10-08T09:47:16.287Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/1d/cc/552331d413c1b933d54ed45e33cc7ff29d0b239677975fe2528e7ac8bfbc/pyside6-6.10.0-cp39-abi3-win_arm64.whl", hash = "sha256:4b709bdeeb89d386059343a5a706fc185cee37b517bda44c7d6b64d5fdaf3339", size = 548826, upload-time = "2025-10-08T09:47:18.399Z" },
+]
+
+[[package]]
+name = "pyside6-addons"
+version = "6.10.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "pyside6-essentials" },
+    { name = "shiboken6" },
+]
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/47/23/9fbdec2ce16244ac3fe28e6d44c39c70465c93a03325939a792fd00fde7f/pyside6_addons-6.10.0-cp39-abi3-macosx_13_0_universal2.whl", hash = "sha256:88e61e21ee4643cdd9efb39ec52f4dc1ac74c0b45c5b7fa453d03c094f0a8a5c", size = 322248256, upload-time = "2025-10-08T09:47:37.844Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/b7/b8/d129210f2c7366b4e1bf5bb6230be42052b29e8ba1b1d7db6ef333cf5a39/pyside6_addons-6.10.0-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:08d4ed46c4c9a353a9eb84134678f8fdd4ce17fb8cce2b3686172a7575025464", size = 170238987, upload-time = "2025-10-08T09:47:51.446Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/cf/ae/ede1edd009395092219f3437d2ee59f9ba93739c28c040542ed47c6cc831/pyside6_addons-6.10.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:15d32229d681be0bba1b936c4a300da43d01e1917ada5b57f9e03a387c245ab0", size = 165939425, upload-time = "2025-10-08T09:48:02.073Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/7d/5d/a3c32f85ac7f905c95679967c0ddda0ba043c273b75623cc90d8185064e4/pyside6_addons-6.10.0-cp39-abi3-win_amd64.whl", hash = "sha256:99d93a32c17c5f6d797c3b90dd58f2a8bae13abde81e85802c34ceafaee11859", size = 164814172, upload-time = "2025-10-08T09:48:12.891Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a3/2a/4ff71b09571202c8e1320c45276fc1d0cd81ee53107dfc17bb22d4243f88/pyside6_addons-6.10.0-cp39-abi3-win_arm64.whl", hash = "sha256:92536427413f3b6557cf53f1a515cd766725ee46a170aff57ad2ff1dfce0ffb1", size = 34104251, upload-time = "2025-10-08T09:48:18.287Z" },
+]
+
+[[package]]
+name = "pyside6-essentials"
+version = "6.10.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "shiboken6" },
+]
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/e5/55/bad02ab890c8b8101abef0db4a2e5304be78a69e23a438e4d8555b664467/pyside6_essentials-6.10.0-cp39-abi3-macosx_13_0_universal2.whl", hash = "sha256:003e871effe1f3e5b876bde715c15a780d876682005a6e989d89f48b8b93e93a", size = 105034090, upload-time = "2025-10-08T09:48:24.944Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/5c/75/e17efc7eb900993e0e3925885635c6cf373c817196f09bcbcc102b00ac94/pyside6_essentials-6.10.0-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:1d5e013a8698e37ab8ef360e6960794eb5ef20832a8d562e649b8c5a0574b2d8", size = 76362150, upload-time = "2025-10-08T09:48:31.849Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/06/62/fbd1e81caafcda97b147c03f5b06cfaadd8da5fa8298f527d2ec648fa5b7/pyside6_essentials-6.10.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:b1dd0864f0577a448fb44426b91cafff7ee7cccd1782ba66491e1c668033f998", size = 75454169, upload-time = "2025-10-08T09:48:38.21Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/bb/3a/d8211d17e6ca70f641c6ebd309f08ef18930acda60e74082c75875a274da/pyside6_essentials-6.10.0-cp39-abi3-win_amd64.whl", hash = "sha256:fc167eb211dd1580e20ba90d299e74898e7a5a1306d832421e879641fc03b6fe", size = 74361794, upload-time = "2025-10-08T09:48:44.335Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/61/e9/0e22e3c10325c4ff09447fadb43f7962afb82cef0b65358f5704251c6b32/pyside6_essentials-6.10.0-cp39-abi3-win_arm64.whl", hash = "sha256:6dd0936394cb14da2fd8e869899f5e0925a738b1c8d74c2f22503720ea363fb1", size = 55099467, upload-time = "2025-10-08T09:48:50.902Z" },
+]
+
+[[package]]
+name = "pytest"
+version = "8.4.2"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "iniconfig" },
+    { name = "packaging" },
+    { name = "pluggy" },
+    { name = "pygments" },
+]
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a3/5c/00a0e072241553e1a7496d638deababa67c5058571567b92a7eaa258397c/pytest-8.4.2.tar.gz", hash = "sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01", size = 1519618, upload-time = "2025-09-04T14:34:22.711Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl", hash = "sha256:872f880de3fc3a5bdc88a11b39c9710c3497a547cfa9320bc3c5e62fbf272e79", size = 365750, upload-time = "2025-09-04T14:34:20.226Z" },
+]
+
+[[package]]
 name = "requests"
 version = "2.32.5"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
@@ -447,6 +688,18 @@ wheels = [
 ]
 
 [[package]]
+name = "shiboken6"
+version = "6.10.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/fd/78/3e730aea82089dd82b1e092bc265778bda329459e6ad9b7134eec5fff3f2/shiboken6-6.10.0-cp39-abi3-macosx_13_0_universal2.whl", hash = "sha256:7a5f5f400ebfb3a13616030815708289c2154e701a60b9db7833b843e0bee543", size = 476535, upload-time = "2025-10-08T09:49:08Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/ea/09/4ffa3284a17b6b765d45b41c9a7f1b2cde6c617c853ac6f170fb62bbbece/shiboken6-6.10.0-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:e612734da515d683696980107cdc0396a3ae0f07b059f0f422ec8a2333810234", size = 271098, upload-time = "2025-10-08T09:49:09.47Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/31/29/00e26f33a0fb259c2edce9c761a7a438d7531ca514bdb1a4c072673bd437/shiboken6-6.10.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:b01377e68d14132360efb0f4b7233006d26aa8ae9bb50edf00960c2a5f52d148", size = 267698, upload-time = "2025-10-08T09:49:10.694Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/11/30/e4624a7e3f0dc9796b701079b77defcce0d32d1afc86bb1d0df04bc3d9e2/shiboken6-6.10.0-cp39-abi3-win_amd64.whl", hash = "sha256:0bc5631c1bf150cbef768a17f5f289aae1cb4db6c6b0c19b2421394e27783717", size = 1234227, upload-time = "2025-10-08T09:49:12.774Z" },
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/dd/e5/0ab862005ea87dc8647ba958a3099b3b0115fd6491c65da5c5a0f6364db1/shiboken6-6.10.0-cp39-abi3-win_arm64.whl", hash = "sha256:dfc4beab5fec7dbbebbb418f3bf99af865d6953aa0795435563d4cbb82093b61", size = 1794775, upload-time = "2025-10-08T09:49:14.641Z" },
+]
+
+[[package]]
 name = "ttkbootstrap"
 version = "1.14.2"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
@@ -459,12 +712,42 @@ wheels = [
 ]
 
 [[package]]
+name = "typing-extensions"
+version = "4.15.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/72/94/1a15dd82efb362ac84269196e94cf00f187f7ed21c242792a923cdb1c61f/typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466", size = 109391, upload-time = "2025-08-25T13:49:26.313Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548", size = 44614, upload-time = "2025-08-25T13:49:24.86Z" },
+]
+
+[[package]]
+name = "typing-inspection"
+version = "0.4.2"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/55/e3/70399cb7dd41c10ac53367ae42139cf4b1ca5f36bb3dc6c9d33acdb43655/typing_inspection-0.4.2.tar.gz", hash = "sha256:ba561c48a67c5958007083d386c3295464928b01faa735ab8547c5692e87f464", size = 75949, upload-time = "2025-10-01T02:14:41.687Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/dc/9b/47798a6c91d8bdb567fe2698fe81e0c6b7cb7ef4d13da4114b41d239f65d/typing_inspection-0.4.2-py3-none-any.whl", hash = "sha256:4ed1cacbdc298c220f1bd249ed5287caa16f34d44ef4e9c3d0cbad5b521545e7", size = 14611, upload-time = "2025-10-01T02:14:40.154Z" },
+]
+
+[[package]]
 name = "urllib3"
 version = "2.5.0"
 source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
 sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/15/22/9ee70a2574a4f4599c47dd506532914ce044817c7752a79b6a51286319bc/urllib3-2.5.0.tar.gz", hash = "sha256:3fc47733c7e419d4bc3f6b3dc2b4f890bb743906a30d56ba4a5bfa4bbff92760", size = 393185, upload-time = "2025-06-18T14:07:41.644Z" }
 wheels = [
     { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl", hash = "sha256:e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc", size = 129795, upload-time = "2025-06-18T14:07:40.39Z" },
+]
+
+[[package]]
+name = "win32-setctime"
+version = "1.2.0"
+source = { registry = "https://mirrors.bfsu.edu.cn/pypi/web/simple/" }
+sdist = { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/b3/8f/705086c9d734d3b663af0e9bb3d4de6578d08f46b1b101c2442fd9aecaa2/win32_setctime-1.2.0.tar.gz", hash = "sha256:ae1fdf948f5640aae05c511ade119313fb6a30d7eabe25fef9764dca5873c4c0", size = 4867, upload-time = "2024-12-07T15:28:28.314Z" }
+wheels = [
+    { url = "https://mirrors.bfsu.edu.cn/pypi/web/packages/e1/07/c6fe3ad3e685340704d314d765b7912993bcb8dc198f0e7a89382d37974b/win32_setctime-1.2.0-py3-none-any.whl", hash = "sha256:95d644c4e708aba81dc3704a116d8cbc974d70b3bdb8be1d150e36be6e9d1390", size = 4083, upload-time = "2024-12-07T15:28:26.465Z" },
 ]
 
 [[package]]

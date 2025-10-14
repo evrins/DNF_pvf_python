@@ -33,7 +33,7 @@ class MessageFrameWidget(ttk.Frame):
 
         self.msgFilterE = ttk.Combobox(frame3)
         self.msgFilterE.configure(
-            state="readonly", values=['全部', '普通', '发电', '广告', '求助', '分享']
+            state="readonly", values=["全部", "普通", "发电", "广告", "求助", "分享"]
         )
         self.msgFilterE.pack(side="left")
         self.msgFilterE.bind("<<ComboboxSelected>>", self.filter_message, add="")
@@ -153,7 +153,9 @@ class MessageFrameWidget(ttk.Frame):
         self.msgBtnFrame.grid(column=0, columnspan=2, row=8, sticky="ew")
 
         self.msgTypeE = ttk.Combobox(self.msgDetailFrame)
-        self.msgTypeE.configure(state="readonly", values=['普通', '发电', '广告', '求助', '分享'])
+        self.msgTypeE.configure(
+            state="readonly", values=["普通", "发电", "广告", "求助", "分享"]
+        )
         self.msgTypeE.grid(column=1, row=2, sticky="ew")
 
         self.msgDetailFrame.pack(fill="both", side="left")
@@ -189,7 +191,6 @@ class MessageFrameWidget(ttk.Frame):
             msgDictBytes = zlib.decompress(messageDictBytesCompressed)
             self.msgDict = pickle.loads(msgDictBytes)
         except:
-
             # print(traceback.format_exc())
             print("获取留言失败")
             pass
@@ -302,8 +303,8 @@ class MessageFrameWidget(ttk.Frame):
             messagebox.showerror("内容为空", "内容不能为空")
             return
         if not messagebox.askokcancel(
-                "确认发布",
-                f"确认发布留言\n主题：{topic}\n昵称：{name}\n类型：{type_}\n内容：{msgMain}",
+            "确认发布",
+            f"确认发布留言\n主题：{topic}\n昵称：{name}\n类型：{type_}\n内容：{msgMain}",
         ):
             return
         msg = {

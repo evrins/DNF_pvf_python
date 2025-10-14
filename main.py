@@ -19,7 +19,7 @@ else:
     config = {}
 # setup logger
 
-logger.add('log/{time}.log')
+logger.add("log/{time}.log")
 
 # loading window
 theme = config.get("THEME", "默认主题")
@@ -103,5 +103,6 @@ def load_callback():
 
 if __name__ == "__main__":
     import dnfpkgtool.__main__ as main
-    logger.info('app starting')
+
+    logger.info("app starting")
     main.run(load_callback, root)

@@ -1,8 +1,10 @@
 import json
 import struct
+import traceback
 from pathlib import Path
 from struct import unpack
 
+from loguru import logger
 from zhconv import convert
 
 try:
@@ -46,8 +48,8 @@ keywordsDictPath = Path("./config/pvfKeywordsDict.json")
 if keywordsDictPath.exists():
     try:
         keywordsDict = json.load(open(keywordsDictPath, "r"))
-    except:
-        pass
+    except Exception:
+        logger.error("fail to load keywordsDict")
 
 GEN_KEYWORD = False
 
@@ -1000,6 +1002,7 @@ def get_Magic_Seal_Dict2(pvf: TinyPVF):
                     except:
                         pass
     except Exception as e:
+        traceback.print_exc()
         print(f"魔法封印文件加载错误 {e}")
         magicSealDict = {0: "pvf魔法封印无法正常读取"}
     return magicSealDict
@@ -1201,7 +1204,7 @@ def get_quest_dict(pvf: TinyPVF):
         except:
             failList.append([id_, path_])
             continue
-    if redundancyList != []:
+    if redundancyList:
         print(f"任务列表重复：{len(redundancyList)},{redundancyList}")
     if failList != []:
         print(f"任务加载失败：{len(failList)},{failList}")
@@ -1625,6 +1628,57 @@ def get_equ_segkeys():
                 equTypeDict[typeStr][typeValue].append(key)
     with open("./config/equTypeDict.json", "w", errors="replace") as f:
         json.dump(equTypeDict, f, ensure_ascii=False)
+
+
+def test_get_quest():
+    fp = "/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf"
+    pvf_header = PVFHeader(fp)
+    pvf = TinyPVF(pvfHeader=pvf_header)
+    pvf.load_Leafs()
+    quest_dict = get_quest_dict(pvf)
+    # print(quest_dict)
+
+
+def test_get_magic_seal():
+    fp = "/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf"
+    pvf_header = PVFHeader(fp)
+    pvf = TinyPVF(pvfHeader=pvf_header)
+    pvf.load_Leafs()
+    res = get_Magic_Seal_Dict2(pvf)
+    print(res)
+
+
+def test_get_Job_Dict2():
+    fp = "/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf"
+    pvf_header = PVFHeader(fp)
+    pvf = TinyPVF(pvfHeader=pvf_header)
+    pvf.load_Leafs()
+    job_dict, job_detail_dict = get_Job_Dict2(pvf)
+    print(job_dict)
+    print(job_detail_dict)
+
+
+def test_get_Equipment_Dict3():
+    fp = "/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf"
+    pvf_header = PVFHeader(fp)
+    pvf = TinyPVF(pvfHeader=pvf_header)
+    pvf.load_Leafs()
+    equipmentStructuredDict, equipmentDict, equipmentDetailDict = get_Equipment_Dict3(
+        pvf
+    )
+    print(equipmentStructuredDict)
+    print(equipmentDict)
+    print(equipmentDetailDict)
+
+
+def test_get_avatar_hidden():
+    fp = "/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf"
+    pvf_header = PVFHeader(fp)
+    pvf = TinyPVF(pvfHeader=pvf_header)
+    pvf.load_Leafs()
+    upper_list, rare_list = get_Hidden_Avatar_List2(pvf)
+    print(upper_list)
+    print(rare_list)
 
 
 if __name__ == "__main__":

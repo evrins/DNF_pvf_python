@@ -39,7 +39,6 @@ def print(*args, **kw):
     logFunc[-1](*args, **kw)
 
 
-
 DEBUG = True
 VerInfo = cacheM.config["VERSION"]  #'Ver.0.2.23'
 logPath = Path("log/")

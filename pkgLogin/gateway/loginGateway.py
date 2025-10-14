@@ -537,10 +537,8 @@ if __name__ == "__main__":
     logQueue = []
     oldPrint = print
 
-
     def log(*text):
         logQueue.append(text)
-
 
     def logger():
         import time
@@ -573,7 +571,6 @@ if __name__ == "__main__":
             except Exception as e:
                 oldPrint(e)
                 pass
-
 
     print = log
     t = threading.Thread(target=logger)
