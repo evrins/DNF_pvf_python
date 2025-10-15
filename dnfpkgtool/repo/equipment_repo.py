@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 import polars as pl
 from loguru import logger
@@ -52,9 +52,47 @@ equipment_mapping = {
     "[ring]": "戒指",
 }
 
+weapon_mapping = {
+    "短剑": "ssword",
+    "太刀": "katana",
+    "巨剑": "lswd",
+    "钝器": "club",
+    "光剑": "beamswd",
+    "手套": "knuckle",
+    "臂铠": "gauntlet",
+    "爪": "claw",
+    "拳套": "bglove",
+    "东方棍": "tonfa",
+    "自动手枪": "automatic",
+    "手弩": "bowgun",
+    "左轮": "revolver",
+    "步枪": "musket",
+    "手炮": "hcannon",
+    "法杖": "staff",
+    "魔杖": "rod",
+    "棍棒": "pole",
+    "矛": "spear",
+    "扫把": "broom",
+    "十字架": "cross",
+    "镰刀": "scythe",
+    "念珠": "rosary",
+    "图腾": "totem",
+    "战斧": "axe",
+    "手杖": "wand",
+    "匕首": "dagger",
+    "双剑": "twinswd",
+}
 
-def map_equipment_type_display(equipment_type: str) -> str:
-    return equipment_mapping[equipment_type]
+weapon_mapping = {v: k for k, v in weapon_mapping.items()}
+
+
+def map_equipment_type_display( d: Dict[str, str]) -> str:
+    equipment_type = d["equipment_type"]
+    item_group_name = d["item_group_name"]
+    if equipment_type == '[weapon]':
+        return weapon_mapping[item_group_name]
+    else:
+        return equipment_mapping[equipment_type]
 
 
 def map_rarity_display(d: dict[str, str | int]) -> str:
@@ -96,6 +134,19 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str):
         ("item_group_name", "[item group name]", "", MappingElementLocation.First),
         ("item_category", "[item category]", "", MappingElementLocation.First),
         ("usable_job", "[usable job]", [], MappingElementLocation.All),
+        ('physical_attack', '[physical attack]', 0, MappingElementLocation.First),
+        ('magical_attack', '[magical attack]', 0, MappingElementLocation.First),
+        ('physical_defense', '[physical defense]', 0, MappingElementLocation.First),
+        ('magical_defense', '[magical defense]', 0, MappingElementLocation.First),
+        ('physical_critical_hit', '[physical critical hit]', 0.0, MappingElementLocation.First),
+        ('magical_critical_hit', '[magical critical hit]', 0.0, MappingElementLocation.First),
+        ('all_elemental_attack', '[all elemental attack]', 0, MappingElementLocation.First),
+        ('attack_speed', '[attack speed]', 0, MappingElementLocation.First),
+        ('cast_speed', '[cast speed]', 0, MappingElementLocation.First),
+        ('move_speed', '[move speed]', 0, MappingElementLocation.First),
+        ('room_list_move_speed_rate', '[room list move speed rate]', 0.0, MappingElementLocation.First),
+        ('mp_max_rate', '[MP MAX rate]', 0.0, MappingElementLocation.First),
+
     ]
     df = remapping_pvf_dict(pvf_dict, mappings)
     df = pl.DataFrame(df)
@@ -103,12 +154,27 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str):
         pl.struct(["id", "equipment_type", "item_group_name"])
         .map_elements(map_armor_type, return_dtype=pl.String)
         .alias("armor_type"),
-        pl.col("equipment_type")
+        pl.struct(["equipment_type", 'item_group_name'])
         .map_elements(map_equipment_type_display)
         .alias("equipment_type_display"),
         pl.struct(["id", "name", "rarity", "item_category"])
         .map_elements(map_rarity_display, return_dtype=pl.String)
         .alias("rarity_display"),
+        pl.col("attack_speed")
+        .map_elements(lambda x: x // 10, return_dtype=pl.Int64)
+        .alias("attack_speed"),
+        pl.col("cast_speed")
+        .map_elements(lambda x: x // 10, return_dtype=pl.Int64)
+        .alias("cast_speed"),
+        pl.col("move_speed")
+        .map_elements(lambda x: x // 10, return_dtype=pl.Int64)
+        .alias("move_speed"),
+        pl.col("room_list_move_speed_rate")
+        .map_elements(lambda x: int(x * 100), return_dtype=pl.Int64)
+        .alias("room_list_move_speed_rate"),
+        pl.col("mp_max_rate")
+        .map_elements(lambda x: int(x), return_dtype=pl.Int64)
+        .alias("mp_max_rate"),
     )
 
     df = df.drop(["rarity", "item_category"])
@@ -153,16 +219,16 @@ class EquipmentRepo:
 
     @time_it
     def query(
-        self,
-        name: str,
-        equipment_type_list: List[str] = None,
-        usable_job: str = None,
-        item_group_name: str = None,
-        armor_type: str = None,
-        min_level: int = None,
-        max_level: int = None,
-        rarity: str = None,
-        limit: int = None,
+            self,
+            name: str,
+            equipment_type_list: List[str] = None,
+            usable_job: str = None,
+            item_group_name: str = None,
+            armor_type: str = None,
+            min_level: int = None,
+            max_level: int = None,
+            rarity: str = None,
+            limit: int = None,
     ):
         logger.info(
             f"querying {name} equipment types {equipment_type_list} usable job {usable_job} item group {item_group_name} armor_type {armor_type} min_level {min_level} max_level {max_level} rarity {rarity}"
