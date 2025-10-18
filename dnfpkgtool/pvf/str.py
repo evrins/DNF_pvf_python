@@ -5,11 +5,11 @@ class Str:
     """处理*.str文件"""
 
     def __init__(self, content_text):
-        self.text = convert(content_text, "zh-cn")
-        lines = filter(lambda l: ">" in l, self.text.split("\n"))
+        self.text = convert(content_text, 'zh-cn')
+        lines = filter(lambda l: '>' in l, self.text.split('\n'))
         self.strDict = {}
         for line in lines:
-            key, value = line.split(">", 1)
+            key, value = line.split('>', 1)
             self.strDict[key] = value
         # print(len(self.strDict.keys()))
 
@@ -17,11 +17,11 @@ class Str:
         res = self.strDict.get(key)
         if res is not None:
             # print(key,res)
-            return res.replace("\r", "")
+            return res.replace('\r', '')
         else:
-            return "None"
+            return 'None'
 
     def __repr__(self):
-        return "Str object. <" + str(self.strDict.items())[:100] + "...>"
+        return 'Str object. <' + str(self.strDict.items())[:100] + '...>'
 
     __str__ = __repr__

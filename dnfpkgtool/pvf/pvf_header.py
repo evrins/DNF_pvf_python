@@ -8,15 +8,15 @@ from dnfpkgtool.utils import decrypt_bytes
 class LeafNode(BaseModel):
     index: int = 0
     fn: int = 0
-    file_path: str = ""
+    file_path: str = ''
     file_length: int = 0
     file_crc32: int = 0
     relative_offset: int = 0
 
 
 class PVFHeader(BaseModel):
-    uuid: bytes = b""
-    version: bytes = b""
+    uuid: bytes = b''
+    version: bytes = b''
     leaf_dict: dict[str, LeafNode] = {}
     header_len: int = 0
     dir_tree_len: int = 0
@@ -26,12 +26,12 @@ class PVFHeader(BaseModel):
 def parse_pvf_header(f) -> PVFHeader:
     header = PVFHeader()
 
-    uuid_len = struct.unpack("i", f.read(4))[0]
+    uuid_len = struct.unpack('i', f.read(4))[0]
     header.uuid = f.read(uuid_len)
-    header.version = struct.unpack("i", f.read(4))[0]
-    dir_tree_len = struct.unpack("i", f.read(4))[0]
-    dir_tree_crc32 = struct.unpack("I", f.read(4))[0]
-    num_files_in_dir_tree = struct.unpack("I", f.read(4))[0]
+    header.version = struct.unpack('i', f.read(4))[0]
+    dir_tree_len = struct.unpack('i', f.read(4))[0]
+    dir_tree_crc32 = struct.unpack('I', f.read(4))[0]
+    num_files_in_dir_tree = struct.unpack('I', f.read(4))[0]
 
     header.header_len = f.tell()
     header.dir_tree_len = dir_tree_len
@@ -69,7 +69,7 @@ def parse_leaf(header_bytes: bytes, index: int) -> tuple[LeafNode, int]:
     index += 4
     file_path_length_bytes = header_bytes[index : index + 4]
     index += 4
-    file_path_length = struct.unpack("I", file_path_length_bytes)[0]
+    file_path_length = struct.unpack('I', file_path_length_bytes)[0]
     file_path_bytes = header_bytes[index : index + file_path_length]
     index += file_path_length
     file_length_bytes = header_bytes[index : index + 4]
@@ -79,25 +79,25 @@ def parse_leaf(header_bytes: bytes, index: int) -> tuple[LeafNode, int]:
     relative_offset_bytes = header_bytes[index : index + 4]
     index += 4
 
-    leaf_node.fn = struct.unpack("I", fn_bytes)[0]
-    leaf_node.file_path = file_path_bytes.decode(errors="replace")
-    leaf_node.file_length = (struct.unpack("I", file_length_bytes)[0] + 3) & 0xFFFFFFFC
-    leaf_node.file_crc32 = struct.unpack("I", file_crc32_bytes)[0]
-    leaf_node.relative_offset = struct.unpack("I", relative_offset_bytes)[0]
+    leaf_node.fn = struct.unpack('I', fn_bytes)[0]
+    leaf_node.file_path = file_path_bytes.decode(errors='replace')
+    leaf_node.file_length = (struct.unpack('I', file_length_bytes)[0] + 3) & 0xFFFFFFFC
+    leaf_node.file_crc32 = struct.unpack('I', file_crc32_bytes)[0]
+    leaf_node.relative_offset = struct.unpack('I', relative_offset_bytes)[0]
 
     return leaf_node, index
 
 
 class PVFHeader_:
     def __init__(self, path, readFullFile=False):
-        fp = open(path, "rb")
+        fp = open(path, 'rb')
         self.pvfPath = path
-        self.uuid_len = struct.unpack("i", fp.read(4))[0]
+        self.uuid_len = struct.unpack('i', fp.read(4))[0]
         self.uuid = fp.read(self.uuid_len)
-        self.PVFversion = struct.unpack("i", fp.read(4))[0]
-        self.dirTreeLength = struct.unpack("i", fp.read(4))[0]  # 长度
-        self.dirTreeCrc32 = struct.unpack("I", fp.read(4))[0]
-        self.numFilesInDirTree: int = struct.unpack("I", fp.read(4))[0]
+        self.PVFversion = struct.unpack('i', fp.read(4))[0]
+        self.dirTreeLength = struct.unpack('i', fp.read(4))[0]  # 长度
+        self.dirTreeCrc32 = struct.unpack('I', fp.read(4))[0]
+        self.numFilesInDirTree: int = struct.unpack('I', fp.read(4))[0]
         self.filePackIndexShift = fp.tell() + self.dirTreeLength
         self.headerLength = fp.tell()
         # 读内部文件树头
@@ -118,21 +118,21 @@ class PVFHeader_:
             self.ullFile = None
         # fp.close()
 
-    def to_bytes(self, CRC: int, fileNum=0, treeLength=0, uuid=b"\x00" * 36):
+    def to_bytes(self, CRC: int, fileNum=0, treeLength=0, uuid=b'\x00' * 36):
         if fileNum == 0:
             fileNum = self.numFilesInDirTree
         if treeLength == 0:
             treeLength = self.dirTreeLength
         # CRC = zlib.crc32(treechunk,fileNum).to_bytes(4,'little')
         res = bytearray()
-        res += len(uuid).to_bytes(4, "little")
+        res += len(uuid).to_bytes(4, 'little')
         res += uuid
-        res += self.PVFversion.to_bytes(4, "little")
-        res += treeLength.to_bytes(4, "little")
-        res += CRC.to_bytes(4, "little")  # dirTreeCrc32.to_bytes(4,'little')
-        res += fileNum.to_bytes(4, "little")
+        res += self.PVFversion.to_bytes(4, 'little')
+        res += treeLength.to_bytes(4, 'little')
+        res += CRC.to_bytes(4, 'little')  # dirTreeCrc32.to_bytes(4,'little')
+        res += fileNum.to_bytes(4, 'little')
         # print(res)
-        print("pvfHeader:", len(res), res)
+        print('pvfHeader:', len(res), res)
         return res
 
     def get_Header_Tree_Bytes(self, byte_num=4):
@@ -145,11 +145,11 @@ class PVFHeader_:
             return self.fullFile[startIndex : startIndex + length]
         else:
             if self.fp is None:
-                self.fp = open(self.pvfPath, "rb")
+                self.fp = open(self.pvfPath, 'rb')
             self.fp.seek(startIndex)
             return self.fp.read(length)
 
     def __repr__(self):
-        return f"PVF [{self.uuid.decode()}]\nVer:{self.PVFversion}\nTreeLength:{self.dirTreeLength} \nCRC:{hex(self.dirTreeCrc32)}\n{self.numFilesInDirTree} files"
+        return f'PVF [{self.uuid.decode()}]\nVer:{self.PVFversion}\nTreeLength:{self.dirTreeLength} \nCRC:{hex(self.dirTreeCrc32)}\n{self.numFilesInDirTree} files'
 
     __str__ = __repr__

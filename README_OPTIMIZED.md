@@ -100,7 +100,7 @@ str_file = lst_file.get_str_file(1001)
 replacement_text = str_file["key"]  # Get replacement text
 
 # Binary Content Parsing
-types, values = pvf.read_file_as_list("equipment/item.equ")
+list_data = pvf.read_file_as_list("equipment/item.equ")
 structured_data = pvf.read_file_as_dict("equipment/item.equ")
 ```
 

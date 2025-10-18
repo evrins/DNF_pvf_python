@@ -1,42 +1,42 @@
 import enum
 import json
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 
 from dnfpkgtool.pvf.pvf_reader import PVFDict
 
 
 def extract_common_field(d: dict) -> dict:
     res = {}
-    name = d.get("[name]", [])
+    name = d.get('[name]', [])
     if name:
         name = name[0]
-    name2 = d.get("[name2]", [])
+    name2 = d.get('[name2]', [])
     if name2:
         name2 = name2[0]
     else:
-        name2 = ""
+        name2 = ''
 
     if not name:
         name = name2
 
-    res["name"] = name
-    res["name2"] = name2
+    res['name'] = name
+    res['name2'] = name2
 
-    level = d.get("[minimum level]", [])
+    level = d.get('[minimum level]', [])
     if level:
         level = level[0]
     else:
         level = 0
 
-    res["level"] = level
+    res['level'] = level
 
-    rarity = d.get("[rarity]", [])
+    rarity = d.get('[rarity]', [])
     if rarity:
         rarity = rarity[0]
     else:
         rarity = 0
 
-    res["rarity"] = rarity
+    res['rarity'] = rarity
 
     return res
 
@@ -52,37 +52,37 @@ type MappingConfig = Tuple[str, str, any, MappingElementLocation]
 
 
 def remapping_pvf_dict(
-    pvf_dict: PVFDict, mappings: List[MappingConfig], separate: str = "-"
+    pvf_dict: PVFDict, mappings: List[MappingConfig], separate: str = '-'
 ) -> dict[str, List[any]]:
     res = {
-        "id": [],
-        "name": [],
-        "name2": [],
-        "json": [],
+        'id': [],
+        'name': [],
+        'name2': [],
+        'json': [],
     }
 
     for k, *_ in mappings:
         res[k] = []
 
     for k, v in pvf_dict.items():
-        res["id"].append(k)
+        res['id'].append(k)
 
-        name = v.get("[name]", [])
+        name = v.get('[name]', [])
         if name:
             name = name[0]
-        name2 = v.get("[name2]", [])
+        name2 = v.get('[name2]', [])
         if name2:
             name2 = name2[0]
         else:
-            name2 = ""
+            name2 = ''
 
         if not name:
             name = name2
 
-        res["name"].append(name)
-        res["name2"].append(name2)
+        res['name'].append(name)
+        res['name2'].append(name2)
 
-        res["json"].append(json.dumps(v, ensure_ascii=False))
+        res['json'].append(json.dumps(v, ensure_ascii=False))
 
         for k1, k2, default, mpl in mappings:
             v2 = v.get(k2, [])
@@ -105,7 +105,7 @@ def remapping_pvf_dict(
 def remapping_pvf_list(
     pvf_list: List[Dict[str, List[any]]],
     mappings: List[MappingConfig],
-    separate: str = "-",
+    separate: str = '-',
 ) -> Dict[str, List[any]]:
     res = {}
 

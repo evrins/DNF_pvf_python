@@ -8,17 +8,17 @@ class Lst(object):
         self,
         content_bytes: bytes,
         string_table: StringTable,
-        encode="big5",
-        base_dir="",
+        encode='big5',
+        base_dir='',
     ):
         self.ver_code = content_bytes[:2]
-        self.table_dict = {}
+        self.table_dict: dict[int, str] = {}
         self.string_table = string_table
         self.encode = encode
         self.base_dir = base_dir
 
         for i in range(2, len(content_bytes) - 9, 10):
-            a, aa, b, bb = struct.unpack("<bIbI", content_bytes[i : i + 10])
+            a, aa, b, bb = struct.unpack('<bIbI', content_bytes[i : i + 10])
             if a == 2:
                 index = aa
             elif a == 7:
@@ -44,8 +44,8 @@ class Lst(object):
         for k, v in self.table_dict.items():
             if count > 10:
                 continue
-            buf.append(f"{k}: {v}")
+            buf.append(f'{k}: {v}')
 
-        return "Lst object. <" + ",".join(buf) + "...>"
+        return 'Lst object. <' + ','.join(buf) + '...>'
 
     __str__ = __repr__
