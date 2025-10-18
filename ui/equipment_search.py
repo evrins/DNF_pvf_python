@@ -1,27 +1,27 @@
 import json
 
-from PySide6.QtCore import QAbstractTableModel, Qt, QSortFilterProxyModel, QTimer
+from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt, QTimer
 from PySide6.QtWidgets import (
-    QHBoxLayout,
-    QFormLayout,
-    QLineEdit,
+    QAbstractItemView,
     QComboBox,
+    QFormLayout,
+    QHBoxLayout,
+    QLineEdit,
     QPushButton,
+    QSizePolicy,
     QTableView,
     QWidget,
-    QSizePolicy,
-    QAbstractItemView,
 )
 
 from dnfpkgtool.repo.equipment_repo import EquipmentRepo
 from ui.signals import SubmitSignal, SubmitType
 from ui.vars import (
     default_options,
-    minor_options,
-    main_options,
-    patch_options,
-    job_name_mapping,
     equipment_name_mapping,
+    job_name_mapping,
+    main_options,
+    minor_options,
+    patch_options,
     rarity_list,
 )
 from ui.widgets.ranged_spin_box import RangedSpinBox
@@ -32,13 +32,13 @@ class EquipmentTableModel(QAbstractTableModel):
         super().__init__()
         self._data = data
         self._headers = [
-            "id",
-            "name",
-            "equipment_type_display",
-            "level",
-            "rarity_display",
+            'id',
+            'name',
+            'equipment_type_display',
+            'level',
+            'rarity_display',
         ]
-        self._headers_display = ["ID", "名称", "装备类型", "等级", "稀有度"]
+        self._headers_display = ['ID', '名称', '装备类型', '等级', '稀有度']
 
     def rowCount(self, parent=None):
         return len(self._data)
@@ -51,28 +51,28 @@ class EquipmentTableModel(QAbstractTableModel):
             key = self._headers[index.column()]
             return self._data[index.row()][key]
         elif role == Qt.ItemDataRole.ToolTipRole:
-            indent = " " * 4
+            indent = ' ' * 4
             row = self._data[index.row()]
-            json_string = row["json"]
+            json_string = row['json']
             d = json.loads(json_string)
             lines = []
             for k, v in d.items():
                 lines.append(k)
                 if (
-                        k == "[basic explain]"
-                        or k == "[detail explain]"
-                        or k == "[flavor text]"
+                    k == '[basic explain]'
+                    or k == '[detail explain]'
+                    or k == '[flavor text]'
                 ):
                     if v:
                         for it in v:
-                            for sub in it.split("\r\n"):
+                            for sub in it.split('\r\n'):
                                 sub = sub.strip()
-                                lines.append(f"{indent}{sub}")
+                                lines.append(f'{indent}{sub}')
                     else:
-                        lines.append("")
+                        lines.append('')
                 else:
-                    lines.append(f"{indent}{v}")
-            return "\n".join(lines)
+                    lines.append(f'{indent}{v}')
+            return '\n'.join(lines)
         return None
 
     def headerData(self, section, orientation, role):
@@ -128,7 +128,7 @@ class EquipmentSearch(QWidget):
         self.patch_combo.setSizePolicy(size_policy)
 
         self.rarity_combo = QComboBox()
-        self.rarity_combo.addItem("---")
+        self.rarity_combo.addItem('---')
         self.rarity_combo.addItems(rarity_list)
         self.rarity_combo.setSizePolicy(size_policy)
 
@@ -137,20 +137,20 @@ class EquipmentSearch(QWidget):
         # Set size policy to match other form fields
         self.ranged_spinbox.setSizePolicy(size_policy)
 
-        search_btn = QPushButton("Search")
+        search_btn = QPushButton('Search')
         search_btn.clicked.connect(self.do_search)
         search_btn.setSizePolicy(size_policy)
 
-        submit_btn = QPushButton("Submit to Mail")
+        submit_btn = QPushButton('Submit to Mail')
         submit_btn.clicked.connect(self.submit_to_mail)
         submit_btn.setSizePolicy(size_policy)
 
-        form_layout.addRow("&Name", self.name_input)
-        form_layout.addRow("&Main", self.main_combox)
-        form_layout.addRow("&Minor", self.minor_combo)
-        form_layout.addRow("&Patch", self.patch_combo)
-        form_layout.addRow("&Rarity", self.rarity_combo)
-        form_layout.addRow("&Level", self.ranged_spinbox)
+        form_layout.addRow('&Name', self.name_input)
+        form_layout.addRow('&Main', self.main_combox)
+        form_layout.addRow('&Minor', self.minor_combo)
+        form_layout.addRow('&Patch', self.patch_combo)
+        form_layout.addRow('&Rarity', self.rarity_combo)
+        form_layout.addRow('&Level', self.ranged_spinbox)
         form_layout.addRow(search_btn, submit_btn)
 
         form_layout.setFieldGrowthPolicy(
@@ -181,8 +181,12 @@ class EquipmentSearch(QWidget):
         self.table_view.setSortingEnabled(True)
 
         # Configure row selection behavior
-        self.table_view.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.table_view.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.table_view.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        self.table_view.setSelectionMode(
+            QAbstractItemView.SelectionMode.SingleSelection
+        )
 
         # Add table view with stretch=1 to take up remaining space
         layout.addWidget(self.table_view, stretch=1)
@@ -285,21 +289,21 @@ class EquipmentSearch(QWidget):
 
         if main_idx == 0:
             equipment_type_list = None
-        elif main_option == "武器":
-            equipment_type_list = ["[weapon]"]
+        elif main_option == '武器':
+            equipment_type_list = ['[weapon]']
             if minor_idx != 0:
                 minor_option = minor_options[main_option][minor_idx]
                 usable_job = job_name_mapping[minor_option]
                 if patch_idx != 0:
                     patch_option = patch_options[minor_option][patch_idx]
                     item_group_name = equipment_name_mapping[patch_option]
-        elif main_option == "防具":
+        elif main_option == '防具':
             equipment_type_list = [
-                "[coat]",
-                "[waist]",
-                "[shoulder]",
-                "[shoes]",
-                "[pants]",
+                '[coat]',
+                '[waist]',
+                '[shoulder]',
+                '[shoes]',
+                '[pants]',
             ]
             if minor_idx != 0:
                 minor_option = minor_options[main_option][minor_idx]
@@ -307,35 +311,35 @@ class EquipmentSearch(QWidget):
                 if patch_idx != 0:
                     patch_option = patch_options[minor_option][patch_idx]
                     equipment_type_list = [equipment_name_mapping[patch_option]]
-        elif main_option == "首饰":
-            equipment_type_list = ["[amulet]", "[wrist]", "[ring]"]
+        elif main_option == '首饰':
+            equipment_type_list = ['[amulet]', '[wrist]', '[ring]']
             if minor_idx != 0:
                 minor_option = minor_options[main_option][minor_idx]
                 equipment_type_list = [equipment_name_mapping[minor_option]]
-        elif main_option == "特殊装备":
-            equipment_type_list = ["[support]", "[magic stone]"]
+        elif main_option == '特殊装备':
+            equipment_type_list = ['[support]', '[magic stone]']
             if minor_idx != 0:
                 minor_option = minor_options[main_option][minor_idx]
                 equipment_type_list = [equipment_name_mapping[minor_option]]
-        elif main_option == "装扮":
-            equipment_type_list = ["[support]", "[magic stone]"]
+        elif main_option == '装扮':
+            equipment_type_list = ['[support]', '[magic stone]']
             if minor_idx != 0:
                 minor_option = minor_options[main_option][minor_idx]
                 equipment_type_list = [equipment_name_mapping[minor_option]]
-        elif main_option == "宠物":
-            equipment_type_list = ["[creature]"]
-        elif main_option == "称号":
-            equipment_type_list = ["[title name]"]
-        elif main_option == "宠物装备":
+        elif main_option == '宠物':
+            equipment_type_list = ['[creature]']
+        elif main_option == '称号':
+            equipment_type_list = ['[title name]']
+        elif main_option == '宠物装备':
             equipment_type_list = [
-                "[artifact blue]",
-                "[artifact green]",
-                "[artifact red]",
+                '[artifact blue]',
+                '[artifact green]',
+                '[artifact red]',
             ]
-        elif main_option == "契约效果":
-            equipment_type_list = [""]
+        elif main_option == '契约效果':
+            equipment_type_list = ['']
         else:
-            raise Exception(f"unknown main option: {main_option}")
+            raise Exception(f'unknown main option: {main_option}')
 
         min_level = self.ranged_spinbox.min_level_spinbox.value()
         min_level = None if min_level == 0 else int(min_level)
@@ -371,11 +375,11 @@ class EquipmentSearch(QWidget):
         if not selected_indexes:
             return
         select_id = selected_indexes[0].data(Qt.ItemDataRole.DisplayRole)
-        print(f"submit {select_id} to mail")
+        print(f'submit {select_id} to mail')
         self.submit_signal.on_submit.emit(SubmitType.Equipment, select_id)
 
     def update_title(self, n_result: int):
-        title = "Equipment Search"
+        title = 'Equipment Search'
         if n_result > 0:
-            title = f"{title} {n_result} records found"
+            title = f'{title} {n_result} records found'
         self.setWindowTitle(title)

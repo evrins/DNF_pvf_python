@@ -1,11 +1,11 @@
 import enum
 
-from PySide6.QtCore import Signal, QObject
+from PySide6.QtCore import QObject, Signal
 
 
 class SubmitType(enum.Enum):
-    Item = 1,
-    Equipment = 2,
+    Item = (1,)
+    Equipment = (2,)
 
 
 class SubmitSignal(QObject):

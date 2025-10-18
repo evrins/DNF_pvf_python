@@ -8,7 +8,7 @@ class AvatarFrameWidget(tk.Frame):
         super(AvatarFrameWidget, self).__init__(master, **kw)
 
         self.invBowserFrame = tk.LabelFrame(self)
-        self.invBowserFrame.configure(height=200, text="当前物品列表", width=200)
+        self.invBowserFrame.configure(height=200, text='当前物品列表', width=200)
 
         frame2 = ttk.Frame(self.invBowserFrame)
         frame2.configure(height=200, width=200)
@@ -17,61 +17,61 @@ class AvatarFrameWidget(tk.Frame):
         self.treeViewFrame.configure(height=200, width=200)
 
         self.itemsTreev_now = ttk.Treeview(self.treeViewFrame)
-        self.itemsTreev_now.configure(selectmode="extended", show="headings")
-        self.itemsTreev_now_cols = ["column1", "column2", "column5", "column6"]
-        self.itemsTreev_now_dcols = ["column1", "column2", "column5", "column6"]
+        self.itemsTreev_now.configure(selectmode='extended', show='headings')
+        self.itemsTreev_now_cols = ['column1', 'column2', 'column5', 'column6']
+        self.itemsTreev_now_dcols = ['column1', 'column2', 'column5', 'column6']
         self.itemsTreev_now.configure(
             columns=self.itemsTreev_now_cols, displaycolumns=self.itemsTreev_now_dcols
         )
         self.itemsTreev_now.column(
-            "column1", anchor="center", stretch=True, width=40, minwidth=20
+            'column1', anchor='center', stretch=True, width=40, minwidth=20
         )
         self.itemsTreev_now.column(
-            "column2", anchor="center", stretch=True, width=120, minwidth=20
+            'column2', anchor='center', stretch=True, width=120, minwidth=20
         )
         self.itemsTreev_now.column(
-            "column5", anchor="center", stretch=True, width=80, minwidth=20
+            'column5', anchor='center', stretch=True, width=80, minwidth=20
         )
         self.itemsTreev_now.column(
-            "column6", anchor="center", stretch=True, width=80, minwidth=20
+            'column6', anchor='center', stretch=True, width=80, minwidth=20
         )
-        self.itemsTreev_now.heading("column1", anchor="center", text=" ")
-        self.itemsTreev_now.heading("column2", anchor="center", text="装扮名称")
-        self.itemsTreev_now.heading("column5", anchor="center", text="物品ID")
-        self.itemsTreev_now.heading("column6", anchor="center", text="潜能")
-        self.itemsTreev_now.pack(expand=True, fill="both", side="left")
+        self.itemsTreev_now.heading('column1', anchor='center', text=' ')
+        self.itemsTreev_now.heading('column2', anchor='center', text='装扮名称')
+        self.itemsTreev_now.heading('column5', anchor='center', text='物品ID')
+        self.itemsTreev_now.heading('column6', anchor='center', text='潜能')
+        self.itemsTreev_now.pack(expand=True, fill='both', side='left')
 
         self.itemsTreev_bar = ttk.Scrollbar(self.treeViewFrame)
-        self.itemsTreev_bar.configure(orient="vertical")
-        self.itemsTreev_bar.pack(fill="y", side="right")
+        self.itemsTreev_bar.configure(orient='vertical')
+        self.itemsTreev_bar.pack(fill='y', side='right')
 
-        self.treeViewFrame.pack(expand=True, fill="both", side="top")
+        self.treeViewFrame.pack(expand=True, fill='both', side='top')
 
         self.blobFuncFrame = ttk.Frame(frame2)
         self.blobFuncFrame.configure(height=200, width=200)
 
         self.avatarHiddenE = ttk.Combobox(self.blobFuncFrame)
-        self.avatarHiddenE.pack(expand=True, fill="x", side="left")
+        self.avatarHiddenE.pack(expand=True, fill='x', side='left')
 
         self.addHiddenBtn = ttk.Button(self.blobFuncFrame)
-        self.addHiddenBtn.configure(text="设置潜能")
-        self.addHiddenBtn.pack(expand=True, fill="x", side="left")
+        self.addHiddenBtn.configure(text='设置潜能')
+        self.addHiddenBtn.pack(expand=True, fill='x', side='left')
         self.addHiddenBtn.configure(command=self.enable_hidden)
 
         self.deleteBtn = ttk.Button(self.blobFuncFrame)
-        self.deleteBtn.configure(text="删除选中")
-        self.deleteBtn.pack(expand=True, fill="x", side="left")
+        self.deleteBtn.configure(text='删除选中')
+        self.deleteBtn.pack(expand=True, fill='x', side='left')
         self.deleteBtn.configure(command=self.ask_delete)
 
-        self.blobFuncFrame.pack(fill="x", side="top")
+        self.blobFuncFrame.pack(fill='x', side='top')
 
-        frame2.pack(expand=True, fill="both", side="top")
+        frame2.pack(expand=True, fill='both', side='top')
 
-        self.invBowserFrame.pack(expand=True, fill="both", side="left")
+        self.invBowserFrame.pack(expand=True, fill='both', side='left')
 
         self.configure(height=200, width=200)
 
-        self.pack(expand=True, fill="both", side="top")
+        self.pack(expand=True, fill='both', side='top')
 
     def enable_hidden(self):
         pass
@@ -80,8 +80,8 @@ class AvatarFrameWidget(tk.Frame):
         pass
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     root = tk.Tk()
     widget = AvatarFrameWidget(root)
-    widget.pack(expand=True, fill="both")
+    widget.pack(expand=True, fill='both')
     root.mainloop()

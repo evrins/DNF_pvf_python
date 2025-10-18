@@ -45,12 +45,12 @@ class ImageLabel(tk.Label):
         if root is not None:
             self.x, self.y = root.winfo_x(), root.winfo_y()
             self.root = root
-            self.bind("<B1-Motion>", self.move_app)
-            self.bind("<Button-1>", self.setxy)
+            self.bind('<B1-Motion>', self.move_app)
+            self.bind('<Button-1>', self.setxy)
 
         def inner():
             self.unload()
-            if not hasattr(self, "framesList"):
+            if not hasattr(self, 'framesList'):
                 self.framesList = []
             if not imDir.exists():
                 imDir.mkdir()
@@ -62,8 +62,8 @@ class ImageLabel(tk.Label):
                     for i in count(1):
                         frames.append(ImageTk.PhotoImage(resize(im.copy(), size)))
                         im.seek(i)
-                        if not hasattr(self, "firstLoad") and not hasattr(
-                            self, "picShow"
+                        if not hasattr(self, 'firstLoad') and not hasattr(
+                            self, 'picShow'
                         ):
                             self.config(image=frames[0])
                             self.picShow = True
@@ -72,12 +72,12 @@ class ImageLabel(tk.Label):
                 frames = cycle(frames)
 
                 try:
-                    delay = im.info["duration"]
+                    delay = im.info['duration']
                 except:
                     delay = 100
                 self.framesList.append([delay, frames])
-                if not hasattr(self, "firstLoad"):
-                    setattr(self, "firstLoad", True)
+                if not hasattr(self, 'firstLoad'):
+                    setattr(self, 'firstLoad', True)
                     self.randomShow()
                     self.next_frame()
 
@@ -88,7 +88,7 @@ class ImageLabel(tk.Label):
         t.start()
 
     def randomShow(self):
-        if not hasattr(self, "framesList"):
+        if not hasattr(self, 'framesList'):
             return False
         if len(self.framesList) > 0:
             self.delay, self.frames = choice(self.framesList)
@@ -97,10 +97,10 @@ class ImageLabel(tk.Label):
         if root is not None:
             self.x, self.y = root.winfo_x(), root.winfo_y()
             self.root = root
-            self.bind("<B1-Motion>", self.move_app)
-            self.bind("<Button-1>", self.setxy)
+            self.bind('<B1-Motion>', self.move_app)
+            self.bind('<Button-1>', self.setxy)
         self.unload()
-        if not hasattr(self, "framesList"):
+        if not hasattr(self, 'framesList'):
             self.framesList = []
         # self.config(height=size[1],width=size[0])
         if isinstance(im, str) or isinstance(im, Path):
@@ -116,15 +116,15 @@ class ImageLabel(tk.Label):
         self.frames = cycle(frames)
 
         try:
-            self.delay = im.info["duration"]
+            self.delay = im.info['duration']
         except:
             self.delay = 100
         self.framesList.append([self.delay, self.frames])
         if len(frames) == 1:
             self.config(image=next(self.frames))
         else:
-            if not hasattr(self, "firstLoad"):
-                setattr(self, "firstLoad", True)
+            if not hasattr(self, 'firstLoad'):
+                setattr(self, 'firstLoad', True)
                 self.next_frame()
 
     def unload(self):
@@ -139,7 +139,7 @@ class ImageLabel(tk.Label):
     def move_app(self, event):
         new_x = (event.x - self.x) + self.root.winfo_x()
         new_y = (event.y - self.y) + self.root.winfo_y()
-        s = f"+{new_x}+{new_y}"
+        s = f'+{new_x}+{new_y}'
         self.root.geometry(s)
 
     def setxy(self, event):
@@ -147,10 +147,10 @@ class ImageLabel(tk.Label):
         self.y = event.y
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     root = tk.Tk()
     lbl = ImageLabel(root)
     lbl.pack()
-    lbl.load("./config/gif/gif.gif")
+    lbl.load('./config/gif/gif.gif')
     print(type(lbl))
     root.mainloop()

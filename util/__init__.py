@@ -6,7 +6,7 @@ def time_it(func):
         start = time.perf_counter_ns()
         result = func(*args, **kwargs)
         end = time.perf_counter_ns()
-        print(f"{func.__name__} took {end - start} nanoseconds to run.")
+        print(f'{func.__name__} took {end - start} nanoseconds to run.')
         return result
 
     return wrapper

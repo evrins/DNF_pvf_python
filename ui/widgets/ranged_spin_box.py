@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QSpinBox, QLabel
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QSpinBox, QWidget
 
 
 class RangedSpinBox(QWidget):
@@ -17,9 +17,9 @@ class RangedSpinBox(QWidget):
         self.min_level_spinbox.setSingleStep(1)
 
         # Add text label between spinboxes
-        level_separator = QLabel("to")
+        level_separator = QLabel('to')
         level_separator.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        level_separator.setStyleSheet("QLabel { margin: 0 3px; font-weight: normal; }")
+        level_separator.setStyleSheet('QLabel { margin: 0 3px; font-weight: normal; }')
 
         self.max_level_spinbox = QSpinBox()
         self.max_level_spinbox.setRange(0, 100)

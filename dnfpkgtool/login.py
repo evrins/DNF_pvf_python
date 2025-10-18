@@ -48,12 +48,12 @@ def login(uid):
     public_key = RSA.importKey(public_key_str)
     cipher = PKCS1_cipher.new(public_key)
     data = (
-        "%08x010101010101010101010101010101010101010101010101010101010101010155914510010403030101"
+        '%08x010101010101010101010101010101010101010101010101010101010101010155914510010403030101'
         % uid
     )
-    dataInBytes = b""
+    dataInBytes = b''
     for i in range(0, len(data), 2):
-        dataInBytes += struct.pack("H", int(data[i : i + 2], 16))
+        dataInBytes += struct.pack('H', int(data[i : i + 2], 16))
 
     """dataInBytes = bytes.fromhex(data)
     print(dataInBytes)
@@ -63,6 +63,6 @@ def login(uid):
     return base64.b64encode(encryptedStr).decode()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     uid = 8
     print(login(uid))

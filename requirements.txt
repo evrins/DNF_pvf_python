@@ -1,3 +1,4 @@
+sqlalchemy
 pyside6
 polars
 pillow

@@ -1,8 +1,6 @@
 import pymysql
 from loguru import logger
 
-from config import config
-
 
 def check_mysql_config(
     host: str,
@@ -18,7 +16,7 @@ def check_mysql_config(
             user=user,
             passwd=password,
             database='d_taiwan',
-            connect_timeout=2,
+            connect_timeout=5,
         )
 
         conn.ping(True)
@@ -33,19 +31,3 @@ def check_mysql_config(
             return True
 
     return False
-
-
-def get_db_conn(db_name: str) -> pymysql.Connection:
-    db_config = config.get_db_config()
-    conn = pymysql.connect(
-        host=db_config.host,
-        port=db_config.port,
-        user=db_config.user,
-        passwd=db_config.password,
-        database=db_name,
-        connect_timeout=2,
-    )
-
-    conn.ping(True)
-
-    return conn

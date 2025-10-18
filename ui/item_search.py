@@ -1,23 +1,24 @@
 import json
 
-from PySide6.QtCore import QAbstractTableModel, Qt, QSortFilterProxyModel, QTimer
+from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt, QTimer
 from PySide6.QtWidgets import (
-    QHBoxLayout,
-    QFormLayout,
-    QLineEdit,
+    QAbstractItemView,
     QComboBox,
+    QFormLayout,
+    QHBoxLayout,
+    QLineEdit,
     QPushButton,
+    QSizePolicy,
     QTableView,
     QWidget,
-    QSizePolicy, QAbstractItemView,
 )
 
 from dnfpkgtool.repo.item_repo import ItemRepo
-from ui.signals import SubmitType, SubmitSignal
+from ui.signals import SubmitSignal, SubmitType
 from ui.vars import (
+    categoryed_stackable_type_dict,
     item_category_key_list,
     item_rarity_list,
-    categoryed_stackable_type_dict,
 )
 from ui.widgets.ranged_spin_box import RangedSpinBox
 
@@ -27,13 +28,13 @@ class ItemTableModel(QAbstractTableModel):
         super().__init__()
         self._data = data
         self._headers = [
-            "id",
-            "name",
-            "stackable_type_display",
-            "level",
-            "rarity_display",
+            'id',
+            'name',
+            'stackable_type_display',
+            'level',
+            'rarity_display',
         ]
-        self._headers_display = ["ID", "名称", "物品种类", "等级", "稀有度"]
+        self._headers_display = ['ID', '名称', '物品种类', '等级', '稀有度']
 
     def rowCount(self, parent=None):
         return len(self._data)
@@ -46,28 +47,28 @@ class ItemTableModel(QAbstractTableModel):
             key = self._headers[index.column()]
             return self._data[index.row()][key]
         elif role == Qt.ItemDataRole.ToolTipRole:
-            indent = " " * 4
+            indent = ' ' * 4
             row = self._data[index.row()]
-            json_string = row["json"]
+            json_string = row['json']
             d = json.loads(json_string)
             lines = []
             for k, v in d.items():
                 lines.append(k)
                 if (
-                        k == "[basic explain]"
-                        or k == "[detail explain]"
-                        or k == "[flavor text]"
+                    k == '[basic explain]'
+                    or k == '[detail explain]'
+                    or k == '[flavor text]'
                 ):
                     if v:
                         for it in v:
-                            for sub in it.split("\r\n"):
+                            for sub in it.split('\r\n'):
                                 sub = sub.strip()
-                                lines.append(f"{indent}{sub}")
+                                lines.append(f'{indent}{sub}')
                     else:
-                        lines.append("")
+                        lines.append('')
                 else:
-                    lines.append(f"{indent}{v}")
-            return "\n".join(lines)
+                    lines.append(f'{indent}{v}')
+            return '\n'.join(lines)
         return None
 
     def headerData(self, section, orientation, role):
@@ -107,12 +108,12 @@ class ItemSearch(QWidget):
         self.name_input.setSizePolicy(size_policy)
 
         self.category_combox = QComboBox()
-        self.category_combox.addItem("---")
+        self.category_combox.addItem('---')
         self.category_combox.addItems(item_category_key_list)
         self.category_combox.setSizePolicy(size_policy)
 
         self.rarity_combo = QComboBox()
-        self.rarity_combo.addItem("---")
+        self.rarity_combo.addItem('---')
         self.rarity_combo.addItems(item_rarity_list)
         self.rarity_combo.setSizePolicy(size_policy)
 
@@ -121,18 +122,18 @@ class ItemSearch(QWidget):
         # Set size policy to match other form fields
         self.ranged_spinbox.setSizePolicy(size_policy)
 
-        search_btn = QPushButton("Search")
+        search_btn = QPushButton('Search')
         search_btn.clicked.connect(self.do_search)
         search_btn.setSizePolicy(size_policy)
 
-        submit_btn = QPushButton("Submit to Mail")
+        submit_btn = QPushButton('Submit to Mail')
         submit_btn.clicked.connect(self.submit_to_mail)
         submit_btn.setSizePolicy(size_policy)
 
-        form_layout.addRow("&Name", self.name_input)
-        form_layout.addRow("&Category", self.category_combox)
-        form_layout.addRow("&Rarity", self.rarity_combo)
-        form_layout.addRow("&Level", self.ranged_spinbox)
+        form_layout.addRow('&Name', self.name_input)
+        form_layout.addRow('&Category', self.category_combox)
+        form_layout.addRow('&Rarity', self.rarity_combo)
+        form_layout.addRow('&Level', self.ranged_spinbox)
         form_layout.addRow(search_btn, submit_btn)
 
         form_layout.setFieldGrowthPolicy(
@@ -235,8 +236,12 @@ class ItemSearch(QWidget):
         self.table_view.resizeColumnsToContents()
 
         # Configure row selection behavior
-        self.table_view.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.table_view.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.table_view.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        self.table_view.setSelectionMode(
+            QAbstractItemView.SelectionMode.SingleSelection
+        )
 
         # After search, adjust size to new content
         QTimer.singleShot(100, self._adjust_size_to_content)
@@ -246,11 +251,11 @@ class ItemSearch(QWidget):
         if not selected_indexes:
             return
         select_id = selected_indexes[0].data(Qt.ItemDataRole.DisplayRole)
-        print(f"submit {select_id} to mail")
+        print(f'submit {select_id} to mail')
         self.submit_signal.on_submit.emit(SubmitType.Item, select_id)
 
     def update_title(self, n_result: int):
-        title = "Item Search"
+        title = 'Item Search'
         if n_result > 0:
-            title = f"{title} {n_result} records found"
+            title = f'{title} {n_result} records found'
         self.setWindowTitle(title)

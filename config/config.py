@@ -9,10 +9,10 @@ class DbConfig(BaseModel):
 
 
 _db_config = DbConfig(
-    host="localhost",
+    host='localhost',
     port=3306,
-    username="game",
-    password="uu5!^%jg",
+    username='game',
+    password='uu5!^%jg',
 )
 
 
