@@ -49,6 +49,19 @@ def test_get_magic_seal_dict():
     save_obj_2_file(magic_seal_dict, 'magic_seal_dict.json')
 
 
+def test_get_magic_seal_as_list():
+    pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
+    reader = PVFReader(pvf_path)
+    magic_seal_list = reader.read_file_as_list(
+        'etc/randomoption/randomizedoptionoverall2.etc'
+    )
+    save_obj_2_file(magic_seal_list, 'magic_seal_list.json')
+    magic_seal_dict = reader.read_file_as_dict(
+        'etc/randomoption/randomizedoptionoverall2.etc'
+    )
+    save_obj_2_file(magic_seal_dict, 'magic_seal_dict.json')
+
+
 def test_get_job_dict():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)

@@ -429,53 +429,6 @@ def getUID(username=''):
     return res[0][0]
 
 
-def decode_charac_list_old(characList: list):
-    global sqlEncodeUseIndex
-    res_new = []
-    if ENCODE_AUTO == True:
-        sqlEncodeUseIndex = 0
-        while sqlEncodeUseIndex < len(SQL_ENCODE_LIST):
-            res_new = []
-            # print(f'当前编码：{SQL_ENCODE_LIST[sqlEncodeUseIndex]}')
-            for i in characList:
-                record = list(i)
-                try:
-                    record[1] = (
-                        record[1]
-                        .encode(SQL_ENCODE_LIST[sqlEncodeUseIndex])
-                        .decode('utf-8')
-                    )
-                    res_new.append(record)
-                except:
-                    if sqlEncodeUseIndex + 1 < len(SQL_ENCODE_LIST):
-                        sqlEncodeUseIndex += 1
-
-                        break
-                    else:
-                        record[1] = (
-                            record[1]
-                            .encode(
-                                SQL_ENCODE_LIST[sqlEncodeUseIndex], errors='replace'
-                            )
-                            .decode('utf-8', errors='replace')
-                        )
-                        res_new.append(record)
-            if len(res_new) == len(characList):
-                break
-    else:
-        for i in characList:
-            record = list(i)
-            print(record)
-            record[1] = (
-                record[1]
-                .encode(SQL_ENCODE_LIST[sqlEncodeUseIndex], errors='replace')
-                .decode('utf-8', errors='replace')
-            )
-            res_new.append(record)
-    print(SQL_ENCODE_LIST[sqlEncodeUseIndex])
-    return res_new
-
-
 def decode(string: str):
     s1 = string.encode('latin1', 'replace')
     s2 = string.encode('cp1252', 'replace')
@@ -1173,21 +1126,21 @@ def send_message(cNo, sender='测试发件人', message='测试邮件') -> int:
 
 
 def send_postal(
-    cNo,
-    letterID=0,
-    sender='测试发件人',
-    message='测试邮件',
-    itemID=1000,
-    increaseType=0,
-    increaseValue=0,
-    forgeLev=0,
-    seal=0,
-    totalnum=1,
-    enhanceValue=0,
-    gold=0,
-    avata_flag=0,
-    creature_flag=0,
-    endurance=0,
+        cNo,
+        letterID=0,
+        sender='测试发件人',
+        message='测试邮件',
+        itemID=1000,
+        increaseType=0,
+        increaseValue=0,
+        forgeLev=0,
+        seal=0,
+        totalnum=1,
+        enhanceValue=0,
+        gold=0,
+        avata_flag=0,
+        creature_flag=0,
+        endurance=0,
 ):
     def send():
         nonlocal num

@@ -852,7 +852,7 @@ class App:
             return self.selectCharac()
 
         def config_TreeViev(
-            itemsTreev, doubleFunc=lambda e: ..., singleFunc=lambda e: ...
+                itemsTreev, doubleFunc=lambda e: ..., singleFunc=lambda e: ...
         ):
             itemsTreev['columns'] = treeViewArgs['columns']
             itemsTreev['show'] = treeViewArgs['show']
@@ -1888,7 +1888,7 @@ class App:
             self.selectCharac()
 
         def set_TreeView_Func(
-            itemsTree_now: ttk.Treeview, itemsTree_edit: ttk.Treeview
+                itemsTree_now: ttk.Treeview, itemsTree_edit: ttk.Treeview
         ):
             def press(e, widget='now'):
                 nonlocal x, y, from_

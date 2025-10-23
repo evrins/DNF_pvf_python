@@ -3,6 +3,7 @@ from typing import Dict, List
 
 import polars as pl
 
+from config import config
 from dnfpkgtool.pvf.pvf_reader import PVFReader
 from dnfpkgtool.repo import MappingElementLocation, remapping_pvf_list
 
@@ -50,9 +51,9 @@ class SkillRepo:
         self.df = pl.read_parquet(fp)
 
     def query(
-        self,
-        name: str,
-        job: str = None,
+            self,
+            name: str,
+            job: str = None,
     ) -> List[dict]:
         name = name.lower()
         cond = pl.col('name').str.contains(name) | pl.col(
@@ -63,3 +64,11 @@ class SkillRepo:
             cond = cond & (pl.col('job') == job)
 
         return self.df.filter(cond).select('*').to_dicts()
+
+    def query_by_id(self, id_: int) -> dict:
+        return self.df.filter(pl.col('id') == id_).limit(1).to_dicts()[0]
+
+
+def get_magic_seal_repo():
+    fp = config.get_magic_seal_parquet_file_path()
+    return SkillRepo(fp)

@@ -2,10 +2,14 @@ import QtQuick 6.10
 import QtQuick.Controls 6.10
 import QtQuick.Layouts 6.10
 
+import "./components" as Components
+
 ApplicationWindow {
     id: window
 
     property string currTime: '00:00:00'
+
+    // Note: cargoModel is provided by the Python backend via context property
 
     height: 600
     title: "Clock"
@@ -48,6 +52,9 @@ ApplicationWindow {
             }
             TabButton {
                 text: qsTr("Activity")
+            }
+            TabButton {
+                text: "Cargo"
             }
         }
         StackLayout {
@@ -133,9 +140,61 @@ ApplicationWindow {
 
                     Text {
                         anchors.centerIn: parent
-                        color: '#333'
-                        font.pixelSize: 24
+                        color: "#333333"
+                        font {
+                            pixelSize: 24
+                            family: "Arial, sans-serif"
+                        }
                         text: "Activity Content"
+                    }
+                }
+            }
+
+            Item {
+                id: cargoTab
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "#f8f8f8"
+
+                    Column {
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        spacing: 10
+
+                        Text {
+                            text: "Cargo Inventory"
+                            font.pixelSize: 20
+                            font.bold: true
+                            color: "#333"
+                        }
+
+                        // Use the cargo table view component
+                        Loader {
+                            id: cargoTableLoader
+                            width: parent.width
+                            height: parent.height - 80
+                            source: "./components/cargo_table_view.qml"
+
+                            onLoaded: {
+                                if (item) {
+                                    item.tableModel = cargoModel;
+                                    // Connect to selection signal
+                                    item.rowSelected.connect(function (row) {
+                                        selectedItemText.text = "Selected: Row " + row;
+                                    });
+                                }
+                            }
+                        }
+
+                        // Selection feedback
+                        Text {
+                            id: selectedItemText
+                            text: "No item selected"
+                            font.pixelSize: 14
+                            color: "#666"
+                            height: 30
+                        }
                     }
                 }
             }

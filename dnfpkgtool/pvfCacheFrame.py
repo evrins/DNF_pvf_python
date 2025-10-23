@@ -37,7 +37,7 @@ creatureEquipDict = {}  # 存储所有宠物装备
 
 class PVFCacheCfgFrame(TitleBarFrame):
     def __init__(
-        self, master, saveFunc=lambda: ..., closeFunc=lambda: ..., *args, **kw
+            self, master, saveFunc=lambda: ..., closeFunc=lambda: ..., *args, **kw
     ):
         TitleBarFrame.__init__(
             self, master, master, title='PVF缓存编辑', closeFunc=closeFunc, *args, **kw

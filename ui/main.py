@@ -1,5 +1,8 @@
+import signal
 import sys
 
+from loguru import logger
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -9,12 +12,19 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from dnfpkgtool.repo.equipment_repo import EquipmentRepo
-from dnfpkgtool.repo.item_repo import ItemRepo
+from ui.account_cargo import AccountCargo
 from ui.equipment_search import EquipmentSearch
 from ui.item_search import ItemSearch
 from ui.settings import Setting
 from ui.signals import SubmitSignal, SubmitType
+
+shutdown_requested = False
+
+
+def handle_shutdown_signal(sig, frame=None):
+    global shutdown_requested
+    logger.info(f'signal {sig} received')
+    shutdown_requested = True
 
 
 class MainWindow(QMainWindow):
@@ -27,20 +37,15 @@ class MainWindow(QMainWindow):
 
         self.submit_signal = SubmitSignal()
 
-        # Initialize repositories
-        equipment_file_path = '/Users/evrins/workspace/python/DNF_pvf_python/dnfpkgtool/repo/data/equipments.parquet'
-        self.equipment_repo = EquipmentRepo(equipment_file_path)
-
-        items_file_path = '/Users/evrins/workspace/python/DNF_pvf_python/dnfpkgtool/repo/data/items.parquet'
-        self.items_repo = ItemRepo(items_file_path)
-
         # Create search widgets
-        self.equip_search = EquipmentSearch(self.equipment_repo, self.submit_signal)
-        self.item_search = ItemSearch(self.items_repo, self.submit_signal)
-
-        # Add tabs to the tab widget
+        self.equip_search = EquipmentSearch(self.submit_signal)
         self.tab_widget.addTab(self.equip_search, '🛡️ Equipment Search')
+
+        self.item_search = ItemSearch(self.submit_signal)
         self.tab_widget.addTab(self.item_search, '📦 Item Search')
+
+        self.account_cargo = AccountCargo()
+        self.tab_widget.addTab(self.account_cargo, 'Account Cargo')
 
         # Add placeholder tabs for future functionality
         self._add_placeholder_tabs()
@@ -58,6 +63,15 @@ class MainWindow(QMainWindow):
 
         # Connect tab change signal
         self.tab_widget.currentChanged.connect(self._on_tab_changed)
+
+        # set default tab
+        self.tab_widget.setCurrentIndex(2)
+
+        self.quit_timer = QTimer(self)
+        self.quit_timer.setInterval(1000)
+        self.quit_timer.timeout.connect(self.check_for_shutdown)
+        self.quit_timer.start()
+
 
     def handle_submit_to_mail(self, submit_type: SubmitType, id_: int):
         """Handle submission to mail system."""
@@ -91,6 +105,7 @@ class MainWindow(QMainWindow):
         tab_names = [
             'Equipment Search',
             'Item Search',
+            'Account Cargo',
             'Character Management',
             'Mail System',
             'Settings',
@@ -104,8 +119,16 @@ class MainWindow(QMainWindow):
         # The tab widget will automatically handle closing its child widgets
         event.accept()
 
+    def check_for_shutdown(self):
+        if shutdown_requested:
+            logger.info('Shutdown requested, closing application')
+            self.close()
+
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, handle_shutdown_signal)
+    signal.signal(signal.SIGTERM, handle_shutdown_signal)
+
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     mw = MainWindow()

@@ -254,13 +254,13 @@ class Lst_lite2:
     """处理*.lst文件对象"""
 
     def __init__(
-        self,
-        contentBytes,
-        tinyPVF,
-        stringtable,
-        encode='big5',
-        baseDir='',
-        convertZhcn=True,
+            self,
+            contentBytes,
+            tinyPVF,
+            stringtable,
+            encode='big5',
+            baseDir='',
+            convertZhcn=True,
     ):
         self.vercode = contentBytes[:2]
         self.tableList = []
@@ -429,11 +429,11 @@ class TinyPVF:
 
     @staticmethod
     def content2List(
-        content,
-        stringtable: StringTable,
-        nString: Lst_lite2,
-        stringQuote='',
-        convertZhcn=False,
+            content,
+            stringtable: StringTable,
+            nString: Lst_lite2,
+            stringQuote='',
+            convertZhcn=False,
     ):
         """读取二进制文本，如stk文件，将解密字段类型和关键字返回为list"""
         if content is None:
@@ -497,13 +497,13 @@ class TinyPVF:
         return self.content2List(fileInBytes, stringtable, nString)
 
     def convert_Bin_to_List(
-        self,
-        content=b'',
-        pvfheader: PVFHeader = None,
-        stringtable: StringTable = None,
-        nString: Lst_lite2 = None,
-        fileTreeDict: dict = None,
-        stringQuote='',
+            self,
+            content=b'',
+            pvfheader: PVFHeader = None,
+            stringtable: StringTable = None,
+            nString: Lst_lite2 = None,
+            fileTreeDict: dict = None,
+            stringQuote='',
     ):
         if pvfheader is None:
             pvfheader = self.pvfHeader
@@ -516,13 +516,13 @@ class TinyPVF:
         return self.content2List(content, stringtable, nString, stringQuote)
 
     def read_File_In_List2(
-        self,
-        fpath='',
-        pvfheader: PVFHeader = None,
-        stringtable: StringTable = None,
-        nString: Lst_lite2 = None,
-        fileTreeDict: dict = None,
-        stringQuote='',
+            self,
+            fpath='',
+            pvfheader: PVFHeader = None,
+            stringtable: StringTable = None,
+            nString: Lst_lite2 = None,
+            fileTreeDict: dict = None,
+            stringQuote='',
     ):
         if pvfheader is None:
             pvfheader = self.pvfHeader
@@ -827,7 +827,7 @@ class TinyPVF:
 
     @staticmethod
     def content2Dict(
-        content, stringtable: StringTable, nString: Lst_lite2, stringQuote=''
+            content, stringtable: StringTable, nString: Lst_lite2, stringQuote=''
     ):
         return TinyPVF.list2Dict(
             TinyPVF.content2List(content, stringtable, nString, stringQuote='')
@@ -835,7 +835,7 @@ class TinyPVF:
 
     @staticmethod
     def dictSegment2text(
-        dictSegment: dict, prefix='', prefixAdd='    ', maxSegNum=50, depth=4
+            dictSegment: dict, prefix='', prefixAdd='    ', maxSegNum=50, depth=4
     ) -> str:
         """递归对字段转换为带缩进的文本"""
         # print('segment',dictSegment,'prefix:',prefix)
@@ -870,7 +870,7 @@ class TinyPVF:
 
     @staticmethod
     def content2Text(
-        content, stringtable: StringTable, nString: Lst_lite2, stringQuote=''
+            content, stringtable: StringTable, nString: Lst_lite2, stringQuote=''
     ):
         fileInDict = TinyPVF.list2Dict(
             TinyPVF.content2List(content, stringtable, nString, stringQuote='')
@@ -879,12 +879,12 @@ class TinyPVF:
         return res
 
     def read_File_In_Structed_List(
-        self,
-        fpath,
-        pvfheader: PVFHeader = None,
-        stringtable: StringTable = None,
-        nString: Lst_lite2 = None,
-        fileTreeDict: dict = None,
+            self,
+            fpath,
+            pvfheader: PVFHeader = None,
+            stringtable: StringTable = None,
+            nString: Lst_lite2 = None,
+            fileTreeDict: dict = None,
     ):
         fileInListWithType = self.read_File_In_List2(
             fpath, pvfheader, stringtable, nString, fileTreeDict
@@ -892,12 +892,12 @@ class TinyPVF:
         return self.list2StructedList(fileInListWithType)
 
     def read_File_In_Dict(
-        self,
-        fpath='',
-        pvfheader: PVFHeader = None,
-        stringtable: StringTable = None,
-        nString: Lst_lite2 = None,
-        fileTreeDict: dict = None,
+            self,
+            fpath='',
+            pvfheader: PVFHeader = None,
+            stringtable: StringTable = None,
+            nString: Lst_lite2 = None,
+            fileTreeDict: dict = None,
     ):
         fileInListWithType = self.read_File_In_List2(
             fpath, pvfheader, stringtable, nString, fileTreeDict
@@ -905,12 +905,12 @@ class TinyPVF:
         return self.list2Dict(fileInListWithType)
 
     def read_File_In_Text(
-        self,
-        fpath='',
-        pvfheader: PVFHeader = None,
-        stringtable: StringTable = None,
-        nString: Lst_lite2 = None,
-        fileTreeDict: dict = None,
+            self,
+            fpath='',
+            pvfheader: PVFHeader = None,
+            stringtable: StringTable = None,
+            nString: Lst_lite2 = None,
+            fileTreeDict: dict = None,
     ):
         return self.content2Text(
             self.read_File_In_Decrypted_Bin(fpath), self.stringTable, self.nString

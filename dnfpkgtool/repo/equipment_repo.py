@@ -4,6 +4,7 @@ from typing import Dict, List
 import polars as pl
 from loguru import logger
 
+from config import config
 from dnfpkgtool.pvf.pvf_reader import PVFDict, PVFReader
 from dnfpkgtool.repo import MappingElementLocation, remapping_pvf_dict
 from util import time_it
@@ -198,7 +199,7 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str):
         .alias('mp_max_rate'),
     )
 
-    df = df.drop(['rarity', 'item_category'])
+    df = df.drop(['item_category'])
     df.write_parquet(fp)
 
 
@@ -240,16 +241,16 @@ class EquipmentRepo:
 
     @time_it
     def query(
-        self,
-        name: str,
-        equipment_type_list: List[str] = None,
-        usable_job: str = None,
-        item_group_name: str = None,
-        armor_type: str = None,
-        min_level: int = None,
-        max_level: int = None,
-        rarity: str = None,
-        limit: int = None,
+            self,
+            name: str,
+            equipment_type_list: List[str] = None,
+            usable_job: str = None,
+            item_group_name: str = None,
+            armor_type: str = None,
+            min_level: int = None,
+            max_level: int = None,
+            rarity: str = None,
+            limit: int = None,
     ):
         logger.info(
             f'querying {name} equipment types {equipment_type_list} usable job {usable_job} item group {item_group_name} armor_type {armor_type} min_level {min_level} max_level {max_level} rarity {rarity}'
@@ -292,3 +293,8 @@ class EquipmentRepo:
         if len(rows) == 0:
             raise EquipmentIdNotFoundException(id_)
         return rows[0]
+
+
+def get_equipment_repo() -> EquipmentRepo:
+    fp = config.get_equipment_parquet_file_path()
+    return EquipmentRepo(fp)

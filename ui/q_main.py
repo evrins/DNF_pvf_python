@@ -1,10 +1,14 @@
+import signal
 import sys
 from pathlib import Path
 from time import localtime, strftime
 
+from dnfpkgtool.db.service.item_service import get_item_service
 from PySide6.QtCore import Property, QObject, QTimer, QUrl, Signal, Slot
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+
+from ui.components.cargo_table_model import CargoTableModel
 
 
 class Backend(QObject):
@@ -40,9 +44,28 @@ class Backend(QObject):
         """Method to check if backend is properly initialized"""
         return True
 
+shutdown_requested = False
+
+def signal_handler(signum, frame):
+    global shutdown_requested
+    print(f'Signal {signum} received, requesting shutdown.')
+    shutdown_requested = True
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
     app = QGuiApplication(sys.argv)
+
+    def check_for_shutdown():
+        if shutdown_requested:
+            print('Shutdown flag detected, quitting event loop.')
+            app.quit()
+
+    timer = QTimer()
+    timer.setInterval(1000)
+    timer.timeout.connect(check_for_shutdown)
+    timer.start()
 
     # Create backend instance first
     backend = Backend()
@@ -53,6 +76,12 @@ if __name__ == '__main__':
 
     # Set context property BEFORE loading QML
     engine.rootContext().setContextProperty('backend', backend)
+
+    item_svc = get_item_service()
+
+    model = CargoTableModel(item_svc.get_current_account_cargo())
+
+    engine.rootContext().setContextProperty('cargoModel', model)
 
     # Get the correct path to the QML file
     current_dir = Path(__file__).parent

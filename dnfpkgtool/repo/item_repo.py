@@ -4,6 +4,7 @@ from typing import List
 import polars as pl
 from loguru import logger
 
+from config import config
 from dnfpkgtool.pvf.pvf_reader import PVFDict, PVFReader
 from dnfpkgtool.repo import MappingElementLocation, remapping_pvf_dict
 from ui.vars import item_rarity_list
@@ -124,13 +125,13 @@ class ItemRepo:
         self.df = pl.read_parquet(fp)
 
     def query(
-        self,
-        name: str,
-        stackable_type_list: list[str] = None,
-        min_level: int = None,
-        max_level: int = None,
-        rarity_display: str = None,
-        item_type: str = None,
+            self,
+            name: str,
+            stackable_type_list: list[str] = None,
+            min_level: int = None,
+            max_level: int = None,
+            rarity_display: str = None,
+            item_type: str = None,
     ) -> List[dict]:
         logger.info(
             f'query with name {name} stackable_type_list {stackable_type_list} min_level {min_level} max_level {max_level} rarity_display {rarity_display} item_type {item_type}'
@@ -158,3 +159,8 @@ class ItemRepo:
         if len(rows) == 0:
             raise ItemIdNotFoundException(id_)
         return rows[0]
+
+
+def get_item_repo() -> ItemRepo:
+    fp = config.get_item_parquet_file_path()
+    return ItemRepo(fp)

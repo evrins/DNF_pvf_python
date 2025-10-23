@@ -1,5 +1,7 @@
 import json
 
+from config import config
+from dnfpkgtool.repo.equipment_repo import EquipmentRepo
 from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt, QTimer
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -13,7 +15,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from dnfpkgtool.repo.equipment_repo import EquipmentRepo
 from ui.signals import SubmitSignal, SubmitType
 from ui.vars import (
     default_options,
@@ -86,9 +87,9 @@ class EquipmentTableModel(QAbstractTableModel):
 
 
 class EquipmentSearch(QWidget):
-    def __init__(self, equipment_repo: EquipmentRepo, submit_signal: SubmitSignal):
+    def __init__(self, submit_signal: SubmitSignal):
         super().__init__()
-        self.equipment_repo = equipment_repo
+        self.equipment_repo =  EquipmentRepo(config.get_equipment_parquet_file_path())
         self.submit_signal = submit_signal
 
         self.form_width = 240
@@ -160,8 +161,8 @@ class EquipmentSearch(QWidget):
         form_container = QWidget()
         form_container.setLayout(form_layout)
 
-        # Set fixed size policy to prevent stretching and align to top-left
-        form_container.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        # Set size policy to maintain fixed width but expand vertically if needed
+        form_container.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
         form_container.setFixedWidth(self.form_width)  # Set a fixed width for the form
 
         # Add form container with top-left alignment
@@ -195,40 +196,19 @@ class EquipmentSearch(QWidget):
 
         self.update_title(0)
 
-        self.setMinimumSize(700, 400)  # Minimum size to ensure usability
+        # Set size policy to expand with parent
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        
+        # Set minimum size to ensure usability but allow expansion
+        self.setMinimumSize(700, 400)
 
-        # Use QTimer to adjust size after the widget is fully rendered
-        QTimer.singleShot(0, self._adjust_size_to_content)
-
-    def _adjust_size_to_content(self):
-        """Adjust window size based on table view content width."""
-        # Calculate total table width
-        table_width = 0
-        for column in range(self.table_view.model().columnCount()):
-            table_width += self.table_view.columnWidth(column)
-
-        # Add extra space for table margins, scrollbars, and padding
-        table_padding = 50  # Space for scrollbars, borders, etc.
-
-        # Form width (fixed at 240px) + margins + table width + padding
-        form_width = self.form_width
-        layout_margins = 10  # Left and right margins from main layout
-        total_width = form_width + layout_margins + table_width + table_padding
-
-        # Set reasonable bounds for the width
-        min_width = 600
-        max_width = 1200
-        calculated_width = max(min_width, min(max_width, total_width))
-
-        # Set height based on content or use default
-        calculated_height = 480  # Default height
-
-        # Resize the window
-        self.resize(calculated_width, calculated_height)
+    def _adjust_table_columns(self):
+        """Adjust table column widths to content."""
+        self.table_view.resizeColumnsToContents()
 
     def adjust_size_to_content(self):
-        """Public method to adjust window size based on current table content."""
-        self._adjust_size_to_content()
+        """Public method to adjust table columns to content."""
+        self._adjust_table_columns()
 
     def main_option_changed(self, index: int):
         if index == 0:
@@ -365,10 +345,10 @@ class EquipmentSearch(QWidget):
         proxy_model = QSortFilterProxyModel()
         proxy_model.setSourceModel(table_model)
         self.table_view.setModel(proxy_model)
+        self.table_view.sortByColumn(0, Qt.SortOrder.AscendingOrder)
 
-        self.table_view.resizeColumnsToContents()
-        # After search, adjust size to new content
-        QTimer.singleShot(100, self._adjust_size_to_content)
+        # Adjust table columns to content
+        QTimer.singleShot(100, self._adjust_table_columns)
 
     def submit_to_mail(self):
         selected_indexes = self.table_view.selectedIndexes()

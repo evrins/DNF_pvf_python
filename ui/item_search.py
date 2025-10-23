@@ -1,5 +1,7 @@
 import json
 
+from config import config
+from dnfpkgtool.repo.item_repo import ItemRepo
 from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt, QTimer
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -13,7 +15,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from dnfpkgtool.repo.item_repo import ItemRepo
 from ui.signals import SubmitSignal, SubmitType
 from ui.vars import (
     categoryed_stackable_type_dict,
@@ -82,9 +83,9 @@ class ItemTableModel(QAbstractTableModel):
 
 
 class ItemSearch(QWidget):
-    def __init__(self, item_repo: ItemRepo, submit_signal: SubmitSignal):
+    def __init__(self,submit_signal: SubmitSignal):
         super().__init__()
-        self.item_repo = item_repo
+        self.items_repo = ItemRepo(config.get_item_parquet_file_path())
         self.submit_signal = submit_signal
 
         self.form_width = 240
@@ -143,8 +144,8 @@ class ItemSearch(QWidget):
         form_container = QWidget()
         form_container.setLayout(form_layout)
 
-        # Set fixed size policy to prevent stretching and align to top-left
-        form_container.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        # Set size policy to maintain fixed width but expand vertically if needed
+        form_container.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
         form_container.setFixedWidth(self.form_width)  # Set a fixed width for the form
 
         # Add form container with top-left alignment
@@ -170,40 +171,19 @@ class ItemSearch(QWidget):
 
         self.update_title(0)
 
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setMinimumSize(700, 400)  # Minimum size to ensure usability
 
         # Use QTimer to adjust size after the widget is fully rendered
-        QTimer.singleShot(0, self._adjust_size_to_content)
+        QTimer.singleShot(0, self._adjust_table_columns)
 
-    def _adjust_size_to_content(self):
-        """Adjust window size based on table view content width."""
-        # Calculate total table width
-        table_width = 0
-        for column in range(self.table_view.model().columnCount()):
-            table_width += self.table_view.columnWidth(column)
-
-        # Add extra space for table margins, scrollbars, and padding
-        table_padding = 50  # Space for scrollbars, borders, etc.
-
-        # Form width (fixed at 240px) + margins + table width + padding
-        form_width = self.form_width
-        layout_margins = 10  # Left and right margins from main layout
-        total_width = form_width + layout_margins + table_width + table_padding
-
-        # Set reasonable bounds for the width
-        min_width = 600
-        max_width = 1200
-        calculated_width = max(min_width, min(max_width, total_width))
-
-        # Set height based on content or use default
-        calculated_height = 480  # Default height
-
-        # Resize the window
-        self.resize(calculated_width, calculated_height)
+    def _adjust_table_columns(self):
+        """Adjust table column widths to content."""
+        self.table_view.resizeColumnsToContents()
 
     def adjust_size_to_content(self):
         """Public method to adjust window size based on current table content."""
-        self._adjust_size_to_content()
+        self._adjust_table_columns()
 
     def do_search(self, s=None):
         name = self.name_input.text().strip()
@@ -219,7 +199,7 @@ class ItemSearch(QWidget):
         rarity_idx = self.rarity_combo.currentIndex()
         rarity = None if rarity_idx == 0 else item_rarity_list[rarity_idx - 1]
 
-        data = self.item_repo.query(
+        data = self.items_repo.query(
             name,
             stackable_type_list=stackable_type_list,
             min_level=min_level,
@@ -232,6 +212,7 @@ class ItemSearch(QWidget):
         proxy_model = QSortFilterProxyModel()
         proxy_model.setSourceModel(table_model)
         self.table_view.setModel(proxy_model)
+        self.table_view.sortByColumn(0, Qt.SortOrder.AscendingOrder)
 
         self.table_view.resizeColumnsToContents()
 
@@ -244,7 +225,7 @@ class ItemSearch(QWidget):
         )
 
         # After search, adjust size to new content
-        QTimer.singleShot(100, self._adjust_size_to_content)
+        QTimer.singleShot(100, self._adjust_table_columns)
 
     def submit_to_mail(self):
         selected_indexes = self.table_view.selectedIndexes()

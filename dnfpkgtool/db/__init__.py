@@ -3,10 +3,10 @@ from loguru import logger
 
 
 def check_mysql_config(
-    host: str,
-    port: int,
-    user: str,
-    password: str,
+        host: str,
+        port: int,
+        user: str,
+        password: str,
 ) -> bool:
     conn = None
     try:

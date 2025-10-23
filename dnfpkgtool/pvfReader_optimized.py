@@ -202,11 +202,11 @@ class PVFHeader:
         return self._fp.read(length)
 
     def to_bytes(
-        self,
-        crc: int,
-        file_num: int = 0,
-        tree_length: int = 0,
-        uuid: bytes = b'\x00' * 36,
+            self,
+            crc: int,
+            file_num: int = 0,
+            tree_length: int = 0,
+            uuid: bytes = b'\x00' * 36,
     ) -> bytes:
         """Convert header to bytes representation."""
         if file_num == 0:
@@ -313,12 +313,12 @@ class LstFile:
     """Handles *.lst files containing ID to path mappings."""
 
     def __init__(
-        self,
-        content_bytes: bytes,
-        tiny_pvf: 'TinyPVF',
-        string_table: StringTable,
-        encoding: str = 'big5',
-        base_dir: str = '',
+            self,
+            content_bytes: bytes,
+            tiny_pvf: 'TinyPVF',
+            string_table: StringTable,
+            encoding: str = 'big5',
+            base_dir: str = '',
     ):
         self.ver_code = content_bytes[:2]
         self.table_list = []
@@ -394,10 +394,10 @@ class ContentParser:
 
     @staticmethod
     def parse_binary_content(
-        content: bytes,
-        string_table: StringTable,
-        n_string: LstFile,
-        string_quote: str = '',
+            content: bytes,
+            string_table: StringTable,
+            n_string: LstFile,
+            string_quote: str = '',
     ) -> Tuple[List[int], List[Any]]:
         """Parse binary content and return types and values."""
         if not content or len(content) < 2:
@@ -471,8 +471,8 @@ class ContentParser:
 
     @staticmethod
     def list_to_dict(
-        file_in_list_with_type: Tuple[List[int], List[Any]],
-        parent_key: Optional[str] = None,
+            file_in_list_with_type: Tuple[List[int], List[Any]],
+            parent_key: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Convert parsed list to structured dictionary."""
         type_list, file_in_list = file_in_list_with_type
@@ -492,7 +492,7 @@ class ContentParser:
                 segment_keys_with_end_mark.append(value.replace('/', '', 1))
 
         def add_segment(
-            result_dict: Dict[str, Any], segment_key: str, segment_data: Any
+                result_dict: Dict[str, Any], segment_key: str, segment_data: Any
         ):
             """Add segment to result dictionary with unique key."""
             if segment_key in result_dict:
@@ -547,11 +547,11 @@ class ContentParser:
 
     @staticmethod
     def dict_to_text(
-        dict_segment: Dict[str, Any],
-        prefix: str = '',
-        prefix_add: str = '    ',
-        max_seg_num: int = 50,
-        depth: int = 4,
+            dict_segment: Dict[str, Any],
+            prefix: str = '',
+            prefix_add: str = '    ',
+            max_seg_num: int = 50,
+            depth: int = 4,
     ) -> str:
         """Convert dictionary segment to formatted text."""
         if depth <= 0:
@@ -600,10 +600,10 @@ class TinyPVF:
         self.encoding = encoding
 
     def load_file_tree(
-        self,
-        dirs: List[str] = None,
-        structured: bool = False,
-        pvf_header: Optional[PVFHeader] = None,
+            self,
+            dirs: List[str] = None,
+            structured: bool = False,
+            pvf_header: Optional[PVFHeader] = None,
     ) -> Dict[str, FileLeaf]:
         """Load file tree from PVF header."""
         if pvf_header is None:
@@ -705,7 +705,7 @@ class TinyPVF:
         return LstFile(content, self, self.string_table, encoding, base_dir)
 
     def read_file_decrypted(
-        self, file_path: str, pvf_header: Optional[PVFHeader] = None
+            self, file_path: str, pvf_header: Optional[PVFHeader] = None
     ) -> bytes:
         """Read and decrypt file content."""
         file_path = file_path.lower().replace('\\', '/')
@@ -744,7 +744,7 @@ class TinyPVF:
             return b''
 
     def read_file_as_list(
-        self, file_path: str, string_quote: str = ''
+            self, file_path: str, string_quote: str = ''
     ) -> Tuple[List[int], List[Any]]:
         """Read file and return as parsed list."""
         content = self.read_file_decrypted(file_path)
@@ -753,7 +753,7 @@ class TinyPVF:
         )
 
     def read_file_as_dict(
-        self, file_path: str, string_quote: str = ''
+            self, file_path: str, string_quote: str = ''
     ) -> Dict[str, Any]:
         """Read file and return as structured dictionary."""
         file_in_list_with_type = self.read_file_as_list(file_path, string_quote)
@@ -889,7 +889,7 @@ class GameDataLoader:
 
 
 def merge_dicts_recursive(
-    dict1: Dict[str, Any], dict2: Dict[str, Any]
+        dict1: Dict[str, Any], dict2: Dict[str, Any]
 ) -> Dict[str, Any]:
     """Recursively merge two dictionaries."""
     for key, value in dict2.items():

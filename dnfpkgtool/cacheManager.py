@@ -404,7 +404,7 @@ def getStackableTypeMainIdAndZh(itemID):
         elif 'creature' in str(equipment_type):
             return 0x05, '宠物'
         elif 'avatar' in str(equipment_type) or (
-                'avatar' in str(fileInDict.keys()) and '[stackable type]'
+            'avatar' in str(fileInDict.keys()) and '[stackable type]'
         ):
             return 0x08, '时装'
     if itemID in equipmentDict.keys():
@@ -610,7 +610,7 @@ def equipmentDetailDict_transform(
                     add_dict_all(equipmentForamted['其它']['其它'], partDir)
                     continue
                 if not isinstance(
-                        partDir, dict
+                    partDir, dict
                 ):  # 直接放到根目录的物品，保存到其它后跳过
                     if isinstance(partDir, str):
                         id_, name = commonType, partDir
@@ -625,7 +625,7 @@ def equipmentDetailDict_transform(
                 else:  # 是防具
                     for armorType, itemDict in partDir.items():
                         if not isinstance(
-                                itemDict, dict
+                            itemDict, dict
                         ):  # 直接放到防具根目录的物品，放到其它后跳过
                             if isinstance(itemDict, str):
                                 id_, name = armorType, itemDict
@@ -663,8 +663,8 @@ def equipmentDetailDict_transform(
                             equipmentForamted['武器'][keyMap[jobName]][weaponType] = {}
 
                         if (
-                                keyMap[weaponType]
-                                not in equipmentForamted['武器'][keyMap[jobName]].keys()
+                            keyMap[weaponType]
+                            not in equipmentForamted['武器'][keyMap[jobName]].keys()
                         ):  # 扩充职业武器类型
                             equipmentForamted['武器'][keyMap[jobName]][
                                 keyMap[weaponType]

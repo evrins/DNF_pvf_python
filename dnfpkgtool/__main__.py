@@ -1870,7 +1870,7 @@ class GuiApp:
         self.tabViewChangeFuncs.append(changeGif)
 
     def _buildtab_itemTab(
-        self, itemEditFrame: itemSlotFrame.ItemslotframeWidget, tabName
+            self, itemEditFrame: itemSlotFrame.ItemslotframeWidget, tabName
     ):
         def ask_commit():
             if showSelectedItemInfo() != True or self.cNo == 0:
@@ -2683,7 +2683,7 @@ class GuiApp:
             CreateToolTip(commitBtn, f'提交当前[{tabName}]页面的所有修改')
 
     def _buildtab_itemTab_creature(
-        self, creatureF: creature_frame.CreatureFrameWidget, tabName=' 宠物 '
+            self, creatureF: creature_frame.CreatureFrameWidget, tabName=' 宠物 '
     ):
         def deleteItems():
             if not messagebox.askokcancel('删除确认', f'确定删除{tabName}所选物品？'):
@@ -2710,7 +2710,7 @@ class GuiApp:
         delBtn.config(command=deleteItems)
 
     def _buildtab_itemTab_avatar(
-        self, avatarF: avatar_frame.AvatarFrameWidget, tabName=' 时装 '
+            self, avatarF: avatar_frame.AvatarFrameWidget, tabName=' 时装 '
     ):
         def deleteItems():
             if not messagebox.askokcancel('删除确认', f'确定删除{tabName}所选物品？'):
@@ -2770,7 +2770,7 @@ class GuiApp:
         delBtn.config(command=deleteItems)
 
     def _buildtab_itemTab_mail(
-        self, mailF: mail_frame.MailFrameWidget, tabName=' 邮件 '
+            self, mailF: mail_frame.MailFrameWidget, tabName=' 邮件 '
     ):
         def deleteItems():
             if not messagebox.askokcancel('删除确认', f'确定删除{tabName}所选物品？'):
@@ -4360,10 +4360,10 @@ class GuiApp:
             return files
 
         def downloadFile(
-            filePath='',
-            targetPath='',
-            progressBarPos=[200, 200],
-            progressBarMaster=None,
+                filePath='',
+                targetPath='',
+                progressBarPos=[200, 200],
+                progressBarMaster=None,
         ):
             def showProgress(transferred, toBeTransferred):
                 nonlocal time_now

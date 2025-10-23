@@ -67,7 +67,7 @@ class PVFReader:
         return self.list_2_dict(res)
 
     def list_2_dict(
-        self, res: BinaryContent
+            self, res: BinaryContent
     ) -> dict[str, List[str | int | float]] | List[str | int | float]:
         """
         not handle [variation] [layer variation] [equipment ani script] segment key well, but I don't need it now

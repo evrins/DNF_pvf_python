@@ -233,11 +233,11 @@ class SSHServerProtocol:
         return files
 
     def downloadFile(
-        self,
-        filePath='',
-        targetPath='',
-        progressBarPos=[200, 200],
-        progressBarMaster=None,
+            self,
+            filePath='',
+            targetPath='',
+            progressBarPos=[200, 200],
+            progressBarMaster=None,
     ):
         def showProgress(transferred, toBeTransferred):
             # print(transferred,toBeTransferred)
@@ -315,13 +315,13 @@ class SSHServerProtocol:
 
 class ServerCtrlFrame(tk.Frame):
     def __init__(
-        self,
-        tabView,
-        tabName='服务器',
-        titlefunc=lambda x: ...,
-        autoConnect=True,
-        *args,
-        **kw,
+            self,
+            tabView,
+            tabName='服务器',
+            titlefunc=lambda x: ...,
+            autoConnect=True,
+            *args,
+            **kw,
     ):
         def connect(show=True, key=False):
             def inner():
@@ -581,10 +581,10 @@ class ServerCtrlFrame(tk.Frame):
             return files
 
         def downloadFile(
-            filePath='',
-            targetPath='',
-            progressBarPos=[200, 200],
-            progressBarMaster=None,
+                filePath='',
+                targetPath='',
+                progressBarPos=[200, 200],
+                progressBarMaster=None,
         ):
             def showProgress(transferred, toBeTransferred):
                 # print(transferred,toBeTransferred)

@@ -255,12 +255,12 @@ class LstEditor:
     """处理*.lst文件对象"""
 
     def __init__(
-        self,
-        contentBytes,
-        stringtable: StringTableEditor,
-        encode='big5',
-        baseDir='',
-        suffix='',
+            self,
+            contentBytes,
+            stringtable: StringTableEditor,
+            encode='big5',
+            baseDir='',
+            suffix='',
     ):
         self.vercode = contentBytes[:2]
         self.suffix = suffix
@@ -446,11 +446,11 @@ class TinyPVFEditor(TinyPVF):
 
     @staticmethod
     def content2List_with_bin(
-        content,
-        stringtable: StringTableEditor,
-        nString: Lst_lite2,
-        stringQuote='',
-        convertZhcn=False,
+            content,
+            stringtable: StringTableEditor,
+            nString: Lst_lite2,
+            stringQuote='',
+            convertZhcn=False,
     ):
         """读取二进制文本，如stk文件，将解密字段类型和关键字返回为list"""
         if content is None:
@@ -604,13 +604,13 @@ class TinyPVFEditor(TinyPVF):
         return res
 
     def read_File_In_List_with_Bin(
-        self,
-        fpath='',
-        pvfheader: PVFHeader = None,
-        stringtable: StringTable = None,
-        nString: Lst_lite2 = None,
-        fileTreeDict: dict = None,
-        stringQuote='',
+            self,
+            fpath='',
+            pvfheader: PVFHeader = None,
+            stringtable: StringTable = None,
+            nString: Lst_lite2 = None,
+            fileTreeDict: dict = None,
+            stringQuote='',
     ):
         if pvfheader is None:
             pvfheader = self.pvfHeader
@@ -626,12 +626,12 @@ class TinyPVFEditor(TinyPVF):
         return self.content2List_with_bin(content, stringtable, nString, stringQuote)
 
     def read_FIle_In_Dict_with_Bin(
-        self,
-        fpath='',
-        pvfheader: PVFHeader = None,
-        stringtable: StringTable = None,
-        nString: Lst_lite2 = None,
-        fileTreeDict: dict = None,
+            self,
+            fpath='',
+            pvfheader: PVFHeader = None,
+            stringtable: StringTable = None,
+            nString: Lst_lite2 = None,
+            fileTreeDict: dict = None,
     ):
         fileInListWithTypeAndBin = self.read_File_In_List_with_Bin(
             fpath, pvfheader, stringtable, nString, fileTreeDict

@@ -54,14 +54,14 @@ letter_send_dict = {}
 
 class GMToolWindow(tk.Toplevel):
     def __init__(
-        self,
-        master,
-        title='GM工具',
-        cNo=0,
-        sponsorFrame=True,
-        sshAutoConnect=True,
-        *args,
-        **kw,
+            self,
+            master,
+            title='GM工具',
+            cNo=0,
+            sponsorFrame=True,
+            sshAutoConnect=True,
+            *args,
+            **kw,
     ):
         self.cNo = cNo
         self.uid = 0

@@ -34,7 +34,7 @@ class MockPVFDataGenerator:
 
     @staticmethod
     def generate_file_tree_entry(
-        file_path: str, file_size: int = 1024, offset: int = 0
+            file_path: str, file_size: int = 1024, offset: int = 0
     ) -> bytes:
         """Generate a mock file tree entry."""
         path_bytes = file_path.encode('utf-8')
