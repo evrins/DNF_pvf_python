@@ -44,12 +44,15 @@ class Backend(QObject):
         """Method to check if backend is properly initialized"""
         return True
 
+
 shutdown_requested = False
+
 
 def signal_handler(signum, frame):
     global shutdown_requested
     print(f'Signal {signum} received, requesting shutdown.')
     shutdown_requested = True
+
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)

@@ -89,7 +89,7 @@ class EquipmentTableModel(QAbstractTableModel):
 class EquipmentSearch(QWidget):
     def __init__(self, submit_signal: SubmitSignal):
         super().__init__()
-        self.equipment_repo =  EquipmentRepo(config.get_equipment_parquet_file_path())
+        self.equipment_repo = EquipmentRepo(config.get_equipment_parquet_file_path())
         self.submit_signal = submit_signal
 
         self.form_width = 240
@@ -162,7 +162,9 @@ class EquipmentSearch(QWidget):
         form_container.setLayout(form_layout)
 
         # Set size policy to maintain fixed width but expand vertically if needed
-        form_container.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        form_container.setSizePolicy(
+            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding
+        )
         form_container.setFixedWidth(self.form_width)  # Set a fixed width for the form
 
         # Add form container with top-left alignment
@@ -198,7 +200,7 @@ class EquipmentSearch(QWidget):
 
         # Set size policy to expand with parent
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        
+
         # Set minimum size to ensure usability but allow expansion
         self.setMinimumSize(700, 400)
 

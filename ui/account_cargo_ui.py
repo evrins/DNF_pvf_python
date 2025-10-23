@@ -18,22 +18,24 @@ from PySide6.QtWidgets import (
 class Ui_account_cargo(object):
     def setupUi(self, account_cargo):
         if not account_cargo.objectName():
-            account_cargo.setObjectName(u"account_cargo")
+            account_cargo.setObjectName('account_cargo')
         account_cargo.resize(569, 566)
         self.verticalLayout = QVBoxLayout(account_cargo)
-        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setObjectName('verticalLayout')
         self.table_view = QTableView(account_cargo)
-        self.table_view.setObjectName(u"table_view")
+        self.table_view.setObjectName('table_view')
 
         self.verticalLayout.addWidget(self.table_view)
-
 
         self.retranslateUi(account_cargo)
 
         QMetaObject.connectSlotsByName(account_cargo)
+
     # setupUi
 
     def retranslateUi(self, account_cargo):
-        account_cargo.setWindowTitle(QCoreApplication.translate("account_cargo", u"Form", None))
-    # retranslateUi
+        account_cargo.setWindowTitle(
+            QCoreApplication.translate('account_cargo', 'Form', None)
+        )
 
+    # retranslateUi

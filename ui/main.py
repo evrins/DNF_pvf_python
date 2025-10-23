@@ -72,7 +72,6 @@ class MainWindow(QMainWindow):
         self.quit_timer.timeout.connect(self.check_for_shutdown)
         self.quit_timer.start()
 
-
     def handle_submit_to_mail(self, submit_type: SubmitType, id_: int):
         """Handle submission to mail system."""
         print(f'Submit {submit_type} ID:{id_} to mail')

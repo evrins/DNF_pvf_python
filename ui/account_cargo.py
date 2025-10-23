@@ -1,7 +1,7 @@
-from PySide6.QtCore import QAbstractTableModel, Qt, QSortFilterProxyModel
+from dnfpkgtool.db.service.item_service import ItemService
+from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt
 from PySide6.QtWidgets import QWidget
 
-from dnfpkgtool.db.service.item_service import ItemService
 from ui.account_cargo_ui import Ui_account_cargo
 
 
@@ -13,7 +13,7 @@ class AccountCargoModel(QAbstractTableModel):
             'display_idx',
             'display_name',
             'num_grade',
-            'display_rarity_name'
+            'display_rarity_name',
         ]
         self._headers_display = ['ID', '名称', '数量', '稀有度']
 
@@ -46,7 +46,6 @@ class AccountCargoModel(QAbstractTableModel):
 
 
 class AccountCargo(QWidget):
-
     def __init__(self, parent=None):
         super().__init__()
 
@@ -55,7 +54,9 @@ class AccountCargo(QWidget):
 
         self.account_cargo_svc = ItemService()
 
-        table_model = AccountCargoModel(self.account_cargo_svc.get_current_account_cargo())
+        table_model = AccountCargoModel(
+            self.account_cargo_svc.get_current_account_cargo()
+        )
 
         proxy_model = QSortFilterProxyModel()
         proxy_model.setSourceModel(table_model)

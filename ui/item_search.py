@@ -83,7 +83,7 @@ class ItemTableModel(QAbstractTableModel):
 
 
 class ItemSearch(QWidget):
-    def __init__(self,submit_signal: SubmitSignal):
+    def __init__(self, submit_signal: SubmitSignal):
         super().__init__()
         self.items_repo = ItemRepo(config.get_item_parquet_file_path())
         self.submit_signal = submit_signal
@@ -145,7 +145,9 @@ class ItemSearch(QWidget):
         form_container.setLayout(form_layout)
 
         # Set size policy to maintain fixed width but expand vertically if needed
-        form_container.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        form_container.setSizePolicy(
+            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding
+        )
         form_container.setFixedWidth(self.form_width)  # Set a fixed width for the form
 
         # Add form container with top-left alignment

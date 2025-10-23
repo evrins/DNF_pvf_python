@@ -5,7 +5,13 @@ class CargoTableModel(QAbstractTableModel):
     def __init__(self, data=None):
         super().__init__()
         self._data = data or []
-        self._headers = ['display_idx', 'display_name', 'num_grade', 'id', 'display_rarity_name']
+        self._headers = [
+            'display_idx',
+            'display_name',
+            'num_grade',
+            'id',
+            'display_rarity_name',
+        ]
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
         return len(self._data)
@@ -26,8 +32,16 @@ class CargoTableModel(QAbstractTableModel):
 
         return None
 
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.ItemDataRole.DisplayRole):
-        if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
+    def headerData(
+            self,
+            section: int,
+            orientation: Qt.Orientation,
+            role: int = Qt.ItemDataRole.DisplayRole,
+    ):
+        if (
+            role == Qt.ItemDataRole.DisplayRole
+            and orientation == Qt.Orientation.Horizontal
+        ):
             return self._headers[section]
         return None
 
