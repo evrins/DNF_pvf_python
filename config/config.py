@@ -1,6 +1,5 @@
 import pymysql
 from loguru import logger
-
 from pydantic import BaseModel
 
 
@@ -76,8 +75,8 @@ def get_current_account_id():
     return 18000000
 
 
-def get_current_character_id():
-    return 5
+def get_current_character_no():
+    return 2
 
 
 # todo build path from config
@@ -93,3 +92,9 @@ def get_equipment_parquet_file_path() -> str:
 
 def get_magic_seal_parquet_file_path() -> str:
     return '/Users/evrins/workspace/python/DNF_pvf_python/dnfpkgtool/repo/data/magic_seals.parquet'
+
+def get_skill_parquet_file_path() -> str:
+    return '/Users/evrins/workspace/python/DNF_pvf_python/dnfpkgtool/repo/data/skills.parquet'
+
+def get_orb_parquet_file_path() -> str:
+    return '/Users/evrins/workspace/python/DNF_pvf_python/dnfpkgtool/repo/data/orbs.parquet'

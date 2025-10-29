@@ -1,5 +1,6 @@
 import signal
 import sys
+import tracemalloc
 
 from loguru import logger
 from PySide6.QtCore import QTimer
@@ -14,6 +15,7 @@ from PySide6.QtWidgets import (
 
 from ui.account_cargo import AccountCargo
 from ui.equipment_search import EquipmentSearch
+from ui.inventory_tabview import InventoryTabView
 from ui.item_search import ItemSearch
 from ui.settings import Setting
 from ui.signals import SubmitSignal, SubmitType
@@ -44,8 +46,8 @@ class MainWindow(QMainWindow):
         self.item_search = ItemSearch(self.submit_signal)
         self.tab_widget.addTab(self.item_search, '📦 Item Search')
 
-        self.account_cargo = AccountCargo()
-        self.tab_widget.addTab(self.account_cargo, 'Account Cargo')
+        self.inventory_tabview = InventoryTabView()
+        self.tab_widget.addTab(self.inventory_tabview, 'Inventory')
 
         # Add placeholder tabs for future functionality
         self._add_placeholder_tabs()
@@ -84,7 +86,9 @@ class MainWindow(QMainWindow):
         # Character Management tab
         character_widget = QWidget()
         character_layout = QVBoxLayout()
-        character_layout.addWidget(QPushButton('Character Management - Coming Soon'))
+        dump_btn = QPushButton('Dump')
+        dump_btn.clicked.connect(self.dump_memory)
+        character_layout.addWidget(dump_btn)
         character_widget.setLayout(character_layout)
         self.tab_widget.addTab(character_widget, '👤 Characters')
 
@@ -123,8 +127,17 @@ class MainWindow(QMainWindow):
             logger.info('Shutdown requested, closing application')
             self.close()
 
+    def dump_memory(self):
+        snapshot = tracemalloc.take_snapshot()
+        top_stats = snapshot.statistics('traceback')
+        print("[ Top 10 memory-allocating lines ]")
+        for stat in top_stats[:10]:
+            print(stat)
+
 
 if __name__ == '__main__':
+    tracemalloc.start()
+
     signal.signal(signal.SIGINT, handle_shutdown_signal)
     signal.signal(signal.SIGTERM, handle_shutdown_signal)
 

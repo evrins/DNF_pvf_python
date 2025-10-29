@@ -1,7 +1,5 @@
 import json
 
-from config import config
-from dnfpkgtool.repo.item_repo import ItemRepo
 from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt, QTimer
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -15,6 +13,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from config import config
+from dnfpkgtool.repo.item_repo import ItemRepo
 from ui.signals import SubmitSignal, SubmitType
 from ui.vars import (
     categoryed_stackable_type_dict,
@@ -56,9 +56,9 @@ class ItemTableModel(QAbstractTableModel):
             for k, v in d.items():
                 lines.append(k)
                 if (
-                    k == '[basic explain]'
-                    or k == '[detail explain]'
-                    or k == '[flavor text]'
+                        k == '[basic explain]'
+                        or k == '[detail explain]'
+                        or k == '[flavor text]'
                 ):
                     if v:
                         for it in v:
@@ -201,13 +201,22 @@ class ItemSearch(QWidget):
         rarity_idx = self.rarity_combo.currentIndex()
         rarity = None if rarity_idx == 0 else item_rarity_list[rarity_idx - 1]
 
-        data = self.items_repo.query(
-            name,
-            stackable_type_list=stackable_type_list,
-            min_level=min_level,
-            max_level=max_level,
-            rarity_display=rarity,
-        )
+        if category == '卡片':
+            data = self.items_repo.query(
+                name,
+                item_category_list=stackable_type_list,
+                min_level=min_level,
+                max_level=max_level,
+                rarity_display=rarity,
+            )
+        else:
+            data = self.items_repo.query(
+                name,
+                stackable_type_list=stackable_type_list,
+                min_level=min_level,
+                max_level=max_level,
+                rarity_display=rarity,
+            )
         self.update_title(len(data))
         table_model = ItemTableModel(data)
 

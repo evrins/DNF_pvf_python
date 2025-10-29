@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 
 import polars as pl
 
@@ -33,7 +34,11 @@ class MagicSealRepo:
         rs = self.df.filter(pl.col('id') == id_).select('*').limit(1).to_dicts()
         return rs[0]
 
+    def query_all(self) -> List[dict]:
+        rs = self.df.select('*').to_dicts()
+        return rs
 
-def get_magic_seal_repo():
+
+def get_magic_seal_repo() -> MagicSealRepo:
     fp = config.get_magic_seal_parquet_file_path()
     return MagicSealRepo(fp)

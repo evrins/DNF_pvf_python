@@ -1,12 +1,15 @@
-from dnfpkgtool.db.service.item_service import ItemService
+from typing import List
+
 from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt
 from PySide6.QtWidgets import QWidget
 
+from dnfpkgtool.db.entity.dnf_item_slot import DnfItemSlot
+from dnfpkgtool.db.service.item_service import ItemService
 from ui.account_cargo_ui import Ui_account_cargo
 
 
 class AccountCargoModel(QAbstractTableModel):
-    def __init__(self, data):
+    def __init__(self, data: List[DnfItemSlot]):
         super().__init__()
         self._data = data
         self._headers = [
@@ -28,7 +31,7 @@ class AccountCargoModel(QAbstractTableModel):
             row = self._data[index.row()]
             key = self._headers[index.column()]
             if key == 'num_grade':
-                if row.type == 0x01:
+                if row.is_equipment:
                     return 1
                 else:
                     return row.num_grade

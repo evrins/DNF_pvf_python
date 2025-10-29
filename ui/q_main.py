@@ -3,11 +3,11 @@ import sys
 from pathlib import Path
 from time import localtime, strftime
 
-from dnfpkgtool.db.service.item_service import get_item_service
 from PySide6.QtCore import Property, QObject, QTimer, QUrl, Signal, Slot
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
+from dnfpkgtool.db.service.item_service import get_item_service
 from ui.components.cargo_table_model import CargoTableModel
 
 

@@ -169,6 +169,7 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str):
         ('mp_max_rate', '[MP MAX rate]', 0.0, MappingElementLocation.First),
         ('set_name', '[set name]', '', MappingElementLocation.First),
         ('set_item', '[set item]', [], MappingElementLocation.All),
+        ('durability', '[durability]', 0, MappingElementLocation.First),
     ]
     df = remapping_pvf_dict(pvf_dict, mappings)
     df = pl.DataFrame(df)

@@ -358,14 +358,14 @@ class ItemslotframeWidget(tk.Frame):
 
 if __name__ == '__main__':
     root = tk.Tk()
-    import ctypes
+    # import ctypes
 
     # 告诉操作系统使用程序自身的dpi适配
-    ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    # ctypes.windll.shcore.SetProcessDpiAwareness(1)
     # 获取屏幕的缩放因子
-    ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+    # ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
     # 设置程序缩放
-    root.tk.call('tk', 'scaling', ScaleFactor / 75)
+    # root.tk.call('tk', 'scaling', ScaleFactor / 75)
     widget = ItemslotframeWidget(root)
     widget.pack(expand=True, fill='both')
     root.mainloop()

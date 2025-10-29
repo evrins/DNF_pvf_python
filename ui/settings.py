@@ -1,4 +1,3 @@
-from dnfpkgtool.db import check_mysql_config
 from loguru import logger
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
@@ -12,6 +11,8 @@ from PySide6.QtWidgets import (
     QSizePolicy,
     QWidget,
 )
+
+from dnfpkgtool.db import check_mysql_config
 
 
 class Setting(QWidget):

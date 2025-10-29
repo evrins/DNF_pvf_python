@@ -1,7 +1,5 @@
 import json
 
-from config import config
-from dnfpkgtool.repo.equipment_repo import EquipmentRepo
 from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt, QTimer
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -15,6 +13,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from config import config
+from dnfpkgtool.repo.equipment_repo import EquipmentRepo
 from ui.signals import SubmitSignal, SubmitType
 from ui.vars import (
     default_options,
@@ -304,7 +304,18 @@ class EquipmentSearch(QWidget):
                 minor_option = minor_options[main_option][minor_idx]
                 equipment_type_list = [equipment_name_mapping[minor_option]]
         elif main_option == '装扮':
-            equipment_type_list = ['[support]', '[magic stone]']
+            equipment_type_list = [
+                '[aurora avatar]',
+                '[hair avatar]',
+                '[hat avatar]',
+                '[face avatar]',
+                '[breast avatar]',
+                '[coat avatar]',
+                '[skin avatar]',
+                '[waist avatar]',
+                '[pants avatar]',
+                '[shoes avatar]',
+            ]
             if minor_idx != 0:
                 minor_option = minor_options[main_option][minor_idx]
                 equipment_type_list = [equipment_name_mapping[minor_option]]

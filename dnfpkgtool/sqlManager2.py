@@ -1191,38 +1191,6 @@ def send_postal(
         if totalnum <= 0:
             break
 
-
-def get_postal(cNo, ret='name'):
-    sql = (
-        'select postal_id,send_charac_name,receive_charac_no,item_id,avata_flag,creature_flag,add_info,gold,letter_id from postal'
-        + f' where receive_charac_no={cNo} and delete_flag=0 and item_id!=0;'
-    )
-    results = execute_and_fetch('taiwan_cain_2nd', sql)
-    res = []
-    for (
-        postal_id,
-        send_charac_name,
-        receive_charac_no,
-        item_id,
-        avata_flag,
-        creature_flag,
-        num,
-        *_,
-    ) in results:
-        if avata_flag == 1:
-            type = '时装'
-        elif creature_flag == 1:
-            type = '宠物'
-        else:
-            type = '普通'
-        item = cacheM.ITEMS_dict.get(item_id)
-        if ret == 'name':
-            res.append([postal_id, item, decode(send_charac_name), type])
-        elif ret == 'id':
-            res.append([postal_id, item_id, decode(send_charac_name), num])
-    return res
-
-
 def get_postal_new(cNo):
     sql = (
         'select postal_id,send_charac_name,receive_charac_no,item_id,avata_flag,creature_flag,add_info,gold,letter_id from postal'

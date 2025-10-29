@@ -72,6 +72,7 @@ def build_item_repo_parquet(pvf_dict: PVFDict, fp: str):
         ('sub_stackable_type', '[stackable type]', 0, MappingElementLocation.Second),
         ('item_group_name', '[item group name]', '', MappingElementLocation.First),
         ('item_category', '[item category]', '', MappingElementLocation.First),
+        ('stack_limit', '[stack limit]', 0, MappingElementLocation.First),
     ]
     df = remapping_pvf_dict(pvf_dict, mappings)
     df = pl.DataFrame(df)
@@ -128,13 +129,14 @@ class ItemRepo:
             self,
             name: str,
             stackable_type_list: list[str] = None,
+            item_category_list: list[str] = None,
             min_level: int = None,
             max_level: int = None,
             rarity_display: str = None,
             item_type: str = None,
     ) -> List[dict]:
         logger.info(
-            f'query with name {name} stackable_type_list {stackable_type_list} min_level {min_level} max_level {max_level} rarity_display {rarity_display} item_type {item_type}'
+            f'query with name {name} stackable_type_list {stackable_type_list} item_category_list {item_category_list} min_level {min_level} max_level {max_level} rarity_display {rarity_display} item_type {item_type}'
         )
         name = name.lower()
         cond = pl.col('name').str.contains(name) | pl.col(
@@ -143,6 +145,8 @@ class ItemRepo:
 
         if stackable_type_list is not None:
             cond = cond & (pl.col('stackable_type').is_in(stackable_type_list))
+        if item_category_list is not None:
+            cond = cond & (pl.col('item_category').is_in(item_category_list))
         if min_level is not None:
             cond = cond & (pl.col('level') >= min_level)
         if max_level is not None:
@@ -155,7 +159,7 @@ class ItemRepo:
         return self.df.filter(cond).select('*').to_dicts()
 
     def query_by_id(self, id_: int) -> dict:
-        rows = self.df.filter(pl.col('id') == id_).head(1).to_dicts()
+        rows = self.df.filter(pl.col('id') == id_).limit(1).to_dicts()
         if len(rows) == 0:
             raise ItemIdNotFoundException(id_)
         return rows[0]

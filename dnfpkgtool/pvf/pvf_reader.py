@@ -202,6 +202,7 @@ class PVFReader:
             for k1, v1 in job_skill_list.table_dict.items():
                 job_name = v1.split('/')[0]
                 job_skill_dict = self.read_file_as_dict(f'{skill_lst.base_dir}/{v1}')
+                job_skill_dict['id_of_job'] = [k1]
                 job_skill_dict['job'] = [job_name.lower()]
                 skills.append(job_skill_dict)
         return skills

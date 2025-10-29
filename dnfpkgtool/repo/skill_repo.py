@@ -22,6 +22,7 @@ def build_skill_repo_parquet(pvf_list: List[Dict[str, any]], fp: str):
             MappingElementLocation.First,
         ),
         ('skill_class', '[skill class]', 0, MappingElementLocation.First),
+        ('id_of_job', 'id_of_job', 0, MappingElementLocation.First),
     ]
     df = remapping_pvf_list(pvf_list, mappings)
     df = pl.DataFrame(df)
@@ -40,10 +41,17 @@ def test_build_skill_repo_parquet():
 
 
 def test_query():
-    fp = base_dir / 'data' / 'items.parquet'
+    fp = base_dir / 'data' / 'skills.parquet'
     skill_repo = SkillRepo(str(fp))
     rs = skill_repo.query('药')
     print(len(rs))
+
+
+def test_query_by_job_and_id_of_job():
+    fp = base_dir / 'data' / 'skills.parquet'
+    skill_repo = SkillRepo(str(fp))
+    rs = skill_repo.query_by_job_and_id_of_job('swordman', 2)
+    print(rs)
 
 
 class SkillRepo:
@@ -68,7 +76,17 @@ class SkillRepo:
     def query_by_id(self, id_: int) -> dict:
         return self.df.filter(pl.col('id') == id_).limit(1).to_dicts()[0]
 
+    def query_by_job_and_id_of_job(self, job: str, id_of_job: int) -> dict:
+        cond = pl.col('id_of_job') == id_of_job
+        if job != 'all':
+            cond = cond & (pl.col('job') == job)
+        return (self.df
+        .filter(cond)
+        .select('*')
+        .limit(1)
+        .to_dicts()[0])
 
-def get_magic_seal_repo():
-    fp = config.get_magic_seal_parquet_file_path()
+
+def get_skill_repo():
+    fp = config.get_skill_parquet_file_path()
     return SkillRepo(fp)

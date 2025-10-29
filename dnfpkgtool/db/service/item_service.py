@@ -1,13 +1,28 @@
+import enum
 import zlib
-from typing import List, Tuple
+from typing import List
 
 from config import config
+from dnfpkgtool.db.entity.character_inventory import CharacterInventory
 from dnfpkgtool.db.entity.dnf_item_slot import DnfItemSlot
 from dnfpkgtool.db.entity.magic_seal import MagicSeal
 from dnfpkgtool.db.repo.account_cargo_repo import get_account_cargo_repo
-from dnfpkgtool.repo.equipment_repo import get_equipment_repo
-from dnfpkgtool.repo.item_repo import get_item_repo
+from dnfpkgtool.db.repo.character_inventory_expand_repo import (
+    get_character_inventory_expand_repo,
+)
+from dnfpkgtool.db.repo.inventory_repo import get_inventory_repo
+from dnfpkgtool.repo.equipment_repo import (
+    EquipmentIdNotFoundException,
+    get_equipment_repo,
+)
+from dnfpkgtool.repo.item_repo import ItemIdNotFoundException, get_item_repo
 from dnfpkgtool.repo.magic_seal_repo import get_magic_seal_repo
+
+
+class InventoryLoc(enum.Enum):
+    Backpack = 0
+    Creatures = 1
+    Equipment = 2
 
 
 class ItemService:
@@ -16,11 +31,69 @@ class ItemService:
         self.equipment_repo = get_equipment_repo()
         self.magic_seal_repo = get_magic_seal_repo()
         self.account_cargo_repo = get_account_cargo_repo()
+        self.character_cargo_repo = get_character_inventory_expand_repo()
+        self.character_inventory = get_inventory_repo()
 
+    # 账户仓库
     def get_current_account_cargo(self) -> List[DnfItemSlot]:
         account_id = config.get_current_account_id()
         account_cargo = self.account_cargo_repo.query_by_m_id(account_id)
         return self.unpack_blob_items(account_cargo.cargo)
+
+    # 角色仓库
+    def get_current_character_cargo(self) -> List[DnfItemSlot]:
+        character_no = config.get_current_character_no()
+        character_cargo = self.character_cargo_repo.query_by_character_no(character_no)
+        return self.unpack_blob_items(character_cargo.cargo)
+
+    # 角色装备 角色宠物 角色背包
+    def get_current_character_inventory(self) -> CharacterInventory:
+        character_no = config.get_current_character_no()
+        inventory = self.character_inventory.query_by_character_no(character_no)
+        ci = CharacterInventory()
+        ci.equipments = self.unpack_blob_items(inventory.equipment_slot)
+        ci.creatures = self.unpack_blob_items(inventory.creature)
+        ci.backpack = self.unpack_blob_items(inventory.inventory)
+
+        return ci
+
+    # 更新账户仓库中的物品
+    def update_current_account_cargo(self, item: DnfItemSlot) -> None:
+        account_id = config.get_current_account_id()
+        account_cargo = self.account_cargo_repo.query_by_m_id(account_id)
+        new_cargo = self.update_blob_items(account_cargo.cargo, item)
+        self.account_cargo_repo.update_cargo_by_m_id(account_id, new_cargo)
+
+    # 更新角色仓库中的物品
+    def update_current_character_cargo(self, item: DnfItemSlot) -> None:
+        character_no = config.get_current_character_no()
+        character_cargo = self.character_cargo_repo.query_by_character_no(character_no)
+        new_cargo = self.update_blob_items(character_cargo.cargo, item)
+        self.character_cargo_repo.update_cargo_by_character_no(character_no, new_cargo)
+
+    # 更新角色装备, 角色宠物, 角色装备 中的物品
+    def update_current_character_inventory(self, item: DnfItemSlot, inventory_loc: InventoryLoc) -> None:
+        character_no = config.get_current_character_no()
+        inventory = self.character_inventory.query_by_character_no(character_no)
+        if inventory_loc == InventoryLoc.Backpack:
+            new_inventory = self.update_blob_items(inventory.inventory, item)
+            self.character_inventory.update_inventory_by_character_no(character_no, new_inventory)
+        elif inventory_loc == InventoryLoc.Equipment:
+            new_equipment = self.update_blob_items(inventory.equipment_slot, item)
+            self.character_inventory.update_equipments_by_character_no(character_no, new_equipment)
+        elif inventory_loc == InventoryLoc.Creatures:
+            new_creatures = self.update_blob_items(inventory.creature, item)
+            self.character_inventory.update_creatures_by_character_no(character_no, new_creatures)
+        else:
+            raise ValueError(f'Inventory location not supported {inventory_loc}')
+
+    def update_blob_items(self, buf: bytes, item: DnfItemSlot) -> bytes:
+        prefix = buf[:4]
+        items_bytes = bytearray(zlib.decompress(buf[4:]))
+        idx = item.display_idx
+        items_bytes[idx * 61: idx * 61 + 61] = item.to_bytes()
+        res = prefix + zlib.compress(items_bytes)
+        return res
 
     def unpack_blob_items(self, buf: bytes) -> List[DnfItemSlot]:
         buf = zlib.decompress(buf[4:])
@@ -35,13 +108,23 @@ class ItemService:
     def unpack_blob_item(self, buf: bytes) -> DnfItemSlot:
         item = DnfItemSlot(buf)
         if item.id:
-            if item.type == 0x01:
-                inner_item = self.equipment_repo.query_by_id(item.id)
-            else:
-                inner_item = self.item_repo.query_by_id(item.id)
-            item.display_name = inner_item['name']
-            item.display_rarity = inner_item['rarity']
-            item.display_rarity_name = inner_item['rarity_display']
+            try:
+                if item.type == 0x01 or item.type == 0x05 or item.type == 0x06:
+                    inner_item = self.equipment_repo.query_by_id(item.id)
+                    item.equipment_type = inner_item['equipment_type']
+                    item.endurance_limit = inner_item['durability']
+                    item.display_category = inner_item['equipment_type_display']
+                else:
+                    inner_item = self.item_repo.query_by_id(item.id)
+                    item.stack_limit = inner_item['stack_limit']
+                    item.display_category = inner_item['stackable_type_display']
+                item.display_name = inner_item['name']
+                item.display_rarity = inner_item['rarity']
+                item.display_rarity_name = inner_item['rarity_display']
+            except ItemIdNotFoundException:
+                item.is_missing = True
+            except EquipmentIdNotFoundException:
+                item.is_missing = True
 
         magic_seal_range_list = [(0, 3), (3, 6), (6, 9), (10, 13)]
         for idx, it in enumerate(magic_seal_range_list):
@@ -49,7 +132,7 @@ class ItemService:
             if ms.id == 0:
                 continue
             ms.name = self.magic_seal_repo.query_by_id(ms.id)['name']
-            item.display_seals[idx] = ms
+            item.display_magic_seals[idx] = ms
         return item
 
 

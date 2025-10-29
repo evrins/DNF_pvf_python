@@ -244,6 +244,7 @@ item_category_key_list = [
     '副职业',
     '任务道具',
     '附魔宝珠',
+    '卡片',
     '礼包',
     '时装徽章',
     '契约',
@@ -283,6 +284,7 @@ categoryed_stackable_type_dict = {
     '附魔宝珠': [
         '[enchant waste]',
     ],
+    '卡片': ['monster card'],
     '秘药': [
         '[expert town potion]',
     ],
