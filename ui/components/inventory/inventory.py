@@ -6,6 +6,7 @@ from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSortFilterProxyMod
 from PySide6.QtWidgets import QApplication, QWidget
 
 from dnfpkgtool.db.entity.dnf_item_slot import DnfItemSlot, type_dict
+from dnfpkgtool.db.model.inventory import Inventory
 from dnfpkgtool.db.service.item_service import ItemService
 from ui.components.inventory.empty import Empty
 from ui.components.inventory.equipment_form import EquipmentForm
@@ -16,7 +17,7 @@ type_text = list(type_dict.values()) + ['全部']
 type_keys = list(type_dict.keys()) + [0xFF]
 
 
-class ItemTableModel(QAbstractTableModel):
+class InventoryTableModel(QAbstractTableModel):
     def __init__(self, data: List[DnfItemSlot]):
         super().__init__()
         self._data = data
@@ -107,7 +108,7 @@ class InventoryWidget(QWidget, Ui_inventory_container):
         self._update_table_view_item()
 
     def _update_table_view_item(self):
-        item_model = ItemTableModel(self.display_item_list)
+        item_model = InventoryTableModel(self.display_item_list)
 
         proxy_model = QSortFilterProxyModel()
         proxy_model.setSourceModel(item_model)

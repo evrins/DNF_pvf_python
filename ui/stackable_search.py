@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 )
 
 from config import config
-from dnfpkgtool.repo.item_repo import ItemRepo
+from dnfpkgtool.repo.stackable_repo import StackableRepo
 from ui.signals import SubmitSignal, SubmitType
 from ui.vars import (
     categoryed_stackable_type_dict,
@@ -24,7 +24,7 @@ from ui.vars import (
 from ui.widgets.ranged_spin_box import RangedSpinBox
 
 
-class ItemTableModel(QAbstractTableModel):
+class StackableTableModel(QAbstractTableModel):
     def __init__(self, data):
         super().__init__()
         self._data = data
@@ -82,10 +82,10 @@ class ItemTableModel(QAbstractTableModel):
         return Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
 
 
-class ItemSearch(QWidget):
+class StackableSearch(QWidget):
     def __init__(self, submit_signal: SubmitSignal):
         super().__init__()
-        self.items_repo = ItemRepo(config.get_item_parquet_file_path())
+        self.stackable_repo = StackableRepo(config.get_stackable_parquet_file_path())
         self.submit_signal = submit_signal
 
         self.form_width = 240
@@ -157,7 +157,7 @@ class ItemSearch(QWidget):
             alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft,
         )
 
-        table_model = ItemTableModel([])
+        table_model = StackableTableModel([])
 
         proxy_model = QSortFilterProxyModel()
         proxy_model.setSourceModel(table_model)
@@ -202,7 +202,7 @@ class ItemSearch(QWidget):
         rarity = None if rarity_idx == 0 else item_rarity_list[rarity_idx - 1]
 
         if category == '卡片':
-            data = self.items_repo.query(
+            data = self.stackable_repo.query(
                 name,
                 item_category_list=stackable_type_list,
                 min_level=min_level,
@@ -210,7 +210,7 @@ class ItemSearch(QWidget):
                 rarity_display=rarity,
             )
         else:
-            data = self.items_repo.query(
+            data = self.stackable_repo.query(
                 name,
                 stackable_type_list=stackable_type_list,
                 min_level=min_level,
@@ -218,7 +218,7 @@ class ItemSearch(QWidget):
                 rarity_display=rarity,
             )
         self.update_title(len(data))
-        table_model = ItemTableModel(data)
+        table_model = StackableTableModel(data)
 
         proxy_model = QSortFilterProxyModel()
         proxy_model.setSourceModel(table_model)

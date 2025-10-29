@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
 from ui.account_cargo import AccountCargo
 from ui.equipment_search import EquipmentSearch
 from ui.inventory_tabview import InventoryTabView
-from ui.item_search import ItemSearch
+from ui.stackable_search import StackableSearch
 from ui.settings import Setting
 from ui.signals import SubmitSignal, SubmitType
 
@@ -43,8 +43,8 @@ class MainWindow(QMainWindow):
         self.equip_search = EquipmentSearch(self.submit_signal)
         self.tab_widget.addTab(self.equip_search, '🛡️ Equipment Search')
 
-        self.item_search = ItemSearch(self.submit_signal)
-        self.tab_widget.addTab(self.item_search, '📦 Item Search')
+        self.stackable_search = StackableSearch(self.submit_signal)
+        self.tab_widget.addTab(self.stackable_search, '📦 Stackable Search')
 
         self.inventory_tabview = InventoryTabView()
         self.tab_widget.addTab(self.inventory_tabview, 'Inventory')
