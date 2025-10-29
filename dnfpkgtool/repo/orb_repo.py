@@ -7,7 +7,7 @@ from typing import List
 import polars as pl
 
 from config import config
-from dnfpkgtool.repo.item_repo import ItemRepo, get_item_repo
+from dnfpkgtool.repo.stackable_repo import StackableRepo, get_stackable_repo
 from dnfpkgtool.repo.skill_repo import SkillRepo, get_skill_repo
 
 enchant_key_mapping = {
@@ -129,7 +129,7 @@ def render_effect_display(enchant: dict, skill_repo: SkillRepo) -> str:
                 res.append(f'+{v}%')
         elif k in ['[attack speed]', '[move speed]', '[cast speed]']:
             v = v[0]
-            v = v/10
+            v = v / 10
             res.append(f'+{v:.1f}%')
         elif k == '[physical critical hit]' or k == '[magical critical hit]':
             res.append(f'+{v[0]}%')
@@ -143,8 +143,8 @@ def render_effect_display(enchant: dict, skill_repo: SkillRepo) -> str:
     return ' '.join(res)
 
 
-def build_orb_repo_parquet(item_repo: ItemRepo, skill_repo: SkillRepo, fp: str):
-    orb_list = item_repo.query('', stackable_type_list=['[enchant waste]'])
+def build_orb_repo_parquet(stackable_repo: StackableRepo, skill_repo: SkillRepo, fp: str):
+    orb_list = stackable_repo.query('', stackable_type_list=['[enchant waste]'])
     rs: defaultdict = defaultdict(list)
     for orb in orb_list:
         orb_d = json.loads(orb['json'])
@@ -155,7 +155,7 @@ def build_orb_repo_parquet(item_repo: ItemRepo, skill_repo: SkillRepo, fp: str):
         monster_card_id = orb_d['[monster card id]'][0]
         if not monster_card_id:
             print(f'[monster card id] not found in {orb["name"]}')
-        card = item_repo.query_by_id(monster_card_id)
+        card = stackable_repo.query_by_id(monster_card_id)
         rs['card_id'].append(card['id'])
         rs['card_name'].append(card['name'])
         rs['card_name2'].append(card['name2'])
@@ -193,13 +193,10 @@ def build_orb_repo_parquet(item_repo: ItemRepo, skill_repo: SkillRepo, fp: str):
     df.write_parquet(fp)
 
 
-base_dir = Path(__file__).parent
-
-
 def test_build_orb_repo_parquet():
-    item_repo = get_item_repo()
+    stackable_repo = get_stackable_repo()
     skill_repo = get_skill_repo()
-    build_orb_repo_parquet(item_repo, skill_repo, base_dir / 'data' / 'orbs.parquet')
+    build_orb_repo_parquet(stackable_repo, skill_repo, config.get_orb_parquet_file_path())
 
 
 def test_build_orb_options():
@@ -236,10 +233,13 @@ class OrbRepo:
                 .sort(pl.col('orb_id'), descending=False)
                 .to_dicts())
 
-    def query_by_enchant_category_display_and_equipment_type(self, enchant_category_display: str, equipment_type: str) -> List[dict]:
-        return (self.df.filter((pl.col('enchant_category_display').list.contains(enchant_category_display)) & pl.col('apply_parts').list.contains(equipment_type))
+    def query_by_enchant_category_display_and_equipment_type(self, enchant_category_display: str,
+                                                             equipment_type: str) -> List[dict]:
+        return (self.df.filter((pl.col('enchant_category_display').list.contains(enchant_category_display)) & pl.col(
+            'apply_parts').list.contains(equipment_type))
                 .sort(pl.col('orb_id'), descending=False)
                 .to_dicts())
+
 
 def get_orb_repo() -> OrbRepo:
     fp = config.get_orb_parquet_file_path()

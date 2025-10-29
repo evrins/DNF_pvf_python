@@ -15,7 +15,7 @@ from dnfpkgtool.repo.equipment_repo import (
     EquipmentIdNotFoundException,
     get_equipment_repo,
 )
-from dnfpkgtool.repo.item_repo import ItemIdNotFoundException, get_item_repo
+from dnfpkgtool.repo.stackable_repo import ItemIdNotFoundException, get_stackable_repo
 from dnfpkgtool.repo.magic_seal_repo import get_magic_seal_repo
 
 
@@ -27,7 +27,7 @@ class InventoryLoc(enum.Enum):
 
 class ItemService:
     def __init__(self):
-        self.item_repo = get_item_repo()
+        self.stackable_repo = get_stackable_repo()
         self.equipment_repo = get_equipment_repo()
         self.magic_seal_repo = get_magic_seal_repo()
         self.account_cargo_repo = get_account_cargo_repo()
@@ -115,7 +115,7 @@ class ItemService:
                     item.endurance_limit = inner_item['durability']
                     item.display_category = inner_item['equipment_type_display']
                 else:
-                    inner_item = self.item_repo.query_by_id(item.id)
+                    inner_item = self.stackable_repo.query_by_id(item.id)
                     item.stack_limit = inner_item['stack_limit']
                     item.display_category = inner_item['stackable_type_display']
                 item.display_name = inner_item['name']

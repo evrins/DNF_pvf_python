@@ -82,8 +82,8 @@ def get_current_character_no():
 # todo build path from config
 
 
-def get_item_parquet_file_path() -> str:
-    return '/Users/evrins/workspace/python/DNF_pvf_python/dnfpkgtool/repo/data/items.parquet'
+def get_stackable_parquet_file_path() -> str:
+    return '/Users/evrins/workspace/python/DNF_pvf_python/dnfpkgtool/repo/data/stackables.parquet'
 
 
 def get_equipment_parquet_file_path() -> str:

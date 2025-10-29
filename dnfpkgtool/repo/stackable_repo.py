@@ -64,7 +64,7 @@ def map_rarity_display(rarity: int) -> str:
     return rarity_display
 
 
-def build_item_repo_parquet(pvf_dict: PVFDict, fp: str):
+def build_stackable_repo_parquet(pvf_dict: PVFDict, fp: str):
     mappings = [
         ('level', '[minimum level]', 0, MappingElementLocation.First),
         ('rarity', '[rarity]', 0, MappingElementLocation.First),
@@ -90,24 +90,24 @@ def build_item_repo_parquet(pvf_dict: PVFDict, fp: str):
 base_dir = Path(__file__).parent
 
 
-def test_build_item_repo_parquet():
+def test_build_stackable_repo_parquet():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)
     stackable_dict = reader.get_stackable_dict()
-    build_item_repo_parquet(stackable_dict, base_dir / 'data' / 'items.parquet')
+    build_stackable_repo_parquet(stackable_dict, config.get_stackable_parquet_file_path())
 
 
 def test_query():
-    fp = base_dir / 'data' / 'items.parquet'
-    item_repo = ItemRepo(str(fp))
-    rs = item_repo.query('药', max_level=50)
+    fp = config.get_stackable_parquet_file_path()
+    stackable_repo = StackableRepo(str(fp))
+    rs = stackable_repo.query('药', max_level=50)
     print(len(rs))
 
 
 def test_query_by_id():
-    fp = base_dir / 'data' / 'items.parquet'
-    item_repo = ItemRepo(str(fp))
-    res = item_repo.query_by_id(1)
+    fp = config.get_stackable_parquet_file_path()
+    stackable_repo = StackableRepo(str(fp))
+    res = stackable_repo.query_by_id(1)
     print()
     print(res)
 
@@ -121,7 +121,7 @@ class ItemIdNotFoundException(Exception):
         return f'Item ID not found: {self.item_id}'
 
 
-class ItemRepo:
+class StackableRepo:
     def __init__(self, fp: str):
         self.df = pl.read_parquet(fp)
 
@@ -165,6 +165,6 @@ class ItemRepo:
         return rows[0]
 
 
-def get_item_repo() -> ItemRepo:
-    fp = config.get_item_parquet_file_path()
-    return ItemRepo(fp)
+def get_stackable_repo() -> StackableRepo:
+    fp = config.get_stackable_parquet_file_path()
+    return StackableRepo(fp)
