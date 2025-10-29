@@ -204,22 +204,19 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str):
     df.write_parquet(fp)
 
 
-base_dir = Path(__file__).parent
-
-
 def test_build_equipment_repo():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)
     stackable_dict = reader.get_equipment_dict()
     build_equipment_repo_parquet(
-        stackable_dict, base_dir / 'data' / 'equipments.parquet'
+        stackable_dict, config.get_equipment_parquet_file_path()
     )
 
 
 def test_query():
-    fp = base_dir / 'data' / 'equipments.parquet'
-    item_repo = EquipmentRepo(str(fp))
-    res = item_repo.query('', ['[coat]', '[shoes]'], 1, 20, 1)
+    fp = config.get_equipment_parquet_file_path()
+    equipment_repo = EquipmentRepo(str(fp))
+    res = equipment_repo.query('', ['[coat]', '[shoes]'], 1, 20, 1)
     print()
     print(f'{len(res)} equipments found')
     for it in res:

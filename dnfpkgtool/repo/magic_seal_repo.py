@@ -1,12 +1,9 @@
-from pathlib import Path
 from typing import List
 
 import polars as pl
 
 from config import config
 from dnfpkgtool.pvf.pvf_reader import PVFReader
-
-base_dir = Path(__file__).parent
 
 
 def build_magic_seal(magic_seal_dict: dict[int, str], out_path: str):
@@ -23,7 +20,7 @@ def test_build_magic_seal():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)
     magic_seal_dict = reader.get_magic_seal_dict()
-    build_magic_seal(magic_seal_dict, base_dir / 'data' / 'magic_seals.parquet')
+    build_magic_seal(magic_seal_dict, config.get_magic_seal_parquet_file_path())
 
 
 class MagicSealRepo:

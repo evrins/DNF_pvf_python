@@ -30,25 +30,22 @@ def build_skill_repo_parquet(pvf_list: List[Dict[str, any]], fp: str):
     df.write_parquet(fp)
 
 
-base_dir = Path(__file__).parent
-
-
 def test_build_skill_repo_parquet():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)
     stackable_dict = reader.get_skill_list()
-    build_skill_repo_parquet(stackable_dict, base_dir / 'data' / 'skills.parquet')
+    build_skill_repo_parquet(stackable_dict, config.get_skill_parquet_file_path())
 
 
 def test_query():
-    fp = base_dir / 'data' / 'skills.parquet'
+    fp = config.get_skill_parquet_file_path()
     skill_repo = SkillRepo(str(fp))
     rs = skill_repo.query('药')
     print(len(rs))
 
 
 def test_query_by_job_and_id_of_job():
-    fp = base_dir / 'data' / 'skills.parquet'
+    fp = config.get_skill_parquet_file_path()
     skill_repo = SkillRepo(str(fp))
     rs = skill_repo.query_by_job_and_id_of_job('swordman', 2)
     print(rs)
