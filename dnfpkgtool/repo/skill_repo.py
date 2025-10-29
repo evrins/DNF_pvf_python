@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Dict, List
 
 import polars as pl
@@ -77,11 +76,7 @@ class SkillRepo:
         cond = pl.col('id_of_job') == id_of_job
         if job != 'all':
             cond = cond & (pl.col('job') == job)
-        return (self.df
-        .filter(cond)
-        .select('*')
-        .limit(1)
-        .to_dicts()[0])
+        return self.df.filter(cond).select('*').limit(1).to_dicts()[0]
 
 
 def get_skill_repo():

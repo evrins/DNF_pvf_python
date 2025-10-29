@@ -94,7 +94,9 @@ def test_build_stackable_repo_parquet():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)
     stackable_dict = reader.get_stackable_dict()
-    build_stackable_repo_parquet(stackable_dict, config.get_stackable_parquet_file_path())
+    build_stackable_repo_parquet(
+        stackable_dict, config.get_stackable_parquet_file_path()
+    )
 
 
 def test_query():

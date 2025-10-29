@@ -2,11 +2,16 @@ import os
 import sys
 from typing import List
 
-from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSortFilterProxyModel, Qt, Signal
+from PySide6.QtCore import (
+    QAbstractTableModel,
+    QModelIndex,
+    QSortFilterProxyModel,
+    Qt,
+    Signal,
+)
 from PySide6.QtWidgets import QApplication, QWidget
 
 from dnfpkgtool.db.entity.dnf_item_slot import DnfItemSlot, type_dict
-from dnfpkgtool.db.model.inventory import Inventory
 from dnfpkgtool.db.service.item_service import ItemService
 from ui.components.inventory.empty import Empty
 from ui.components.inventory.equipment_form import EquipmentForm

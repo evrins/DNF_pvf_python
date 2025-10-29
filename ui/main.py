@@ -13,12 +13,11 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ui.account_cargo import AccountCargo
 from ui.equipment_search import EquipmentSearch
 from ui.inventory_tabview import InventoryTabView
-from ui.stackable_search import StackableSearch
 from ui.settings import Setting
 from ui.signals import SubmitSignal, SubmitType
+from ui.stackable_search import StackableSearch
 
 shutdown_requested = False
 
@@ -130,7 +129,7 @@ class MainWindow(QMainWindow):
     def dump_memory(self):
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics('traceback')
-        print("[ Top 10 memory-allocating lines ]")
+        print('[ Top 10 memory-allocating lines ]')
         for stat in top_stats[:10]:
             print(stat)
 

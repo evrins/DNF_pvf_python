@@ -1,7 +1,7 @@
 from PySide6 import QtWidgets
 
 from dnfpkgtool.db.entity.dnf_item_slot import DnfItemSlot
-from dnfpkgtool.db.service.item_service import ItemService, InventoryLoc
+from dnfpkgtool.db.service.item_service import InventoryLoc, ItemService
 from ui.components.inventory.inventory import InventoryWidget
 
 
@@ -15,57 +15,73 @@ class InventoryTabView(QtWidgets.QTabWidget):
         self.account_cargo_tab = InventoryWidget(account_cargo)
         self.account_cargo_tab.on_save.connect(self.save_account_cargo)
         self.account_cargo_tab.on_delete.connect(self.delete_account_cargo)
-        self.addTab(self.account_cargo_tab, "Account Cargo")
+        self.addTab(self.account_cargo_tab, 'Account Cargo')
 
         character_cargo = self.item_svc.get_current_character_cargo()
         self.character_cargo_tab = InventoryWidget(character_cargo)
         self.character_cargo_tab.on_save.connect(self.save_character_cargo)
         self.character_cargo_tab.on_delete.connect(self.delete_character_cargo)
-        self.addTab(self.character_cargo_tab, "Character Cargo")
+        self.addTab(self.character_cargo_tab, 'Character Cargo')
 
         ci = self.item_svc.get_current_character_inventory()
         self.backpack_tab = InventoryWidget(ci.backpack)
         self.backpack_tab.on_save.connect(self.save_backpack)
         self.backpack_tab.on_delete.connect(self.delete_backpack)
-        self.addTab(self.backpack_tab, "Backpack")
+        self.addTab(self.backpack_tab, 'Backpack')
 
         self.equipments_tab = InventoryWidget(ci.equipments)
         self.equipments_tab.on_save.connect(self.save_equipments)
         self.equipments_tab.on_delete.connect(self.delete_equipments)
-        self.addTab(self.equipments_tab, "Equipment")
+        self.addTab(self.equipments_tab, 'Equipment')
 
         self.creatures_tab = InventoryWidget(ci.creatures)
         self.creatures_tab.on_save.connect(self.save_creatures)
         self.creatures_tab.on_delete.connect(self.delete_creatures)
-        self.addTab(self.creatures_tab, "Creatures")
+        self.addTab(self.creatures_tab, 'Creatures')
 
     def save_account_cargo(self, new_item: DnfItemSlot):
         self.item_svc.update_current_account_cargo(new_item)
 
     # 删除操作就是将二进制序列中的一段置为空
     def delete_account_cargo(self, item: DnfItemSlot):
-        self.item_svc.update_current_account_cargo(DnfItemSlot.with_idx(item.display_idx))
+        self.item_svc.update_current_account_cargo(
+            DnfItemSlot.with_idx(item.display_idx)
+        )
 
     def save_character_cargo(self, new_item: DnfItemSlot):
         self.item_svc.update_current_character_cargo(new_item)
 
     def delete_character_cargo(self, item: DnfItemSlot):
-        self.item_svc.update_current_character_cargo(DnfItemSlot.with_idx(item.display_idx))
+        self.item_svc.update_current_character_cargo(
+            DnfItemSlot.with_idx(item.display_idx)
+        )
 
     def save_backpack(self, new_item: DnfItemSlot):
-        self.item_svc.update_current_character_inventory(new_item, InventoryLoc.Backpack)
+        self.item_svc.update_current_character_inventory(
+            new_item, InventoryLoc.Backpack
+        )
 
     def delete_backpack(self, item: DnfItemSlot):
-        self.item_svc.update_current_character_inventory(DnfItemSlot.with_idx(item.display_idx), InventoryLoc.Backpack)
+        self.item_svc.update_current_character_inventory(
+            DnfItemSlot.with_idx(item.display_idx), InventoryLoc.Backpack
+        )
 
     def save_equipments(self, new_item: DnfItemSlot):
-        self.item_svc.update_current_character_inventory(new_item, InventoryLoc.Equipment)
+        self.item_svc.update_current_character_inventory(
+            new_item, InventoryLoc.Equipment
+        )
 
     def delete_equipments(self, item: DnfItemSlot):
-        self.item_svc.update_current_character_inventory(DnfItemSlot.with_idx(item.display_idx), InventoryLoc.Equipment)
+        self.item_svc.update_current_character_inventory(
+            DnfItemSlot.with_idx(item.display_idx), InventoryLoc.Equipment
+        )
 
     def save_creatures(self, new_item: DnfItemSlot):
-        self.item_svc.update_current_character_inventory(new_item, InventoryLoc.Creatures)
+        self.item_svc.update_current_character_inventory(
+            new_item, InventoryLoc.Creatures
+        )
 
     def delete_creatures(self, item: DnfItemSlot):
-        self.item_svc.update_current_character_inventory(DnfItemSlot.with_idx(item.display_idx), InventoryLoc.Creatures)
+        self.item_svc.update_current_character_inventory(
+            DnfItemSlot.with_idx(item.display_idx), InventoryLoc.Creatures
+        )

@@ -1191,6 +1191,7 @@ def send_postal(
         if totalnum <= 0:
             break
 
+
 def get_postal_new(cNo):
     sql = (
         'select postal_id,send_charac_name,receive_charac_no,item_id,avata_flag,creature_flag,add_info,gold,letter_id from postal'

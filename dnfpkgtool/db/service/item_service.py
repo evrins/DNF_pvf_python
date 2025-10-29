@@ -15,8 +15,8 @@ from dnfpkgtool.repo.equipment_repo import (
     EquipmentIdNotFoundException,
     get_equipment_repo,
 )
-from dnfpkgtool.repo.stackable_repo import ItemIdNotFoundException, get_stackable_repo
 from dnfpkgtool.repo.magic_seal_repo import get_magic_seal_repo
+from dnfpkgtool.repo.stackable_repo import ItemIdNotFoundException, get_stackable_repo
 
 
 class InventoryLoc(enum.Enum):
@@ -72,18 +72,26 @@ class ItemService:
         self.character_cargo_repo.update_cargo_by_character_no(character_no, new_cargo)
 
     # 更新角色装备, 角色宠物, 角色装备 中的物品
-    def update_current_character_inventory(self, item: DnfItemSlot, inventory_loc: InventoryLoc) -> None:
+    def update_current_character_inventory(
+            self, item: DnfItemSlot, inventory_loc: InventoryLoc
+    ) -> None:
         character_no = config.get_current_character_no()
         inventory = self.character_inventory.query_by_character_no(character_no)
         if inventory_loc == InventoryLoc.Backpack:
             new_inventory = self.update_blob_items(inventory.inventory, item)
-            self.character_inventory.update_inventory_by_character_no(character_no, new_inventory)
+            self.character_inventory.update_inventory_by_character_no(
+                character_no, new_inventory
+            )
         elif inventory_loc == InventoryLoc.Equipment:
             new_equipment = self.update_blob_items(inventory.equipment_slot, item)
-            self.character_inventory.update_equipments_by_character_no(character_no, new_equipment)
+            self.character_inventory.update_equipments_by_character_no(
+                character_no, new_equipment
+            )
         elif inventory_loc == InventoryLoc.Creatures:
             new_creatures = self.update_blob_items(inventory.creature, item)
-            self.character_inventory.update_creatures_by_character_no(character_no, new_creatures)
+            self.character_inventory.update_creatures_by_character_no(
+                character_no, new_creatures
+            )
         else:
             raise ValueError(f'Inventory location not supported {inventory_loc}')
 
@@ -91,7 +99,7 @@ class ItemService:
         prefix = buf[:4]
         items_bytes = bytearray(zlib.decompress(buf[4:]))
         idx = item.display_idx
-        items_bytes[idx * 61: idx * 61 + 61] = item.to_bytes()
+        items_bytes[idx * 61 : idx * 61 + 61] = item.to_bytes()
         res = prefix + zlib.compress(items_bytes)
         return res
 
@@ -100,7 +108,7 @@ class ItemService:
         num = len(buf) // 61
         res = []
         for i in range(num):
-            item = self.unpack_blob_item(buf[i * 61: (i + 1) * 61])
+            item = self.unpack_blob_item(buf[i * 61 : (i + 1) * 61])
             item.display_idx = i
             res.append(item)
         return res
@@ -128,7 +136,7 @@ class ItemService:
 
         magic_seal_range_list = [(0, 3), (3, 6), (6, 9), (10, 13)]
         for idx, it in enumerate(magic_seal_range_list):
-            ms = MagicSeal.from_bytes(item.magic_seal[it[0]: it[1]])
+            ms = MagicSeal.from_bytes(item.magic_seal[it[0] : it[1]])
             if ms.id == 0:
                 continue
             ms.name = self.magic_seal_repo.query_by_id(ms.id)['name']

@@ -18,9 +18,11 @@ class CharacterInventoryExpandRepo(BaseRepo):
 
     def update_cargo_by_character_no(self, character_no: int, new_cargo: bytes) -> None:
         with Session(self.get_engine()) as session:
-            stmt = (update(CharacterInventoryExpand)
-                    .where(CharacterInventoryExpand.charac_no == character_no)
-                    .values(cargo=new_cargo))
+            stmt = (
+                update(CharacterInventoryExpand)
+                .where(CharacterInventoryExpand.charac_no == character_no)
+                .values(cargo=new_cargo)
+            )
             session.execute(stmt)
 
 

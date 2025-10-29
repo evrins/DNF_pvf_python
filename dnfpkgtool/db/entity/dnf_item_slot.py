@@ -119,8 +119,13 @@ class DnfItemSlot(BaseModel):
         buf += self._others20_30
         buf += self.otherworld  # struct.pack('H',self.otherworld)
         buf += self._others32_36
-        magic_seal = self.display_magic_seals[0].to_bytes() + self.display_magic_seals[1].to_bytes() + \
-                     self.display_magic_seals[2].to_bytes() + self.magic_seal[9:10] + self.magic_seal[3].to_bytes()
+        magic_seal = (
+            self.display_magic_seals[0].to_bytes()
+            + self.display_magic_seals[1].to_bytes()
+            + self.display_magic_seals[2].to_bytes()
+            + self.magic_seal[9:10]
+            + self.magic_seal[3].to_bytes()
+        )
         buf += magic_seal
         buf += struct.pack('B', self.forge_level)
         buf += self._others

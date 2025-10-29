@@ -1,14 +1,12 @@
 import json
-import math
 from collections import defaultdict
-from pathlib import Path
 from typing import List
 
 import polars as pl
 
 from config import config
-from dnfpkgtool.repo.stackable_repo import StackableRepo, get_stackable_repo
 from dnfpkgtool.repo.skill_repo import SkillRepo, get_skill_repo
+from dnfpkgtool.repo.stackable_repo import StackableRepo, get_stackable_repo
 
 enchant_key_mapping = {
     '[all activestatus resistance]': '所有异常状态抗性',
@@ -57,14 +55,48 @@ enchant_key_mapping = {
     '[/enchant index]': '',
 }
 
-orb_category_order = {'所有异常状态抗性': 10, '回避率': 20, '石化抗性': 30, '束缚抗性': 40, '中毒抗性': 50,
-                      '减速抗性': 60, '火属性抗性': 70, '光属性抗性': 80, '暗属性抗性': 90, '所有属性抗性': 100,
-                      'PVP': 110, '魔法防御': 120, '物理防御': 130, '物理暴击率': 140, '魔法暴击率': 150,
-                      '物理攻击力': 160, '魔法攻击力': 170, '力量': 180, '智力': 190, '独立攻击力': 200,
-                      '火属性强化': 210, '冰属性强化': 220, '光属性强化': 230, '暗属性强化': 240, '所有属性强化': 250,
-                      '攻击速度': 260, '释放速度': 270, '移动速度': 280, 'HP 回复速度': 290, 'MP 回复速度': 300,
-                      'HP 最大值': 310, 'MP 最大值': 320, '属性攻击': 330, '跳跃力': 340, '技能等级提升': 390,
-                      '命中率': 370, '僵直': 380, '硬直': 400, '特殊效果': 410, '': 430}
+orb_category_order = {
+    '所有异常状态抗性': 10,
+    '回避率': 20,
+    '石化抗性': 30,
+    '束缚抗性': 40,
+    '中毒抗性': 50,
+    '减速抗性': 60,
+    '火属性抗性': 70,
+    '光属性抗性': 80,
+    '暗属性抗性': 90,
+    '所有属性抗性': 100,
+    'PVP': 110,
+    '魔法防御': 120,
+    '物理防御': 130,
+    '物理暴击率': 140,
+    '魔法暴击率': 150,
+    '物理攻击力': 160,
+    '魔法攻击力': 170,
+    '力量': 180,
+    '智力': 190,
+    '独立攻击力': 200,
+    '火属性强化': 210,
+    '冰属性强化': 220,
+    '光属性强化': 230,
+    '暗属性强化': 240,
+    '所有属性强化': 250,
+    '攻击速度': 260,
+    '释放速度': 270,
+    '移动速度': 280,
+    'HP 回复速度': 290,
+    'MP 回复速度': 300,
+    'HP 最大值': 310,
+    'MP 最大值': 320,
+    '属性攻击': 330,
+    '跳跃力': 340,
+    '技能等级提升': 390,
+    '命中率': 370,
+    '僵直': 380,
+    '硬直': 400,
+    '特殊效果': 410,
+    '': 430,
+}
 
 enchant_key = '[enchant]'
 
@@ -76,13 +108,13 @@ def transform_job_name(job_name: str) -> str:
 def render_skills_text(skill_repo: SkillRepo, arr: list) -> list[str]:
     res = []
     for i in range(0, len(arr), 3):
-        res.append(render_skill_text(skill_repo, arr[i:i + 3]))
+        res.append(render_skill_text(skill_repo, arr[i : i + 3]))
     return res
 
 
 def render_skill_text(skill_repo: SkillRepo, arr: list) -> str:
     skill = skill_repo.query_by_job_and_id_of_job(transform_job_name(arr[0]), arr[1])
-    return f"{skill['name']} +{arr[2]}"
+    return f'{skill["name"]} +{arr[2]}'
 
 
 # render effect display based on keys
@@ -112,8 +144,12 @@ def render_effect_display(enchant: dict, skill_repo: SkillRepo) -> str:
             res.extend(render_skills_text(skill_repo, v))
         # ignore this key
         elif k == '[all skill item container]':
-            lower = v['[all skill item]']['[skill apply condition]']['[lower bound level]'][0]
-            upper = v['[all skill item]']['[skill apply condition]']['[upper bound level]'][0]
+            lower = v['[all skill item]']['[skill apply condition]'][
+                '[lower bound level]'
+            ][0]
+            upper = v['[all skill item]']['[skill apply condition]'][
+                '[upper bound level]'
+            ][0]
             level = v['[all skill item]']['[skill apply condition]']['[value]'][0]
             res.append(f'{lower}-{upper} 主动技能等级 +{level}')
         elif k == '[all skill item]':
@@ -143,7 +179,9 @@ def render_effect_display(enchant: dict, skill_repo: SkillRepo) -> str:
     return ' '.join(res)
 
 
-def build_orb_repo_parquet(stackable_repo: StackableRepo, skill_repo: SkillRepo, fp: str):
+def build_orb_repo_parquet(
+        stackable_repo: StackableRepo, skill_repo: SkillRepo, fp: str
+):
     orb_list = stackable_repo.query('', stackable_type_list=['[enchant waste]'])
     rs: defaultdict = defaultdict(list)
     for orb in orb_list:
@@ -196,7 +234,9 @@ def build_orb_repo_parquet(stackable_repo: StackableRepo, skill_repo: SkillRepo,
 def test_build_orb_repo_parquet():
     stackable_repo = get_stackable_repo()
     skill_repo = get_skill_repo()
-    build_orb_repo_parquet(stackable_repo, skill_repo, config.get_orb_parquet_file_path())
+    build_orb_repo_parquet(
+        stackable_repo, skill_repo, config.get_orb_parquet_file_path()
+    )
 
 
 def test_build_orb_options():
@@ -212,8 +252,12 @@ def test_build_orb_options():
     parts = list(set(chain.from_iterable(parts)))
     options = {}
     for p in parts:
-        category_list = df.filter(pl.col('apply_parts').list.contains(p)).select(
-            pl.col('enchant_category_display')).to_series().to_list()
+        category_list = (
+            df.filter(pl.col('apply_parts').list.contains(p))
+            .select(pl.col('enchant_category_display'))
+            .to_series()
+            .to_list()
+        )
         category_list = list(set(chain.from_iterable(category_list)))
         category_list = sorted(category_list, key=lambda x: orb_category_order[x])
         options[p] = category_list
@@ -228,17 +272,34 @@ class OrbRepo:
     def query_by_card_id(self, card_id: int) -> dict:
         return self.df.filter(pl.col('card_id') == card_id).limit(1).to_dicts()[0]
 
-    def query_by_enchant_category_display(self, enchant_category_display: str) -> List[dict]:
-        return (self.df.filter(pl.col('enchant_category_display').list.contains(enchant_category_display))
-                .sort(pl.col('orb_id'), descending=False)
-                .to_dicts())
+    def query_by_enchant_category_display(
+            self, enchant_category_display: str
+    ) -> List[dict]:
+        return (
+            self.df.filter(
+                pl.col('enchant_category_display').list.contains(
+                    enchant_category_display
+                )
+            )
+            .sort(pl.col('orb_id'), descending=False)
+            .to_dicts()
+        )
 
-    def query_by_enchant_category_display_and_equipment_type(self, enchant_category_display: str,
-                                                             equipment_type: str) -> List[dict]:
-        return (self.df.filter((pl.col('enchant_category_display').list.contains(enchant_category_display)) & pl.col(
-            'apply_parts').list.contains(equipment_type))
-                .sort(pl.col('orb_id'), descending=False)
-                .to_dicts())
+    def query_by_enchant_category_display_and_equipment_type(
+            self, enchant_category_display: str, equipment_type: str
+    ) -> List[dict]:
+        return (
+            self.df.filter(
+                (
+                    pl.col('enchant_category_display').list.contains(
+                        enchant_category_display
+                    )
+                )
+                & pl.col('apply_parts').list.contains(equipment_type)
+            )
+            .sort(pl.col('orb_id'), descending=False)
+            .to_dicts()
+        )
 
 
 def get_orb_repo() -> OrbRepo:

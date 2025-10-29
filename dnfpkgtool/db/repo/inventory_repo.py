@@ -14,28 +14,37 @@ class InventoryRepo(BaseRepo):
             stmt = select(Inventory).where(Inventory.charac_no == character_no)
             return session.scalars(stmt).first()
 
-    def update_equipments_by_character_no(self, character_no: int, equipments: bytes) -> None:
+    def update_equipments_by_character_no(
+            self, character_no: int, equipments: bytes
+    ) -> None:
         with Session(self.get_engine()) as session:
-            stmt = (update(Inventory)
-                    .where(Inventory.charac_no == character_no)
-                    .values(equipment_slot=equipments)
-                    )
+            stmt = (
+                update(Inventory)
+                .where(Inventory.charac_no == character_no)
+                .values(equipment_slot=equipments)
+            )
             session.execute(stmt)
 
-    def update_creatures_by_character_no(self, character_no: int, creatures: bytes) -> None:
+    def update_creatures_by_character_no(
+            self, character_no: int, creatures: bytes
+    ) -> None:
         with Session(self.get_engine()) as session:
-            stmt = (update(Inventory)
-                    .where(Inventory.charac_no == character_no)
-                    .values(creature=creatures)
-                    )
+            stmt = (
+                update(Inventory)
+                .where(Inventory.charac_no == character_no)
+                .values(creature=creatures)
+            )
             session.execute(stmt)
 
-    def update_inventory_by_character_no(self, character_no: int, inventory: bytes) -> None:
+    def update_inventory_by_character_no(
+            self, character_no: int, inventory: bytes
+    ) -> None:
         with Session(self.get_engine()) as session:
-            stmt = (update(Inventory)
-                    .where(Inventory.charac_no == character_no)
-                    .values(inventory=inventory)
-                    )
+            stmt = (
+                update(Inventory)
+                .where(Inventory.charac_no == character_no)
+                .values(inventory=inventory)
+            )
             session.execute(stmt)
 
 

@@ -56,9 +56,9 @@ class StackableTableModel(QAbstractTableModel):
             for k, v in d.items():
                 lines.append(k)
                 if (
-                        k == '[basic explain]'
-                        or k == '[detail explain]'
-                        or k == '[flavor text]'
+                    k == '[basic explain]'
+                    or k == '[detail explain]'
+                    or k == '[flavor text]'
                 ):
                     if v:
                         for it in v:

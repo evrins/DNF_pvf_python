@@ -9,35 +9,185 @@ from ui.components.inventory.inventory_equipment_form_ui import (
     Ui_inventory_equipment_form,
 )
 
-orb_part_options = {'[magic stone]': ['物理攻击力', '魔法攻击力', '独立攻击力', '所有属性强化'],
-                    '[pants]': ['火属性抗性', '暗属性抗性', '所有属性抗性', '物理暴击率', '魔法暴击率', '物理攻击力',
-                                '魔法攻击力', '力量', '智力', '独立攻击力', '攻击速度', '释放速度', '移动速度', '硬直',
-                                '特殊效果'],
-                    '[shoes]': ['回避率', '魔法防御', '物理防御', '物理暴击率', '魔法暴击率', '物理攻击力',
-                                '魔法攻击力', '力量', '智力', '独立攻击力', '移动速度', 'HP 最大值', 'MP 最大值',
-                                '跳跃力', '技能等级提升'],
-                    '[title name]': ['魔法防御', '物理防御', '物理攻击力', '魔法攻击力', '力量', '智力', '独立攻击力',
-                                     '所有属性强化', 'HP 最大值', 'MP 最大值', '僵直', '技能等级提升', '硬直'],
-                    '[coat]': ['物理暴击率', '魔法暴击率', '物理攻击力', '魔法攻击力', '力量', '智力', '独立攻击力',
-                               '攻击速度', '释放速度'],
-                    '[weapon]': ['物理攻击力', '魔法攻击力', '力量', '智力', '独立攻击力', '攻击速度', '释放速度',
-                                 '属性攻击', '命中率'],
-                    '[waist]': ['魔法防御', '物理防御', '物理暴击率', '魔法暴击率', '物理攻击力', '魔法攻击力', '力量',
-                                '智力', '独立攻击力', 'HP 最大值', 'MP 最大值', '技能等级提升'],
-                    '[wrist]': ['火属性抗性', '光属性抗性', '力量', '智力', '独立攻击力', '火属性强化', '冰属性强化',
-                                '光属性强化', '暗属性强化', '所有属性强化', 'HP 回复速度', '僵直'],
-                    '[amulet]': ['所有异常状态抗性', '石化抗性', '束缚抗性', '火属性抗性', '力量', '智力', '独立攻击力',
-                                 '火属性强化', '冰属性强化', '光属性强化', '暗属性强化', '所有属性强化', '僵直',
-                                 '技能等级提升'],
-                    '[foil]': ['火属性抗性', '物理暴击率', '魔法暴击率', '力量', '智力', '攻击速度', '释放速度',
-                               '移动速度', 'HP 最大值', 'MP 最大值', '硬直'],
-                    '[shoulder]': ['魔法防御', '物理防御', '物理暴击率', '魔法暴击率', '物理攻击力', '魔法攻击力',
-                                   '力量', '智力', '独立攻击力', '释放速度', 'HP 最大值', 'MP 最大值', '技能等级提升'],
-                    '[unlimited challenge]': ['火属性抗性', '物理暴击率', '魔法暴击率', '攻击速度', '释放速度',
-                                              'HP 最大值', 'MP 最大值', '硬直'],
-                    '[ring]': ['中毒抗性', '减速抗性', '火属性抗性', '力量', '智力', '独立攻击力', '火属性强化',
-                               '冰属性强化', '光属性强化', '暗属性强化', '所有属性强化', 'MP 回复速度', '僵直'],
-                    '[support]': ['物理攻击力', '魔法攻击力', '独立攻击力', '释放速度', '技能等级提升', '特殊效果']}
+orb_part_options = {
+    '[magic stone]': ['物理攻击力', '魔法攻击力', '独立攻击力', '所有属性强化'],
+    '[pants]': [
+        '火属性抗性',
+        '暗属性抗性',
+        '所有属性抗性',
+        '物理暴击率',
+        '魔法暴击率',
+        '物理攻击力',
+        '魔法攻击力',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '攻击速度',
+        '释放速度',
+        '移动速度',
+        '硬直',
+        '特殊效果',
+    ],
+    '[shoes]': [
+        '回避率',
+        '魔法防御',
+        '物理防御',
+        '物理暴击率',
+        '魔法暴击率',
+        '物理攻击力',
+        '魔法攻击力',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '移动速度',
+        'HP 最大值',
+        'MP 最大值',
+        '跳跃力',
+        '技能等级提升',
+    ],
+    '[title name]': [
+        '魔法防御',
+        '物理防御',
+        '物理攻击力',
+        '魔法攻击力',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '所有属性强化',
+        'HP 最大值',
+        'MP 最大值',
+        '僵直',
+        '技能等级提升',
+        '硬直',
+    ],
+    '[coat]': [
+        '物理暴击率',
+        '魔法暴击率',
+        '物理攻击力',
+        '魔法攻击力',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '攻击速度',
+        '释放速度',
+    ],
+    '[weapon]': [
+        '物理攻击力',
+        '魔法攻击力',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '攻击速度',
+        '释放速度',
+        '属性攻击',
+        '命中率',
+    ],
+    '[waist]': [
+        '魔法防御',
+        '物理防御',
+        '物理暴击率',
+        '魔法暴击率',
+        '物理攻击力',
+        '魔法攻击力',
+        '力量',
+        '智力',
+        '独立攻击力',
+        'HP 最大值',
+        'MP 最大值',
+        '技能等级提升',
+    ],
+    '[wrist]': [
+        '火属性抗性',
+        '光属性抗性',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '火属性强化',
+        '冰属性强化',
+        '光属性强化',
+        '暗属性强化',
+        '所有属性强化',
+        'HP 回复速度',
+        '僵直',
+    ],
+    '[amulet]': [
+        '所有异常状态抗性',
+        '石化抗性',
+        '束缚抗性',
+        '火属性抗性',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '火属性强化',
+        '冰属性强化',
+        '光属性强化',
+        '暗属性强化',
+        '所有属性强化',
+        '僵直',
+        '技能等级提升',
+    ],
+    '[foil]': [
+        '火属性抗性',
+        '物理暴击率',
+        '魔法暴击率',
+        '力量',
+        '智力',
+        '攻击速度',
+        '释放速度',
+        '移动速度',
+        'HP 最大值',
+        'MP 最大值',
+        '硬直',
+    ],
+    '[shoulder]': [
+        '魔法防御',
+        '物理防御',
+        '物理暴击率',
+        '魔法暴击率',
+        '物理攻击力',
+        '魔法攻击力',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '释放速度',
+        'HP 最大值',
+        'MP 最大值',
+        '技能等级提升',
+    ],
+    '[unlimited challenge]': [
+        '火属性抗性',
+        '物理暴击率',
+        '魔法暴击率',
+        '攻击速度',
+        '释放速度',
+        'HP 最大值',
+        'MP 最大值',
+        '硬直',
+    ],
+    '[ring]': [
+        '中毒抗性',
+        '减速抗性',
+        '火属性抗性',
+        '力量',
+        '智力',
+        '独立攻击力',
+        '火属性强化',
+        '冰属性强化',
+        '光属性强化',
+        '暗属性强化',
+        '所有属性强化',
+        'MP 回复速度',
+        '僵直',
+    ],
+    '[support]': [
+        '物理攻击力',
+        '魔法攻击力',
+        '独立攻击力',
+        '释放速度',
+        '技能等级提升',
+        '特殊效果',
+    ],
+}
 
 
 class EquipmentForm(QWidget, Ui_inventory_equipment_form):
@@ -99,7 +249,9 @@ class EquipmentForm(QWidget, Ui_inventory_equipment_form):
         if options is None:
             self.orb_category.setDisabled(True)
         else:
-            self.orb_category.addItems(['---'] + orb_part_options.get(item.equipment_type))
+            self.orb_category.addItems(
+                ['---'] + orb_part_options.get(item.equipment_type)
+            )
             self.orb_category.setDisabled(False)
 
         # set orb
@@ -132,11 +284,16 @@ class EquipmentForm(QWidget, Ui_inventory_equipment_form):
     def update_orb_item_options(self, idx):
         print(f'selected: idx: {idx}')
         print(f'selected text: {self.orb_category.currentText()}')
-        self.orb_list = self.orb_repo.query_by_enchant_category_display_and_equipment_type(
-            self.orb_category.currentText(), self.origin_item.equipment_type)
+        self.orb_list = (
+            self.orb_repo.query_by_enchant_category_display_and_equipment_type(
+                self.orb_category.currentText(), self.origin_item.equipment_type
+            )
+        )
 
         # more detail
-        orb_display_list = ['---'] + [f"{it['orb_name']} {it['effect_display']}" for it in self.orb_list]
+        orb_display_list = ['---'] + [
+            f'{it["orb_name"]} {it["effect_display"]}' for it in self.orb_list
+        ]
 
         self.orb_item.clear()
         self.orb_item.addItems(orb_display_list)
@@ -157,7 +314,9 @@ class EquipmentForm(QWidget, Ui_inventory_equipment_form):
         if self.orb_item.currentIndex() == 0:
             new_item.card_id = 0
         else:
-            new_item.card_id = self.orb_list[self.orb_item.currentIndex() - 1]['card_id']
+            new_item.card_id = self.orb_list[self.orb_item.currentIndex() - 1][
+                'card_id'
+            ]
 
         for i in range(0, 4):
             ms = MagicSeal()

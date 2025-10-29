@@ -16,10 +16,11 @@ class AccountCargoRepo(BaseRepo):
 
     def update_cargo_by_m_id(self, m_id: int, new_cargo: bytes):
         with Session(self.get_engine()) as session:
-            stmt = (update(AccountCargo)
-                    .where(AccountCargo.m_id == m_id)
-                    .values(cargo=new_cargo)
-                    )
+            stmt = (
+                update(AccountCargo)
+                .where(AccountCargo.m_id == m_id)
+                .values(cargo=new_cargo)
+            )
             session.execute(stmt)
 
 
