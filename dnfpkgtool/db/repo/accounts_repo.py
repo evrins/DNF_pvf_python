@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from dnfpkgtool.db.model.account import Accounts
+from dnfpkgtool.db.model.accounts import Accounts
 from dnfpkgtool.db.repo.base_repo import BaseRepo
 
 
