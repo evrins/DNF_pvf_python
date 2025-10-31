@@ -2,11 +2,9 @@ sqlalchemy
 pyside6
 polars
 pillow
-mysql-connector
 zhconv
 pymysql
 pyperclip
 pyqrcode
 paramiko
 ttkbootstrap
-pycrypto
