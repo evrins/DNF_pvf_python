@@ -8,7 +8,6 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QWidget,
 )
-from uri_template import expand
 
 from config import config
 from dnfpkgtool.db import check_mysql_config
