@@ -135,3 +135,4 @@ dnfpkgtool/pvf/dump
 sql_bak
 dnfpkgtool/repo/data
 *.pvfcache
+data

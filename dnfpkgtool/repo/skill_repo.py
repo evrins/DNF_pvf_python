@@ -32,8 +32,8 @@ def build_skill_repo_parquet(pvf_list: List[Dict[str, any]], fp: str):
 def test_build_skill_repo_parquet():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)
-    stackable_dict = reader.get_skill_list()
-    build_skill_repo_parquet(stackable_dict, config.get_skill_parquet_file_path())
+    skill_list = reader.get_skill_list()
+    build_skill_repo_parquet(skill_list, config.get_skill_parquet_file_path())
 
 
 def test_query():

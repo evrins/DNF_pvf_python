@@ -1,5 +1,6 @@
 from PySide6 import QtWidgets
 
+from config.signals import gs
 from dnfpkgtool.db.entity.dnf_item_slot import DnfItemSlot
 from dnfpkgtool.db.service.item_service import InventoryLoc, ItemService
 from ui.components.inventory.inventory import InventoryWidget
@@ -9,35 +10,54 @@ class InventoryTabView(QtWidgets.QTabWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.item_svc: ItemService = None
+        self.creatures_tab: InventoryWidget = None
+        self.equipments_tab: InventoryWidget = None
+        self.backpack_tab: InventoryWidget = None
+        self.character_cargo_tab: InventoryWidget = None
+        self.account_cargo_tab: InventoryWidget = None
+
+        gs.pvf_changed.connect(self.set_data)
+
+    def set_data(self):
         self.item_svc = ItemService()
 
         account_cargo = self.item_svc.get_current_account_cargo()
         self.account_cargo_tab = InventoryWidget(account_cargo)
+        self.account_cargo_tab.on_refresh.connect(self.refresh_account_cargo)
         self.account_cargo_tab.on_save.connect(self.save_account_cargo)
         self.account_cargo_tab.on_delete.connect(self.delete_account_cargo)
         self.addTab(self.account_cargo_tab, 'Account Cargo')
 
         character_cargo = self.item_svc.get_current_character_cargo()
         self.character_cargo_tab = InventoryWidget(character_cargo)
+        self.character_cargo_tab.on_refresh.connect(self.refresh_character_cargo)
         self.character_cargo_tab.on_save.connect(self.save_character_cargo)
         self.character_cargo_tab.on_delete.connect(self.delete_character_cargo)
         self.addTab(self.character_cargo_tab, 'Character Cargo')
 
         ci = self.item_svc.get_current_character_inventory()
         self.backpack_tab = InventoryWidget(ci.backpack)
+        self.backpack_tab.on_refresh.connect(self.refresh_character_inventory)
         self.backpack_tab.on_save.connect(self.save_backpack)
         self.backpack_tab.on_delete.connect(self.delete_backpack)
         self.addTab(self.backpack_tab, 'Backpack')
 
         self.equipments_tab = InventoryWidget(ci.equipments)
+        self.equipments_tab.on_refresh.connect(self.refresh_character_inventory)
         self.equipments_tab.on_save.connect(self.save_equipments)
         self.equipments_tab.on_delete.connect(self.delete_equipments)
         self.addTab(self.equipments_tab, 'Equipment')
 
         self.creatures_tab = InventoryWidget(ci.creatures)
+        self.creatures_tab.on_refresh.connect(self.refresh_character_inventory)
         self.creatures_tab.on_save.connect(self.save_creatures)
         self.creatures_tab.on_delete.connect(self.delete_creatures)
         self.addTab(self.creatures_tab, 'Creatures')
+
+    def refresh_account_cargo(self):
+        account_cargo = self.item_svc.get_current_account_cargo()
+        self.account_cargo_tab.set_data(account_cargo)
 
     def save_account_cargo(self, new_item: DnfItemSlot):
         self.item_svc.update_current_account_cargo(new_item)
@@ -48,6 +68,10 @@ class InventoryTabView(QtWidgets.QTabWidget):
             DnfItemSlot.with_idx(item.display_idx)
         )
 
+    def refresh_character_cargo(self):
+        character_cargo = self.item_svc.get_current_character_cargo()
+        self.character_cargo_tab.set_data(character_cargo)
+
     def save_character_cargo(self, new_item: DnfItemSlot):
         self.item_svc.update_current_character_cargo(new_item)
 
@@ -55,6 +79,12 @@ class InventoryTabView(QtWidgets.QTabWidget):
         self.item_svc.update_current_character_cargo(
             DnfItemSlot.with_idx(item.display_idx)
         )
+
+    def refresh_character_inventory(self):
+        ci = self.item_svc.get_current_character_inventory()
+        self.backpack_tab.set_data(ci.backpack)
+        self.equipments_tab.set_data(ci.equipments)
+        self.creatures_tab.set_data(ci.creatures)
 
     def save_backpack(self, new_item: DnfItemSlot):
         self.item_svc.update_current_character_inventory(

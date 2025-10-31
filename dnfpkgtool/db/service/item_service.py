@@ -11,12 +11,23 @@ from dnfpkgtool.db.repo.character_inventory_expand_repo import (
     get_character_inventory_expand_repo,
 )
 from dnfpkgtool.db.repo.inventory_repo import get_inventory_repo
+from dnfpkgtool.pvf.pvf_reader import PVFReader
 from dnfpkgtool.repo.equipment_repo import (
     EquipmentIdNotFoundException,
+    build_equipment_repo_parquet,
     get_equipment_repo,
 )
-from dnfpkgtool.repo.magic_seal_repo import get_magic_seal_repo
-from dnfpkgtool.repo.stackable_repo import ItemIdNotFoundException, get_stackable_repo
+from dnfpkgtool.repo.magic_seal_repo import (
+    build_magic_seal_parquet,
+    get_magic_seal_repo,
+)
+from dnfpkgtool.repo.orb_repo import build_orb_repo_parquet
+from dnfpkgtool.repo.skill_repo import build_skill_repo_parquet, get_skill_repo
+from dnfpkgtool.repo.stackable_repo import (
+    ItemIdNotFoundException,
+    build_stackable_repo_parquet,
+    get_stackable_repo,
+)
 
 
 class InventoryLoc(enum.Enum):
@@ -84,6 +95,8 @@ class ItemService:
             )
         elif inventory_loc == InventoryLoc.Equipment:
             new_equipment = self.update_blob_items(inventory.equipment_slot, item)
+            print(f'old equipment: {inventory.equipment_slot}')
+            print(f'new equipment: {new_equipment}')
             self.character_inventory.update_equipments_by_character_no(
                 character_no, new_equipment
             )
@@ -99,7 +112,7 @@ class ItemService:
         prefix = buf[:4]
         items_bytes = bytearray(zlib.decompress(buf[4:]))
         idx = item.display_idx
-        items_bytes[idx * 61 : idx * 61 + 61] = item.to_bytes()
+        items_bytes[idx * 61: idx * 61 + 61] = item.to_bytes()
         res = prefix + zlib.compress(items_bytes)
         return res
 
@@ -108,7 +121,7 @@ class ItemService:
         num = len(buf) // 61
         res = []
         for i in range(num):
-            item = self.unpack_blob_item(buf[i * 61 : (i + 1) * 61])
+            item = self.unpack_blob_item(buf[i * 61: (i + 1) * 61])
             item.display_idx = i
             res.append(item)
         return res
@@ -136,7 +149,7 @@ class ItemService:
 
         magic_seal_range_list = [(0, 3), (3, 6), (6, 9), (10, 13)]
         for idx, it in enumerate(magic_seal_range_list):
-            ms = MagicSeal.from_bytes(item.magic_seal[it[0] : it[1]])
+            ms = MagicSeal.from_bytes(item.magic_seal[it[0]: it[1]])
             if ms.id == 0:
                 continue
             ms.name = self.magic_seal_repo.query_by_id(ms.id)['name']
@@ -146,3 +159,28 @@ class ItemService:
 
 def get_item_service() -> ItemService:
     return ItemService()
+
+
+def build_repo_parquet(fp: str):
+    reader = PVFReader(fp)
+    build_equipment_repo_parquet(
+        reader.get_equipment_dict(), config.get_equipment_parquet_file_path()
+    )
+    build_stackable_repo_parquet(
+        reader.get_stackable_dict(), config.get_stackable_parquet_file_path()
+    )
+    build_magic_seal_parquet(
+        reader.get_magic_seal_dict(), config.get_magic_seal_parquet_file_path()
+    )
+    build_skill_repo_parquet(
+        reader.get_skill_list(), config.get_skill_parquet_file_path()
+    )
+
+    # build orb repo should come after stackable_repo and skill_repo
+    stackable_repo = get_stackable_repo()
+    skill_repo = get_skill_repo()
+    build_orb_repo_parquet(
+        stackable_repo, skill_repo, config.get_orb_parquet_file_path()
+    )
+
+    reader.close()

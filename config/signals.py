@@ -1,3 +1,15 @@
+from PySide6.QtCore import QObject, Signal
+
+
+class GlobalSignals(QObject):
+    pvf_changed = Signal()
+
+    def __init__(self):
+        super().__init__()
+
+
+gs = GlobalSignals()
+
 import enum
 
 from PySide6.QtCore import QObject, Signal

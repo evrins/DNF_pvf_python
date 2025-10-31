@@ -24,6 +24,7 @@ class InventoryRepo(BaseRepo):
                 .values(equipment_slot=equipments)
             )
             session.execute(stmt)
+            session.commit()
 
     def update_creatures_by_character_no(
             self, character_no: int, creatures: bytes
@@ -35,6 +36,7 @@ class InventoryRepo(BaseRepo):
                 .values(creature=creatures)
             )
             session.execute(stmt)
+            session.commit()
 
     def update_inventory_by_character_no(
             self, character_no: int, inventory: bytes
@@ -46,6 +48,7 @@ class InventoryRepo(BaseRepo):
                 .values(inventory=inventory)
             )
             session.execute(stmt)
+            session.commit()
 
 
 def get_inventory_repo() -> InventoryRepo:

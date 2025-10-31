@@ -24,6 +24,7 @@ class CharacterInventoryExpandRepo(BaseRepo):
                 .values(cargo=new_cargo)
             )
             session.execute(stmt)
+            session.commit()
 
 
 def get_character_inventory_expand_repo() -> CharacterInventoryExpandRepo:

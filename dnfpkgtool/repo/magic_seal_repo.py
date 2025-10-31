@@ -6,7 +6,7 @@ from config import config
 from dnfpkgtool.pvf.pvf_reader import PVFReader
 
 
-def build_magic_seal(magic_seal_dict: dict[int, str], out_path: str):
+def build_magic_seal_parquet(magic_seal_dict: dict[int, str], out_path: str):
     df = {'id': [], 'name': []}
     for k, v in magic_seal_dict.items():
         df['id'].append(k)
@@ -16,11 +16,11 @@ def build_magic_seal(magic_seal_dict: dict[int, str], out_path: str):
     df.write_parquet(out_path)
 
 
-def test_build_magic_seal():
+def test_build_magic_seal_parquet():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)
     magic_seal_dict = reader.get_magic_seal_dict()
-    build_magic_seal(magic_seal_dict, config.get_magic_seal_parquet_file_path())
+    build_magic_seal_parquet(magic_seal_dict, config.get_magic_seal_parquet_file_path())
 
 
 class MagicSealRepo:

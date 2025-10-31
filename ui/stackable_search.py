@@ -13,9 +13,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from config import config
-from dnfpkgtool.repo.stackable_repo import StackableRepo
-from ui.signals import SubmitSignal, SubmitType
+from config.signals import SubmitSignal, SubmitType, gs
+from dnfpkgtool.repo.stackable_repo import StackableRepo, get_stackable_repo
 from ui.vars import (
     categoryed_stackable_type_dict,
     item_category_key_list,
@@ -85,7 +84,9 @@ class StackableTableModel(QAbstractTableModel):
 class StackableSearch(QWidget):
     def __init__(self, submit_signal: SubmitSignal):
         super().__init__()
-        self.stackable_repo = StackableRepo(config.get_stackable_parquet_file_path())
+        self.stackable_repo: StackableRepo = None
+
+        gs.pvf_changed.connect(self.set_stackable_repo)
         self.submit_signal = submit_signal
 
         self.form_width = 240
@@ -183,6 +184,9 @@ class StackableSearch(QWidget):
         """Adjust table column widths to content."""
         self.table_view.resizeColumnsToContents()
 
+    def set_stackable_repo(self):
+        self.stackable_repo = get_stackable_repo()
+
     def adjust_size_to_content(self):
         """Public method to adjust window size based on current table content."""
         self._adjust_table_columns()
@@ -208,6 +212,7 @@ class StackableSearch(QWidget):
                 min_level=min_level,
                 max_level=max_level,
                 rarity_display=rarity,
+                limit=1024,
             )
         else:
             data = self.stackable_repo.query(
@@ -216,6 +221,7 @@ class StackableSearch(QWidget):
                 min_level=min_level,
                 max_level=max_level,
                 rarity_display=rarity,
+                limit=1024,
             )
         self.update_title(len(data))
         table_model = StackableTableModel(data)

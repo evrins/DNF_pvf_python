@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Dict, List
 
 import polars as pl
@@ -125,7 +126,7 @@ def map_rarity_display(d: dict[str, str | int]) -> str:
     raise ValueError(f'{id_} unknown rarity {rarity}')
 
 
-def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str):
+def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str | Path):
     mappings = [
         ('level', '[minimum level]', 0, MappingElementLocation.First),
         ('rarity', '[rarity]', 0, MappingElementLocation.First),
@@ -182,21 +183,11 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str):
         pl.struct(['id', 'name', 'rarity', 'item_category'])
         .map_elements(map_rarity_display, return_dtype=pl.String)
         .alias('rarity_display'),
-        pl.col('attack_speed')
-        .map_elements(lambda x: x // 10, return_dtype=pl.Int64)
-        .alias('attack_speed'),
-        pl.col('cast_speed')
-        .map_elements(lambda x: x // 10, return_dtype=pl.Int64)
-        .alias('cast_speed'),
-        pl.col('move_speed')
-        .map_elements(lambda x: x // 10, return_dtype=pl.Int64)
-        .alias('move_speed'),
-        pl.col('room_list_move_speed_rate')
-        .map_elements(lambda x: int(x * 100), return_dtype=pl.Int64)
-        .alias('room_list_move_speed_rate'),
-        pl.col('mp_max_rate')
-        .map_elements(lambda x: int(x), return_dtype=pl.Int64)
-        .alias('mp_max_rate'),
+        pl.col('attack_speed') // 10,
+        pl.col('cast_speed') // 10,
+        pl.col('move_speed') // 10,
+        pl.col('room_list_move_speed_rate') * 100,
+        pl.col('mp_max_rate').cast(pl.Int64),
     )
 
     df = df.drop(['item_category'])
@@ -233,7 +224,7 @@ class EquipmentIdNotFoundException(Exception):
 
 
 class EquipmentRepo:
-    def __init__(self, fp: str):
+    def __init__(self, fp: str | Path):
         self.df = pl.read_parquet(fp)
 
     @time_it

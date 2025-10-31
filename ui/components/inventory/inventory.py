@@ -64,17 +64,18 @@ class InventoryTableModel(QAbstractTableModel):
 
 
 class InventoryWidget(QWidget, Ui_inventory_container):
+    on_refresh: Signal = Signal()
     on_save: Signal = Signal(DnfItemSlot)
     on_delete: Signal = Signal(DnfItemSlot)
 
     def __init__(self, item_list: List[DnfItemSlot]):
         super().__init__()
 
-        self.setupUi(self)
+        self.item_list: List[DnfItemSlot] = []
+        self.item_dict: dict[int, DnfItemSlot] = {}
+        self.display_item_list: List[DnfItemSlot] = []
 
-        self.item_list = item_list
-        self.item_dict = {it.display_idx: it for it in self.item_list}
-        self.display_item_list = item_list
+        self.setupUi(self)
 
         self.items_table_view.clicked.connect(self.on_row_clicked)
 
@@ -85,7 +86,9 @@ class InventoryWidget(QWidget, Ui_inventory_container):
         self.type_combox.setCurrentIndex(len(type_text) - 1)
         self.type_combox.currentIndexChanged.connect(self.filter_type)
 
-        self.update_table_view_item()
+        self.refresh_btn.clicked.connect(self.refresh)
+
+        self.set_data(item_list)
 
         self.empty = Empty()
         self.equipment_form = EquipmentForm()
@@ -103,6 +106,13 @@ class InventoryWidget(QWidget, Ui_inventory_container):
         self.form_stack_widget.setCurrentIndex(0)
 
     def toggle_empty(self, checked: bool):
+        self.update_table_view_item()
+
+    def set_data(self, item_list: List[DnfItemSlot]):
+        self.item_list = item_list
+        self.item_dict = {it.display_idx: it for it in self.item_list}
+        self.display_item_list = item_list
+
         self.update_table_view_item()
 
     def filter_type(self, idx: int):
@@ -159,6 +169,9 @@ class InventoryWidget(QWidget, Ui_inventory_container):
         else:
             self.form_stack_widget.setCurrentIndex(2)
             self.stackable_form.set_item(selected_item)
+
+    def refresh(self):
+        self.on_refresh.emit()
 
     def save(self, new_item: DnfItemSlot):
         self.on_save.emit(new_item)

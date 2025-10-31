@@ -67,13 +67,47 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="type_combox"/>
+          <widget class="QComboBox" name="type_combox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget_2" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="refresh_btn">
+           <property name="text">
+            <string>Refresh</string>
+           </property>
+          </widget>
          </item>
         </layout>
+        <zorder>show_blank_chkbox</zorder>
+        <zorder>type_combox</zorder>
+        <zorder>refresh_btn</zorder>
+        <zorder>widget_2</zorder>
        </widget>
       </item>
       <item>
        <widget class="QTableView" name="items_table_view">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="editTriggers">
          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
         </property>

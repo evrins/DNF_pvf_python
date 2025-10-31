@@ -13,10 +13,12 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from config import config
+from config.config import get_config
+from config.signals import SubmitSignal, SubmitType, gs
+from ui.components.settings.settings import Setting
 from ui.equipment_search import EquipmentSearch
 from ui.inventory_tabview import InventoryTabView
-from ui.settings import Setting
-from ui.signals import SubmitSignal, SubmitType
 from ui.stackable_search import StackableSearch
 
 shutdown_requested = False
@@ -135,6 +137,7 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
+    config.init_dirs()
     tracemalloc.start()
 
     signal.signal(signal.SIGINT, handle_shutdown_signal)
@@ -144,4 +147,7 @@ if __name__ == '__main__':
     app.setStyle('Fusion')
     mw = MainWindow()
     mw.show()
+
+    if get_config().have_valid_pvf():
+        gs.pvf_changed.emit()
     app.exec()

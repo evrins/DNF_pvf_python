@@ -13,9 +13,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from config import config
-from dnfpkgtool.repo.equipment_repo import EquipmentRepo
-from ui.signals import SubmitSignal, SubmitType
+from config.signals import SubmitSignal, SubmitType, gs
+from dnfpkgtool.repo.equipment_repo import EquipmentRepo, get_equipment_repo
 from ui.vars import (
     default_options,
     equipment_name_mapping,
@@ -89,9 +88,10 @@ class EquipmentTableModel(QAbstractTableModel):
 class EquipmentSearch(QWidget):
     def __init__(self, submit_signal: SubmitSignal):
         super().__init__()
-        self.equipment_repo = EquipmentRepo(config.get_equipment_parquet_file_path())
+        self.equipment_repo: EquipmentRepo = None
         self.submit_signal = submit_signal
 
+        gs.pvf_changed.connect(self.set_equipment_repo)
         self.form_width = 240
         layout = QHBoxLayout()
         layout.setContentsMargins(5, 5, 5, 5)  # Add small margins to the main layout
@@ -203,6 +203,9 @@ class EquipmentSearch(QWidget):
 
         # Set minimum size to ensure usability but allow expansion
         self.setMinimumSize(700, 400)
+
+    def set_equipment_repo(self):
+        self.equipment_repo = get_equipment_repo()
 
     def _adjust_table_columns(self):
         """Adjust table column widths to content."""
@@ -351,6 +354,7 @@ class EquipmentSearch(QWidget):
             min_level=min_level,
             max_level=max_level,
             rarity=rarity,
+            limit=1024,
         )
         self.update_title(len(data))
         table_model = EquipmentTableModel(data)

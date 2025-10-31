@@ -136,6 +136,7 @@ class StackableRepo:
             max_level: int = None,
             rarity_display: str = None,
             item_type: str = None,
+            limit: int = None,
     ) -> List[dict]:
         logger.info(
             f'query with name {name} stackable_type_list {stackable_type_list} item_category_list {item_category_list} min_level {min_level} max_level {max_level} rarity_display {rarity_display} item_type {item_type}'
@@ -158,7 +159,11 @@ class StackableRepo:
         if item_type is not None:
             cond = cond & (pl.col('item_type') == item_type)
 
-        return self.df.filter(cond).select('*').to_dicts()
+        query = self.df.filter(cond).select('*')
+        if limit is not None:
+            query = query.limit(limit)
+
+        return query.to_dicts()
 
     def query_by_id(self, id_: int) -> dict:
         rows = self.df.filter(pl.col('id') == id_).limit(1).to_dicts()

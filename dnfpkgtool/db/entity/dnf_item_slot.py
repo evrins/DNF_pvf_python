@@ -44,7 +44,7 @@ class DnfItemSlot(BaseModel):
     otherworld: bytes = b''
     _others32_36: bytes = b''
     magic_seal: bytes = b''
-    cover_magic: int = 0
+    cover_magic_idx: int = 0
     forge_level: int = 0
     _others: bytes = b''
 
@@ -69,7 +69,7 @@ class DnfItemSlot(BaseModel):
         super().__init__()
 
         if len(buf) < 61:
-            buf += b'\x00' * 61
+            buf = b'\x00' * 61
 
         self.is_sealed = buf[0]
         self.type = buf[1]
@@ -92,10 +92,8 @@ class DnfItemSlot(BaseModel):
         self._others20_30 = buf[20:31]
         self.otherworld = buf[31:33]  # struct.unpack('H',item_bytes[31:33])[0]
         self._others32_36 = buf[33:37]
-        self.magic_seal = buf[37:51]
-        self.cover_magic = self.magic_seal[
-            -1
-        ]  # 表示被替换的魔法封印，当第四属性存在的时候有效
+        self.magic_seal = buf[37:50]
+        self.cover_magic_idx = buf[50] # 表示被替换的魔法封印，当第四属性存在的时候有效
 
         self.forge_level = buf[51]
         self._others = buf[52:]
@@ -124,7 +122,8 @@ class DnfItemSlot(BaseModel):
             + self.display_magic_seals[1].to_bytes()
             + self.display_magic_seals[2].to_bytes()
             + self.magic_seal[9:10]
-            + self.magic_seal[3].to_bytes()
+            + self.display_magic_seals[3].to_bytes()
+            + struct.pack('B', self.cover_magic_idx)
         )
         buf += magic_seal
         buf += struct.pack('B', self.forge_level)
