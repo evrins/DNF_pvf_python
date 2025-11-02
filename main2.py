@@ -16,10 +16,10 @@ from PySide6.QtWidgets import (
 from config import config
 from config.config import get_config
 from config.signals import SubmitSignal, SubmitType, gs
+from ui.components.equipment_search.equipment_search import EquipmentSearch
 from ui.components.settings.settings import Setting
-from ui.equipment_search import EquipmentSearch
+from ui.components.stackable_search.stackable_search import StackableSearch
 from ui.inventory_tabview import InventoryTabView
-from ui.stackable_search import StackableSearch
 
 shutdown_requested = False
 
@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
 
         # Set window properties
         self.setWindowTitle('DNF Package Tool - Search Interface')
-        self.resize(1000, 700)  # Set initial size
+        self.resize(1200, 800)  # Set initial size
 
         # Connect tab change signal
         self.tab_widget.currentChanged.connect(self._on_tab_changed)

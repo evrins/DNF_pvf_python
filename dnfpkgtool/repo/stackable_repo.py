@@ -7,7 +7,7 @@ from loguru import logger
 from config import config
 from dnfpkgtool.pvf.pvf_reader import PVFDict, PVFReader
 from dnfpkgtool.repo import MappingElementLocation, remapping_pvf_dict
-from ui.vars import item_rarity_list
+from ui.components.stackable_search.vars import item_rarity_list
 
 stackable_mapping = {
     '[avatar emblem]': '时装徽章',
@@ -19,8 +19,8 @@ stackable_mapping = {
     '[usable cera package]': '礼包',
     '[upgrade limit cube]': '礼包',
     '[contract]': '契约',
-    '[creature expitem]': '宠物道具',
-    '[creature]': '宠物道具',
+    '[creature expitem]': '宠物经验道具',
+    '[creature]': '宠物',
     '[feed]': '宠物道具',
     '[disguise random]': '变身道具',
     '[disguise]': '变身道具',
@@ -59,12 +59,12 @@ def map_stackable_type(d: dict[str, str]) -> str:
     return stackable_mapping[stackable_type]
 
 
-def map_rarity_display(rarity: int) -> str:
-    rarity_display = item_rarity_list[rarity]
-    return rarity_display
+def map_display_rarity(rarity: int) -> str:
+    display_rarity = item_rarity_list[rarity]
+    return display_rarity
 
 
-def build_stackable_repo_parquet(pvf_dict: PVFDict, fp: str):
+def build_stackable_repo_parquet(pvf_dict: PVFDict, fp: str | Path):
     mappings = [
         ('level', '[minimum level]', 0, MappingElementLocation.First),
         ('rarity', '[rarity]', 0, MappingElementLocation.First),
@@ -73,16 +73,18 @@ def build_stackable_repo_parquet(pvf_dict: PVFDict, fp: str):
         ('item_group_name', '[item group name]', '', MappingElementLocation.First),
         ('item_category', '[item category]', '', MappingElementLocation.First),
         ('stack_limit', '[stack limit]', 0, MappingElementLocation.First),
+        ('usable_job', '[usable job]', [], MappingElementLocation.All),
     ]
+
     df = remapping_pvf_dict(pvf_dict, mappings)
     df = pl.DataFrame(df)
     df = df.with_columns(
         pl.struct(['stackable_type', 'item_category'])
         .map_elements(map_stackable_type, return_dtype=pl.String)
-        .alias('stackable_type_display'),
+        .alias('display_stackable_type'),
         pl.col('rarity')
-        .map_elements(map_rarity_display, return_dtype=pl.String)
-        .alias('rarity_display'),
+        .map_elements(map_display_rarity, return_dtype=pl.String)
+        .alias('display_rarity'),
     )
     df.write_parquet(fp)
 
@@ -124,7 +126,7 @@ class ItemIdNotFoundException(Exception):
 
 
 class StackableRepo:
-    def __init__(self, fp: str):
+    def __init__(self, fp: str | Path):
         self.df = pl.read_parquet(fp)
 
     def query(
@@ -134,12 +136,12 @@ class StackableRepo:
             item_category_list: list[str] = None,
             min_level: int = None,
             max_level: int = None,
-            rarity_display: str = None,
+            display_rarity: str = None,
             item_type: str = None,
             limit: int = None,
     ) -> List[dict]:
         logger.info(
-            f'query with name {name} stackable_type_list {stackable_type_list} item_category_list {item_category_list} min_level {min_level} max_level {max_level} rarity_display {rarity_display} item_type {item_type}'
+            f'query with name {name} stackable_type_list {stackable_type_list} item_category_list {item_category_list} min_level {min_level} max_level {max_level} display_rarity {display_rarity} item_type {item_type}'
         )
         name = name.lower()
         cond = pl.col('name').str.contains(name) | pl.col(
@@ -154,8 +156,9 @@ class StackableRepo:
             cond = cond & (pl.col('level') >= min_level)
         if max_level is not None:
             cond = cond & (pl.col('level') <= max_level)
-        if rarity_display is not None:
-            cond = cond & (pl.col('rarity_display') == rarity_display)
+        if display_rarity is not None:
+            cond = cond & (pl.col('display_rarity') == display_rarity)
+
         if item_type is not None:
             cond = cond & (pl.col('item_type') == item_type)
 
