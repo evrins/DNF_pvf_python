@@ -7,13 +7,31 @@
     <x>0</x>
     <y>0</y>
     <width>305</width>
-    <height>588</height>
+    <height>747</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="leftMargin">
+    <number>8</number>
+   </property>
+   <property name="topMargin">
+    <number>8</number>
+   </property>
+   <property name="rightMargin">
+    <number>8</number>
+   </property>
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="id_label">
      <property name="text">
@@ -81,7 +99,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="grade_label">
      <property name="text">
-      <string>等级</string>
+      <string>品级</string>
      </property>
     </widget>
    </item>

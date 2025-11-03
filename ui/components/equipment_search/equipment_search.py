@@ -11,7 +11,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from config.signals import SubmitSignal, SubmitType, gs
+from dnfpkgtool.db.entity.mail_form_item import ItemType
+from dnfpkgtool.db.entity.mail_submit_item import MailSubmitItem
+from dnfpkgtool.db.entity.signals import  gs
 from dnfpkgtool.repo.equipment_repo import EquipmentRepo, get_equipment_repo
 from ui.components.equipment_search.equipment_search_ui import Ui_equipment_search
 from ui.components.stackable_search.vars import (
@@ -64,12 +66,11 @@ class EquipmentTableModel(QAbstractTableModel):
 
 
 class EquipmentSearch(QWidget, Ui_equipment_search):
-    def __init__(self, submit_signal: SubmitSignal):
+    def __init__(self):
         super().__init__()
         self.setupUi(self)
 
         self.equipment_repo: EquipmentRepo = None
-        self.submit_signal = submit_signal
 
         gs.pvf_changed.connect(self.set_equipment_repo)
 
@@ -234,7 +235,32 @@ class EquipmentSearch(QWidget, Ui_equipment_search):
             return
         row = selected_indexes[0].data(Qt.ItemDataRole.UserRole)
         print(f'submit {row["id"]} to mail')
-        self.submit_signal.on_submit.emit(SubmitType.Equipment, row['id'])
+        mail_submit_item = MailSubmitItem(
+            item_id=row['id'],
+            item_name=row['name'],
+            item_type=ItemType.Equipment,
+            endurance=row['durability'],
+            sub_type=row['sub_type'],
+        )
+
+        equipment_type = row['equipment_type']
+        if equipment_type in  [
+            '[aurora avatar]',
+            '[hair avatar]',
+            '[hat avatar]',
+            '[face avatar]',
+            '[breast avatar]',
+            '[coat avatar]',
+            '[skin avatar]',
+            '[waist avatar]',
+            '[pants avatar]',
+            '[shoes avatar]',
+        ]:
+            mail_submit_item.item_type = ItemType.Avatar
+        elif equipment_type in ['[creature]']:
+            mail_submit_item.item_type = ItemType.Creature
+
+        gs.submit_mail_form.emit(mail_submit_item)
 
     def on_row_clicked(self, index: QModelIndex):
         print(index.row(), index.column())

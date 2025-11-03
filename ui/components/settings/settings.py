@@ -49,33 +49,47 @@ class BuilderThread(QThread):
             self.progress.emit(f'{self.elapsed():.2f}s: Start building repo parquet')
             reader = PVFReader(self.pvf_path)
 
-            self.progress.emit(f'{self.elapsed():.2f}s: Start building equipment repo 1/5')
+            self.progress.emit(
+                f'{self.elapsed():.2f}s: Start building equipment repo 1/5'
+            )
             build_equipment_repo_parquet(
                 reader.get_equipment_dict(),
                 config.build_equipment_parquet_file_path(self.pvf_hash),
             )
-            self.progress.emit(f'{self.elapsed():.2f}s: End building equipment repo 1/5')
+            self.progress.emit(
+                f'{self.elapsed():.2f}s: End building equipment repo 1/5'
+            )
 
-            self.progress.emit(f'{self.elapsed():.2f}s: Start building stackable repo 2/5')
+            self.progress.emit(
+                f'{self.elapsed():.2f}s: Start building stackable repo 2/5'
+            )
             build_stackable_repo_parquet(
                 reader.get_stackable_dict(),
                 config.build_stackable_parquet_file_path(self.pvf_hash),
             )
-            self.progress.emit(f'{self.elapsed():.2f}s: End building stackable repo 2/5')
+            self.progress.emit(
+                f'{self.elapsed():.2f}s: End building stackable repo 2/5'
+            )
 
-            self.progress.emit(f'{self.elapsed():.2f}s: Start building magic seal repo 3/5')
+            self.progress.emit(
+                f'{self.elapsed():.2f}s: Start building magic seal repo 3/5'
+            )
             build_magic_seal_parquet(
                 reader.get_magic_seal_dict(),
                 config.build_magic_seal_parquet_file_path(self.pvf_hash),
             )
-            self.progress.emit(f'{self.elapsed():.2f}s: End building magic seal repo 3/5')
+            self.progress.emit(
+                f'{self.elapsed():.2f}s: End building magic seal repo 3/5'
+            )
 
             self.progress.emit(f'{self.elapsed():.2f}s: Start building skill repo 4/5')
             build_skill_repo_parquet(
                 reader.get_skill_list(),
                 config.build_skill_parquet_parquet_file_path(self.pvf_hash),
             )
-            self.progress.emit(f'{self.elapsed():.2f}s: End building magic seal repo 4/5')
+            self.progress.emit(
+                f'{self.elapsed():.2f}s: End building magic seal repo 4/5'
+            )
 
             # build orb repo should come after stackable_repo and skill_repo
             self.progress.emit(f'{self.elapsed():.2f}s: Start building orb repo 5/5')

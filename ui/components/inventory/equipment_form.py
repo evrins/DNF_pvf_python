@@ -257,7 +257,7 @@ class EquipmentForm(QWidget, Ui_inventory_equipment_form):
         # set orb
         if item.card_id > 0:
             self.orb = self.orb_repo.query_by_card_id(item.card_id)
-            enchant_category = self.orb['enchant_category_display']
+            enchant_category = self.orb['display_enchant_category']
             if len(enchant_category) > 0:
                 first_enchant_category = enchant_category[0]
                 self.orb_category.setCurrentText(first_enchant_category)
@@ -285,14 +285,14 @@ class EquipmentForm(QWidget, Ui_inventory_equipment_form):
         print(f'selected: idx: {idx}')
         print(f'selected text: {self.orb_category.currentText()}')
         self.orb_list = (
-            self.orb_repo.query_by_enchant_category_display_and_equipment_type(
+            self.orb_repo.query_by_display_enchant_category_and_equipment_type(
                 self.orb_category.currentText(), self.origin_item.equipment_type
             )
         )
 
         # more detail
         orb_display_list = ['---'] + [
-            f'{it["orb_name"]} {it["effect_display"]}' for it in self.orb_list
+            f'{it["orb_name"]} {it["display_effect"]}' for it in self.orb_list
         ]
 
         self.orb_item.clear()

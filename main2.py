@@ -15,8 +15,11 @@ from PySide6.QtWidgets import (
 
 from config import config
 from config.config import get_config
-from config.signals import SubmitSignal, SubmitType, gs
+from dnfpkgtool.db.entity.mail_submit_item import MailSubmitItem
+from dnfpkgtool.db.entity.signals import gs
+from ui.components.characters.characters import Characters
 from ui.components.equipment_search.equipment_search import EquipmentSearch
+from ui.components.mail.mail import Mail
 from ui.components.settings.settings import Setting
 from ui.components.stackable_search.stackable_search import StackableSearch
 from ui.inventory_tabview import InventoryTabView
@@ -38,85 +41,58 @@ class MainWindow(QMainWindow):
         self.tab_widget = QTabWidget()
         self.setCentralWidget(self.tab_widget)
 
-        self.submit_signal = SubmitSignal()
+        self.character_widget = Characters()
+        self.tab_widget.addTab(self.character_widget, 'Characters')
 
-        # Create search widgets
-        self.equip_search = EquipmentSearch(self.submit_signal)
+        self.equip_search = EquipmentSearch()
         self.tab_widget.addTab(self.equip_search, '🛡️ Equipment Search')
 
-        self.stackable_search = StackableSearch(self.submit_signal)
+        self.stackable_search = StackableSearch()
         self.tab_widget.addTab(self.stackable_search, '📦 Stackable Search')
 
         self.inventory_tabview = InventoryTabView()
         self.tab_widget.addTab(self.inventory_tabview, 'Inventory')
 
-        # Add placeholder tabs for future functionality
-        self._add_placeholder_tabs()
+        self.mail_widget = Mail()
+        self.tab_widget.addTab(self.mail_widget, '📧 Mail')
+
+        self.settings_widget = Setting()
+        self.tab_widget.addTab(self.settings_widget, '⚙️ Settings')
 
         # Set up status bar
         self.status_bar = self.statusBar()
-        self.status_bar.showMessage('Ready - Select a tab to start searching')
+        self.update_status_message()
 
         # Connect signals
-        self.submit_signal.on_submit.connect(self.handle_submit_to_mail)
+        gs.submit_mail_form.connect(self.handle_submit_to_mail)
+        gs.character_no_changed.connect(self.update_status_message)
 
         # Set window properties
-        self.setWindowTitle('DNF Package Tool - Search Interface')
+        self.setWindowTitle('DNF GM Tool')
         self.resize(1200, 800)  # Set initial size
 
-        # Connect tab change signal
-        self.tab_widget.currentChanged.connect(self._on_tab_changed)
-
         # set default tab
-        self.tab_widget.setCurrentIndex(2)
+        self.tab_widget.setCurrentIndex(0)
 
         self.quit_timer = QTimer(self)
         self.quit_timer.setInterval(1000)
         self.quit_timer.timeout.connect(self.check_for_shutdown)
         self.quit_timer.start()
 
-    def handle_submit_to_mail(self, submit_type: SubmitType, id_: int):
-        """Handle submission to mail system."""
-        print(f'Submit {submit_type} ID:{id_} to mail')
-        self.status_bar.showMessage(
-            f'Submitted {submit_type.value} (ID: {id_}) to mail system'
-        )
+    def handle_submit_to_mail(self, mail_submit_item: MailSubmitItem):
+        self.tab_widget.setCurrentIndex(3)
 
-    def _add_placeholder_tabs(self):
-        """Add placeholder tabs for future functionality."""
-        # Character Management tab
-        character_widget = QWidget()
-        character_layout = QVBoxLayout()
-        dump_btn = QPushButton('Dump')
-        dump_btn.clicked.connect(self.dump_memory)
-        character_layout.addWidget(dump_btn)
-        character_widget.setLayout(character_layout)
-        self.tab_widget.addTab(character_widget, '👤 Characters')
+    def update_status_message(self):
+        account_id = config.get_current_account_id()
+        character_no = config.get_current_character_no()
+        character_name =  config.get_config().character_name
 
-        # Mail System tab
-        mail_widget = QWidget()
-        mail_layout = QVBoxLayout()
-        mail_layout.addWidget(QPushButton('Mail System - Coming Soon'))
-        mail_widget.setLayout(mail_layout)
-        self.tab_widget.addTab(mail_widget, '📧 Mail')
+        if account_id == 0 or character_no == 0:
+            msg = 'No Character Selected'
+        else:
+            msg = f'Current Character [{character_no}] {character_name}'
 
-        # Settings tab - using actual Settings widget
-        self.settings_widget = Setting()
-        self.tab_widget.addTab(self.settings_widget, '⚙️ Settings')
-
-    def _on_tab_changed(self, index: int):
-        """Handle tab change events."""
-        tab_names = [
-            'Equipment Search',
-            'Item Search',
-            'Account Cargo',
-            'Character Management',
-            'Mail System',
-            'Settings',
-        ]
-
-        if index < len(tab_names):
-            self.status_bar.showMessage(f'Active tab: {tab_names[index]}')
+        self.status_bar.showMessage(msg)
 
     def closeEvent(self, event):
         """Handle application close event."""

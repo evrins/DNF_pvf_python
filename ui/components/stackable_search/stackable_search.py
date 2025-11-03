@@ -6,13 +6,15 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from config.signals import SubmitSignal, SubmitType, gs
+from dnfpkgtool.db.entity.mail_form_item import ItemType
+from dnfpkgtool.db.entity.mail_submit_item import MailSubmitItem
+from dnfpkgtool.db.entity.signals import gs
 from dnfpkgtool.repo.stackable_repo import StackableRepo, get_stackable_repo
 from ui.components.stackable_search.stackable_search_ui import Ui_stackable_search
 from ui.components.stackable_search.vars import (
     categoryed_stackable_type_dict,
     item_category_key_list,
-    item_rarity_list, job_name_list, job_name_mapping,
+    item_rarity_list
 )
 
 
@@ -62,6 +64,8 @@ class StackableTableModel(QAbstractTableModel):
                 else:
                     lines.append(f'{indent}{v}')
             return '\n'.join(lines)
+        elif role == Qt.ItemDataRole.UserRole:
+            return self._data[index.row()]
         return None
 
     def headerData(self, section, orientation, role):
@@ -75,7 +79,7 @@ class StackableTableModel(QAbstractTableModel):
 
 
 class StackableSearch(QWidget, Ui_stackable_search):
-    def __init__(self, submit_signal: SubmitSignal):
+    def __init__(self):
         super().__init__()
 
         self.setupUi(self)
@@ -83,7 +87,6 @@ class StackableSearch(QWidget, Ui_stackable_search):
         self.stackable_repo: StackableRepo = None
 
         gs.pvf_changed.connect(self.set_stackable_repo)
-        self.submit_signal = submit_signal
 
         self.name_line_edit.returnPressed.connect(self.do_search)
 
@@ -165,9 +168,13 @@ class StackableSearch(QWidget, Ui_stackable_search):
         selected_indexes = self.result_table_view.selectedIndexes()
         if not selected_indexes:
             return
-        select_id = selected_indexes[0].data(Qt.ItemDataRole.DisplayRole)
-        print(f'submit {select_id} to mail')
-        self.submit_signal.on_submit.emit(SubmitType.Item, select_id)
+        row = selected_indexes[0].data(Qt.ItemDataRole.UserRole)
+        mail_submit_item = MailSubmitItem(
+            item_id=row['id'],
+            item_name=row['name'],
+            item_type=ItemType.Stackable,
+        )
+        gs.submit_mail_form.emit(mail_submit_item)
 
     def update_title(self, n_result: int):
         title = 'Results'

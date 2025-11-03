@@ -93,7 +93,7 @@ class DnfItemSlot(BaseModel):
         self.otherworld = buf[31:33]  # struct.unpack('H',item_bytes[31:33])[0]
         self._others32_36 = buf[33:37]
         self.magic_seal = buf[37:50]
-        self.cover_magic_idx = buf[50] # 表示被替换的魔法封印，当第四属性存在的时候有效
+        self.cover_magic_idx = buf[50]  # 表示被替换的魔法封印，当第四属性存在的时候有效
 
         self.forge_level = buf[51]
         self._others = buf[52:]

@@ -116,13 +116,13 @@ def test_query_by_id():
     print(res)
 
 
-class ItemIdNotFoundException(Exception):
+class StackableIdNotFoundException(Exception):
     def __init__(self, item_id):
         self.item_id = item_id
-        super().__init__('Item ID not found')
+        super().__init__('Stackable ID not found')
 
     def __str__(self):
-        return f'Item ID not found: {self.item_id}'
+        return f'Stackable ID not found: {self.item_id}'
 
 
 class StackableRepo:
@@ -171,7 +171,7 @@ class StackableRepo:
     def query_by_id(self, id_: int) -> dict:
         rows = self.df.filter(pl.col('id') == id_).limit(1).to_dicts()
         if len(rows) == 0:
-            raise ItemIdNotFoundException(id_)
+            raise StackableIdNotFoundException(id_)
         return rows[0]
 
 

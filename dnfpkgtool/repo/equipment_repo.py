@@ -86,8 +86,23 @@ weapon_mapping = {
 
 weapon_mapping = {v: k for k, v in weapon_mapping.items()}
 
+job_name_mapping = {
+    '[all]': '全部职业',
+    '[swordman]': '鬼剑士',
+    '[fighter]': '格斗家',
+    '[at fighter]': '格斗家-男',
+    '[gunner]': '神枪手',
+    '[at gunner]': '神枪手-女',
+    '[mage]': '魔法师',
+    '[at mage]': '魔法师-男',
+    '[priest]': '圣职者',
+    '[thief]': '暗夜使者',
+    '[demonic swordman]': '黑暗武士',
+    '[creator mage]': '缔造者',
+}
 
-def map_equipment_type_display(d: Dict[str, str]) -> str:
+
+def map_display_equipment_type(d: Dict[str, str]) -> str:
     equipment_type = d['equipment_type']
     item_group_name = d['item_group_name']
     if equipment_type == '[weapon]':
@@ -96,7 +111,7 @@ def map_equipment_type_display(d: Dict[str, str]) -> str:
         return equipment_mapping[equipment_type]
 
 
-def map_rarity_display(d: dict[str, str | int]) -> str:
+def map_display_rarity(d: dict[str, str | int]) -> str:
     id_ = d['id']
     name = d['name']
     rarity = d['rarity']
@@ -124,6 +139,10 @@ def map_rarity_display(d: dict[str, str | int]) -> str:
         return '勇者'
 
     raise ValueError(f'{id_} unknown rarity {rarity}')
+
+
+def map_display_usable_job(usable_job: List[str]) -> str:
+    return ','.join([job_name_mapping[it] for it in usable_job])
 
 
 def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str | Path):
@@ -170,6 +189,7 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str | Path):
         ('set_name', '[set name]', '', MappingElementLocation.First),
         ('set_item', '[set item]', [], MappingElementLocation.All),
         ('durability', '[durability]', 0, MappingElementLocation.First),
+        ('sub_type', '[sub type]', 0, MappingElementLocation.First),
     ]
     df = remapping_pvf_dict(pvf_dict, mappings)
     df = pl.DataFrame(df)
@@ -178,11 +198,14 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str | Path):
         .map_elements(map_armor_type, return_dtype=pl.String)
         .alias('armor_type'),
         pl.struct(['equipment_type', 'item_group_name'])
-        .map_elements(map_equipment_type_display)
-        .alias('equipment_type_display'),
+        .map_elements(map_display_equipment_type)
+        .alias('display_equipment_type'),
         pl.struct(['id', 'name', 'rarity', 'item_category'])
-        .map_elements(map_rarity_display, return_dtype=pl.String)
-        .alias('rarity_display'),
+        .map_elements(map_display_rarity, return_dtype=pl.String)
+        .alias('display_rarity'),
+        pl.col('usable_job')
+        .map_elements(map_display_usable_job, return_dtype=pl.String)
+        .alias('display_usable_job'),
         pl.col('attack_speed') // 10,
         pl.col('cast_speed') // 10,
         pl.col('move_speed') // 10,
@@ -194,12 +217,15 @@ def build_equipment_repo_parquet(pvf_dict: PVFDict, fp: str | Path):
     df.write_parquet(fp)
 
 
+base_dir = Path(__file__).parent
+
+
 def test_build_equipment_repo():
     pvf_path = '/Users/evrins/workspace/python/DNF_pvf_python/Script.pvf'
     reader = PVFReader(pvf_path)
     stackable_dict = reader.get_equipment_dict()
     build_equipment_repo_parquet(
-        stackable_dict, config.get_equipment_parquet_file_path()
+        stackable_dict, base_dir / 'data' / 'equipments.parquet'
     )
 
 
@@ -255,13 +281,16 @@ class EquipmentRepo:
             cond = cond & (pl.col('level') <= max_level)
 
         if rarity is not None:
-            cond = cond & (pl.col('rarity_display') == rarity)
+            cond = cond & (pl.col('display_rarity') == rarity)
 
         if equipment_type_list is not None:
             cond = cond & (pl.col('equipment_type').is_in(equipment_type_list))
 
         if usable_job is not None:
-            cond = cond & (pl.col('usable_job').list.contains(usable_job))
+            cond = cond & (
+                pl.col('usable_job').list.contains('[all]')
+                | (pl.col('usable_job').list.contains(usable_job))
+            )
 
         if item_group_name is not None:
             cond = cond & (pl.col('item_group_name') == item_group_name)

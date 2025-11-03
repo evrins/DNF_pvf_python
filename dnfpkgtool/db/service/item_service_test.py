@@ -60,6 +60,7 @@ def test_unpack_blob_item_4():
     buf2 = item.to_bytes()
     assert buf2 == buf
 
+
 def test_get_current_character_cargo():
     svc = ItemService()
     items = svc.get_current_character_cargo()

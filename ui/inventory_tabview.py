@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
 
-from config.signals import gs
+from dnfpkgtool.db.entity.signals import gs
 from dnfpkgtool.db.entity.dnf_item_slot import DnfItemSlot
 from dnfpkgtool.db.service.item_service import InventoryLoc, ItemService
 from ui.components.inventory.inventory import InventoryWidget
@@ -18,6 +18,9 @@ class InventoryTabView(QtWidgets.QTabWidget):
         self.account_cargo_tab: InventoryWidget = None
 
         gs.pvf_changed.connect(self.set_data)
+        gs.account_id_changed.connect(self.refresh_account_cargo)
+        gs.character_no_changed.connect(self.refresh_character_cargo)
+        gs.character_no_changed.connect(self.refresh_character_inventory)
 
     def set_data(self):
         self.item_svc = ItemService()

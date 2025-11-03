@@ -98,16 +98,21 @@ class Ui_inventory_container(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.item_edit.sizePolicy().hasHeightForWidth())
         self.item_edit.setSizePolicy(sizePolicy3)
-        self.item_edit.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
         self.verticalLayout_2 = QVBoxLayout(self.item_edit)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(4, 4, 4, 4)
         self.form_stack_widget = QStackedWidget(self.item_edit)
         self.form_stack_widget.setObjectName(u"form_stack_widget")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(1)
+        sizePolicy4.setHeightForWidth(self.form_stack_widget.sizePolicy().hasHeightForWidth())
+        self.form_stack_widget.setSizePolicy(sizePolicy4)
 
         self.verticalLayout_2.addWidget(self.form_stack_widget)
 
 
-        self.horizontalLayout.addWidget(self.item_edit, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
+        self.horizontalLayout.addWidget(self.item_edit)
 
 
         self.retranslateUi(inventory_container)

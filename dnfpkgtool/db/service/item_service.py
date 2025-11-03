@@ -24,7 +24,7 @@ from dnfpkgtool.repo.magic_seal_repo import (
 from dnfpkgtool.repo.orb_repo import build_orb_repo_parquet
 from dnfpkgtool.repo.skill_repo import build_skill_repo_parquet, get_skill_repo
 from dnfpkgtool.repo.stackable_repo import (
-    ItemIdNotFoundException,
+    StackableIdNotFoundException,
     build_stackable_repo_parquet,
     get_stackable_repo,
 )
@@ -112,7 +112,7 @@ class ItemService:
         prefix = buf[:4]
         items_bytes = bytearray(zlib.decompress(buf[4:]))
         idx = item.display_idx
-        items_bytes[idx * 61: idx * 61 + 61] = item.to_bytes()
+        items_bytes[idx * 61 : idx * 61 + 61] = item.to_bytes()
         res = prefix + zlib.compress(items_bytes)
         return res
 
@@ -121,7 +121,7 @@ class ItemService:
         num = len(buf) // 61
         res = []
         for i in range(num):
-            item = self.unpack_blob_item(buf[i * 61: (i + 1) * 61])
+            item = self.unpack_blob_item(buf[i * 61 : (i + 1) * 61])
             item.display_idx = i
             res.append(item)
         return res
@@ -134,22 +134,22 @@ class ItemService:
                     inner_item = self.equipment_repo.query_by_id(item.id)
                     item.equipment_type = inner_item['equipment_type']
                     item.endurance_limit = inner_item['durability']
-                    item.display_category = inner_item['equipment_type_display']
+                    item.display_category = inner_item['display_equipment_type']
                 else:
                     inner_item = self.stackable_repo.query_by_id(item.id)
                     item.stack_limit = inner_item['stack_limit']
-                    item.display_category = inner_item['stackable_type_display']
+                    item.display_category = inner_item['display_stackable_type']
                 item.display_name = inner_item['name']
                 item.display_rarity = inner_item['rarity']
-                item.display_rarity_name = inner_item['rarity_display']
-            except ItemIdNotFoundException:
+                item.display_rarity_name = inner_item['display_rarity']
+            except StackableIdNotFoundException:
                 item.is_missing = True
             except EquipmentIdNotFoundException:
                 item.is_missing = True
 
         magic_seal_range_list = [(0, 3), (3, 6), (6, 9), (10, 13)]
         for idx, it in enumerate(magic_seal_range_list):
-            ms = MagicSeal.from_bytes(item.magic_seal[it[0]: it[1]])
+            ms = MagicSeal.from_bytes(item.magic_seal[it[0] : it[1]])
             if ms.id == 0:
                 continue
             ms.name = self.magic_seal_repo.query_by_id(ms.id)['name']

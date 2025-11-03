@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 import polars as pl
@@ -6,7 +7,7 @@ from config import config
 from dnfpkgtool.pvf.pvf_reader import PVFReader
 
 
-def build_magic_seal_parquet(magic_seal_dict: dict[int, str], out_path: str):
+def build_magic_seal_parquet(magic_seal_dict: dict[int, str], out_path: str | Path):
     df = {'id': [], 'name': []}
     for k, v in magic_seal_dict.items():
         df['id'].append(k)

@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+from pathlib import Path
 from typing import List
 
 import polars as pl
@@ -118,7 +119,7 @@ def render_skill_text(skill_repo: SkillRepo, arr: list) -> str:
 
 
 # render effect display based on keys
-def render_effect_display(enchant: dict, skill_repo: SkillRepo) -> str:
+def render_display_effect(enchant: dict, skill_repo: SkillRepo) -> str:
     res = []
 
     # special effect use stat_desc instead
@@ -180,7 +181,7 @@ def render_effect_display(enchant: dict, skill_repo: SkillRepo) -> str:
 
 
 def build_orb_repo_parquet(
-        stackable_repo: StackableRepo, skill_repo: SkillRepo, fp: str
+        stackable_repo: StackableRepo, skill_repo: SkillRepo, fp: str | Path
 ):
     orb_list = stackable_repo.query('', stackable_type_list=['[enchant waste]'])
     rs: defaultdict = defaultdict(list)
@@ -205,7 +206,7 @@ def build_orb_repo_parquet(
             enchant_category = ['special']
         rs['enchant_category'].append(enchant_category)
 
-        rs['enchant_category_display'].append(
+        rs['display_enchant_category'].append(
             list(
                 filter(
                     lambda it: it,
@@ -214,8 +215,8 @@ def build_orb_repo_parquet(
             )
         )
 
-        effect_display = render_effect_display(enchant, skill_repo)
-        rs['effect_display'].append(effect_display)
+        display_effect = render_display_effect(enchant, skill_repo)
+        rs['display_effect'].append(display_effect)
 
         apply_parts = card_d['[string data]'][1:]
 
@@ -254,7 +255,7 @@ def test_build_orb_options():
     for p in parts:
         category_list = (
             df.filter(pl.col('apply_parts').list.contains(p))
-            .select(pl.col('enchant_category_display'))
+            .select(pl.col('display_enchant_category'))
             .to_series()
             .to_list()
         )
@@ -272,27 +273,27 @@ class OrbRepo:
     def query_by_card_id(self, card_id: int) -> dict:
         return self.df.filter(pl.col('card_id') == card_id).limit(1).to_dicts()[0]
 
-    def query_by_enchant_category_display(
-            self, enchant_category_display: str
+    def query_by_display_enchant_category(
+            self, display_enchant_category: str
     ) -> List[dict]:
         return (
             self.df.filter(
-                pl.col('enchant_category_display').list.contains(
-                    enchant_category_display
+                pl.col('display_enchant_category').list.contains(
+                    display_enchant_category
                 )
             )
             .sort(pl.col('orb_id'), descending=False)
             .to_dicts()
         )
 
-    def query_by_enchant_category_display_and_equipment_type(
-            self, enchant_category_display: str, equipment_type: str
+    def query_by_display_enchant_category_and_equipment_type(
+            self, display_enchant_category: str, equipment_type: str
     ) -> List[dict]:
         return (
             self.df.filter(
                 (
-                    pl.col('enchant_category_display').list.contains(
-                        enchant_category_display
+                    pl.col('display_enchant_category').list.contains(
+                        display_enchant_category
                     )
                 )
                 & pl.col('apply_parts').list.contains(equipment_type)

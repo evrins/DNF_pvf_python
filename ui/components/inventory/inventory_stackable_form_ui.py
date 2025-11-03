@@ -24,6 +24,11 @@ class Ui_inventory_stackable_form(object):
         if not inventory_stackable_form.objectName():
             inventory_stackable_form.setObjectName(u"inventory_stackable_form")
         inventory_stackable_form.resize(270, 161)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(inventory_stackable_form.sizePolicy().hasHeightForWidth())
+        inventory_stackable_form.setSizePolicy(sizePolicy)
         self.formLayout = QFormLayout(inventory_stackable_form)
         self.formLayout.setObjectName(u"formLayout")
         self.id_label = QLabel(inventory_stackable_form)
@@ -55,11 +60,11 @@ class Ui_inventory_stackable_form(object):
 
         self.num_spin_box = QSpinBox(inventory_stackable_form)
         self.num_spin_box.setObjectName(u"num_spin_box")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.num_spin_box.sizePolicy().hasHeightForWidth())
-        self.num_spin_box.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.num_spin_box.sizePolicy().hasHeightForWidth())
+        self.num_spin_box.setSizePolicy(sizePolicy1)
         self.num_spin_box.setMaximum(999999999)
 
         self.formLayout.setWidget(2, QFormLayout.ItemRole.FieldRole, self.num_spin_box)

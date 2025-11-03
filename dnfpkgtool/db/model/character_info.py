@@ -9,7 +9,7 @@ class CharacterInfo(Base):
 
     m_id: Mapped[int] = mapped_column(Integer)
     charac_no: Mapped[int] = mapped_column(Integer, primary_key=True)
-    charac_name: Mapped[str] = mapped_column(String, max_length=20)
+    charac_name: Mapped[str] = mapped_column(String(20))
     lev: Mapped[int] = mapped_column(Integer)
     job: Mapped[int] = mapped_column(Integer)
     grow_type: Mapped[int] = mapped_column(Integer)

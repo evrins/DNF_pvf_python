@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Dict, List
 
 import polars as pl
@@ -7,7 +8,7 @@ from dnfpkgtool.pvf.pvf_reader import PVFReader
 from dnfpkgtool.repo import MappingElementLocation, remapping_pvf_list
 
 
-def build_skill_repo_parquet(pvf_list: List[Dict[str, any]], fp: str):
+def build_skill_repo_parquet(pvf_list: List[Dict[str, any]], fp: str | Path):
     mappings = [
         ('job', 'job', 0, MappingElementLocation.First),
         ('name', '[name]', '', MappingElementLocation.First),

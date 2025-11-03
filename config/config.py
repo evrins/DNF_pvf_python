@@ -6,7 +6,7 @@ import pymysql
 from loguru import logger
 from pydantic import BaseModel
 
-from config.signals import gs
+from dnfpkgtool.db.entity.signals import gs
 
 
 class DbConfig(BaseModel):
@@ -38,6 +38,9 @@ class Config(BaseModel):
     history: History
     pvf_hash: str = ''
     pvf_dir: Path = ''
+    account_id: int = 0
+    character_no: int = 0
+    character_name: str = ''
 
     @staticmethod
     def default() -> 'Config':
@@ -166,11 +169,11 @@ def get_db_conn(db_name: str) -> pymysql.Connection:
 
 
 def get_current_account_id():
-    return 18000000
+    return _config.account_id
 
 
 def get_current_character_no():
-    return 2
+    return _config.character_no
 
 
 # todo build path from config
@@ -245,3 +248,14 @@ def set_pvf_hash(pvf_hash: str):
     save()
 
     gs.pvf_changed.emit()
+
+
+def set_account_id_and_character_no(account_id: int, character_no: int, character_name: str):
+    _config.account_id = account_id
+    _config.character_no = character_no
+    _config.character_name = character_name
+
+    save()
+
+    gs.account_id_changed.emit()
+    gs.character_no_changed.emit()
