@@ -39,6 +39,7 @@ class EquipmentForm(QWidget, Ui_equipment_form):
             grade=self.grade_spin_box.value(),
             amplify_option=self.reinforce_type_combox.currentIndex(),
             amplify_value=self.reinforce_value_spin_box.value(),
+            upgrade=self.enhance_level_spin_box.value(),
             separate_upgrade=self.forge_level_spin_box.value(),
             seal_flag=1 if self.seal_checkbox.isChecked() else 0,
             endurance=self.endurance_spin_box.value(),
