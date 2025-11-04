@@ -136,3 +136,4 @@ sql_bak
 dnfpkgtool/repo/data
 *.pvfcache
 data
+.idea
