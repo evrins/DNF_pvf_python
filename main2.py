@@ -80,7 +80,7 @@ class MainWindow(QMainWindow):
         self.quit_timer.start()
 
     def handle_submit_to_mail(self, mail_submit_item: MailSubmitItem):
-        self.tab_widget.setCurrentIndex(3)
+        self.tab_widget.setCurrentWidget(self.mail_widget)
 
     def update_status_message(self):
         account_id = config.get_current_account_id()
