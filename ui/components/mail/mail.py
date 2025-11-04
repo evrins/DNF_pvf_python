@@ -74,6 +74,7 @@ class Mail(QWidget, Ui_mail):
         self.current_item_type = None
 
         gs.submit_mail_form.connect(self.on_submit)
+        gs.character_no_changed.connect(self.refresh)
 
         self.refresh_btn.clicked.connect(self.refresh)
         self.del_btn.clicked.connect(self.delete_selected)
@@ -128,7 +129,7 @@ class Mail(QWidget, Ui_mail):
         mail_form_item: MailFormItem = self.stackedWidget.currentWidget().get_item()
 
         for character_no in character_no_list:
-            self.mail_service.send_mail('你好', '世界', character_no, mail_form_item)
+            self.mail_service.send_mail('hello', 'world', character_no, mail_form_item)
         self.refresh()
 
     def delete_selected(self):
