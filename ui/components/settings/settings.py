@@ -125,9 +125,13 @@ class Setting(QWidget, Ui_settings):
         history = cfg.history
 
         self.host_combox.addItems(history.host_list)
+        self.host_combox.setCurrentText(cfg.db_config.host)
         self.port_combox.addItems(map(str, history.port_list))
+        self.port_combox.setCurrentText(str(cfg.db_config.port))
         self.username_combox.addItems(history.username_list)
+        self.username_combox.setCurrentText(cfg.db_config.username)
         self.password_combox.addItems(history.password_list)
+        self.password_combox.setCurrentText(cfg.db_config.password)
 
         # load pvf hash
         self.pvf_combox.addItems(history.pvf_hash_list)
