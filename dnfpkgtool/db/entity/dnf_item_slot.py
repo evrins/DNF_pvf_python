@@ -105,7 +105,6 @@ class DnfItemSlot(BaseModel):
         buf += struct.pack('I', self.id)
         enhance_and_seal = self.enhancement_level | (self.seal_count << 5)
         buf += struct.pack('B', enhance_and_seal)
-        # print(self.num_grade)
         if self.type == 0x01:
             buf += struct.pack('!I', self.num_grade)
         else:

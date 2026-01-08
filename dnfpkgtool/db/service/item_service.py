@@ -95,8 +95,6 @@ class ItemService:
             )
         elif inventory_loc == InventoryLoc.Equipment:
             new_equipment = self.update_blob_items(inventory.equipment_slot, item)
-            print(f'old equipment: {inventory.equipment_slot}')
-            print(f'new equipment: {new_equipment}')
             self.character_inventory.update_equipments_by_character_no(
                 character_no, new_equipment
             )
